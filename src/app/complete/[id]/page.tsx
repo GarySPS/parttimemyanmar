@@ -75,42 +75,59 @@ export default async function CompleteJobPage({
   }
 
   return (
-    <main className="w-full min-h-screen bg-gray-50 text-gray-900 p-4 md:p-8">
-      <header className="mb-6 w-full border-b pb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Complete Job</h1>
-        <Link href="/" className="text-sm text-gray-500 hover:text-black">
-          Cancel
-        </Link>
-      </header>
+    <main className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 text-gray-900 font-sans selection:bg-blue-200 p-4 md:p-8 flex justify-center items-start">
+      <div className="w-full max-w-xl mt-4 md:mt-12">
+        
+        <header className="mb-8 w-full flex items-center justify-between">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+            Complete Task
+          </h1>
+          <Link href="/" className="px-5 py-2 bg-white/60 hover:bg-white border border-gray-200 rounded-full text-sm font-semibold shadow-sm transition-all hover:shadow-md">
+            Cancel
+          </Link>
+        </header>
 
-      <section className="w-full bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-        <div className="mb-6">
-          <h2 className="font-semibold text-lg">{job.title}</h2>
-          <p className="text-sm text-gray-500 mt-1">Upload the WavePay or KBZPay screenshot to close this listing.</p>
-        </div>
-
-        <form action={submitReceipt} className="flex flex-col gap-6 w-full">
+        <section className="w-full bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] border border-white/60">
           
-          <div className="flex flex-col gap-2 w-full">
-            <label htmlFor="receipt" className="font-medium text-sm text-gray-700">Payment Screenshot (.jpg, .png, .webp)</label>
-            <input 
-              type="file" 
-              id="receipt" 
-              name="receipt" 
-              accept="image/*"
-              required 
-              className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold rounded-full mb-4">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Pending Validation
+            </div>
+            <h2 className="font-extrabold text-2xl text-gray-900 mb-2 leading-tight">{job.title}</h2>
+            <p className="text-sm text-gray-500 font-medium">To permanently close this listing and build your reputation, upload the WavePay or KBZPay transaction screenshot.</p>
           </div>
 
-          <button 
-            type="submit" 
-            className="w-full mt-4 bg-green-600 text-white py-3 rounded-md font-medium hover:bg-green-700 transition-colors shadow-sm"
-          >
-            Upload & Close Job
-          </button>
-        </form>
-      </section>
+          <form action={submitReceipt} className="flex flex-col gap-6 w-full">
+            
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="receipt" className="font-bold text-sm text-gray-700 ml-2">Payment Screenshot</label>
+              
+              <div className="relative group w-full">
+                {/* Soft glowing effect behind the input */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                
+                {/* Highly customized file input */}
+                <input 
+                  type="file" 
+                  id="receipt" 
+                  name="receipt" 
+                  accept="image/*"
+                  required 
+                  className="relative w-full bg-white/90 border border-gray-200/80 rounded-2xl p-2 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gray-900 file:text-white file:shadow-sm hover:file:bg-black hover:file:cursor-pointer cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-4 rounded-full font-bold text-base shadow-lg shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              Upload & Close Task
+            </button>
+          </form>
+        </section>
+      </div>
     </main>
   );
 }

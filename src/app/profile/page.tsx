@@ -3,109 +3,102 @@
 import { createClient } from '../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { revalidatePath } from 'next/cache';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
-  
-  // 1. Ensure user is authenticated
   const { data: { user } } = await supabase.auth.getUser();
+
   if (!user) {
     redirect('/');
   }
 
-  // 2. Fetch existing profile data
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*')
+    .select('contact_app, contact_username, role')
     .eq('id', user.id)
     .single();
 
-  // 3. Server Action to update contact info
   async function updateProfile(formData: FormData) {
     'use server';
-    
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    
     if (!user) return;
 
     const contact_app = formData.get('contact_app') as string;
     const contact_username = formData.get('contact_username') as string;
 
-    const { error } = await supabase
+    await supabase
       .from('profiles')
       .update({ contact_app, contact_username })
       .eq('id', user.id);
 
-    if (!error) {
-      redirect('/');
-    }
+    revalidatePath('/profile');
+    redirect('/');
   }
 
   return (
-    <main className="w-full min-h-screen bg-gray-50 text-gray-900 p-4 md:p-8">
-      <header className="mb-6 w-full border-b pb-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">Contact Settings</h1>
-          {profile?.role && (
-            <span className="px-2 py-1 bg-gray-200 text-gray-800 text-xs font-bold uppercase tracking-wider rounded shadow-sm">
-              {profile.role === 'employer' ? 'Employer' : 'Job Seeker'}
+    <main className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 text-gray-900 font-sans selection:bg-blue-200 p-4 md:p-8 flex justify-center items-start">
+      <div className="w-full max-w-xl mt-4 md:mt-12">
+        
+        <header className="mb-8 w-full flex items-center justify-between">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+            Settings
+          </h1>
+          <Link href="/" className="px-5 py-2 bg-white/60 hover:bg-white border border-gray-200 rounded-full text-sm font-semibold shadow-sm transition-all hover:shadow-md">
+            Back to Feed
+          </Link>
+        </header>
+
+        <section className="w-full bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] border border-white/60">
+          
+          <div className="mb-6">
+            <span className="inline-block px-3 py-1 bg-gray-100/80 text-gray-600 text-xs font-bold rounded-full uppercase tracking-wider mb-2">
+              Role: {profile?.role || 'Seeker'}
             </span>
-          )}
-        </div>
-        <Link href="/" className="text-sm text-gray-500 hover:text-black transition-colors">
-          Cancel
-        </Link>
-      </header>
+            <p className="text-sm text-gray-500 font-medium">Update your out-of-band contact methods so users can reach you.</p>
+          </div>
 
-      <section className="w-full bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
-        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-100 rounded-md">
-          <p className="text-sm text-yellow-800 font-medium">Safety Notice</p>
-          <p className="text-xs text-yellow-700 mt-1">
-            Never use your real name or NRC. Provide only a platform username to organize out-of-band communication. 
-            Your anonymous handle is: <strong>{profile?.handle}</strong>
-          </p>
-        </div>
+          <form action={updateProfile} className="flex flex-col gap-6 w-full">
+            
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="contact_app" className="font-bold text-sm text-gray-700 ml-2">Contact App</label>
+              <select
+                id="contact_app"
+                name="contact_app"
+                defaultValue={profile?.contact_app || ''}
+                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-2xl p-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all cursor-pointer appearance-none"
+              >
+                <option value="" disabled>Select an app...</option>
+                <option value="Viber">Viber</option>
+                <option value="Telegram">Telegram</option>
+                <option value="Messenger">Messenger</option>
+                <option value="Phone">Phone / SMS</option>
+              </select>
+            </div>
 
-        <form action={updateProfile} className="flex flex-col gap-6 w-full">
-          <div className="flex flex-col gap-2 w-full">
-            <label htmlFor="contact_app" className="font-medium text-sm text-gray-700">Preferred Chat App</label>
-            <select 
-              id="contact_app" 
-              name="contact_app" 
-              required
-              defaultValue={profile?.contact_app || ""}
-              className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="contact_username" className="font-bold text-sm text-gray-700 ml-2">Username or Phone</label>
+              <input
+                type="text"
+                id="contact_username"
+                name="contact_username"
+                defaultValue={profile?.contact_username || ''}
+                placeholder="e.g., @yourusername or 09xxxxxxxxx"
+                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-2xl p-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all placeholder:text-gray-400"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-4 bg-gray-900 text-white py-4 rounded-full font-bold text-base shadow-lg shadow-gray-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
-              <option value="" disabled>Select an app</option>
-              <option value="Viber">Viber</option>
-              <option value="Telegram">Telegram</option>
-              <option value="Messenger">Messenger</option>
-              <option value="Signal">Signal</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full">
-            <label htmlFor="contact_username" className="font-medium text-sm text-gray-700">Username / ID (No Phone Numbers)</label>
-            <input 
-              type="text" 
-              id="contact_username" 
-              name="contact_username" 
-              required 
-              defaultValue={profile?.contact_username || ""}
-              placeholder="e.g., @my_telegram_handle" 
-              className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="w-full mt-4 bg-black text-white py-3 rounded-md font-medium hover:bg-gray-800 transition-colors"
-          >
-            Save Contact Info
-          </button>
-        </form>
-      </section>
+              Save Profile
+            </button>
+            
+          </form>
+        </section>
+      </div>
     </main>
   );
 }
