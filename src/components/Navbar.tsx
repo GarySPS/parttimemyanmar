@@ -58,8 +58,14 @@ export default async function Navbar() {
                   {userRole === 'seeker' && (
                     <Link href="/saved" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">Saved Jobs</Link>
                   )}
+                  
+                  {/* Added Profile Link */}
+                  <Link href="/profile" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">Profile</Link>
+                  
                   <Link href="/history" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">History</Link>
-                  <Link href="/profile" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">Settings</Link>
+                  
+                  {/* Fixed Settings Link to point to /settings */}
+                  <Link href="/settings" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">Settings</Link>
                   
                   <div className="mt-6 px-6">
                     <div className="bg-orange-950/40 backdrop-blur-md border border-orange-500/20 p-5 rounded-3xl relative overflow-hidden shadow-inner">

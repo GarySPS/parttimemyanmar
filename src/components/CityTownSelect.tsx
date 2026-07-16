@@ -55,40 +55,43 @@ export default function CityTownSelect({
 
   // Handle keyboard navigation for City
   const handleCityKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (!cityOpen || filteredCities.length === 0) {
-      if (e.key === 'ArrowDown') setCityOpen(true);
-      return;
-    }
+  // 🚨 ALWAYS block Enter from submitting form
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setCityActiveIndex(prev => (prev + 1 >= filteredCities.length ? 0 : prev + 1));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setCityActiveIndex(prev => (prev - 1 < 0 ? filteredCities.length - 1 : prev - 1));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (cityActiveIndex >= 0) {
-          const selected = filteredCities[cityActiveIndex];
-          setCity(selected);
-          setTown('');
-          setCityOpen(false);
-          // Focus town input after city selection
-          townInputRef.current?.focus();
-        }
-        break;
-      case 'Escape':
+  if (!cityOpen || filteredCities.length === 0) {
+    if (e.key === 'ArrowDown') setCityOpen(true);
+    return;
+  }
+
+  switch (e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      setCityActiveIndex(prev => (prev + 1 >= filteredCities.length ? 0 : prev + 1));
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      setCityActiveIndex(prev => (prev - 1 < 0 ? filteredCities.length - 1 : prev - 1));
+      break;
+    case 'Enter':
+      if (cityActiveIndex >= 0) {
+        const selected = filteredCities[cityActiveIndex];
+        setCity(selected);
+        setTown('');
         setCityOpen(false);
-        setCityActiveIndex(-1);
-        break;
-      case 'Tab':
-        setCityOpen(false);
-        break;
-    }
-  };
+        townInputRef.current?.focus();
+      }
+      break;
+    case 'Escape':
+      setCityOpen(false);
+      setCityActiveIndex(-1);
+      break;
+    case 'Tab':
+      setCityOpen(false);
+      break;
+  }
+};
 
   // Handle keyboard navigation for Town
   const handleTownKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

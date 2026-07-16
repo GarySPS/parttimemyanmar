@@ -62,7 +62,6 @@ export default async function Home({
   let query = supabase
     .from('jobs')
     .select(`*, profiles(contact_app, contact_username), bookmarks(id)`)
-    .eq('status', 'open') 
     .gte('expires_at', today)
     .order('created_at', { ascending: false });
 
@@ -166,10 +165,11 @@ export default async function Home({
             <div className="flex flex-col gap-5">
               {jobs.map((job, index) => {
                 
-                // 1. Calculate if the post is less than 24 hours old
+                // 1. Calculate status and age
                 const postDate = new Date(job.created_at);
                 const now = new Date();
                 const isNew = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60) < 24;
+                const isClosed = job.status !== 'open';
 
                 // 2. Format the Task Date (e.g., 16.7.2026)
                 const taskDateObj = job.task_date ? new Date(job.task_date) : null;
@@ -210,11 +210,17 @@ export default async function Home({
                         </div>
 
                         {/* Badges */}
-                        {isNew && (
+                        {(isClosed || isNew) && (
                           <div className="mt-3.5">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100/50">
-                              New to you
-                            </span>
+                            {isClosed ? (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-rose-50 text-rose-700 border border-rose-100/50">
+                                Closed
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100/50">
+                                New to you
+                              </span>
+                            )}
                           </div>
                         )}
 

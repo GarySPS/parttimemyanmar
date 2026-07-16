@@ -51,11 +51,6 @@ export default async function JobDetailPage({
     notFound();
   }
 
-  // Redirect to home feed if the job is already closed
-  if (job.status === 'closed') {
-    redirect('/');
-  }
-
   // 3. Format Dates & Data
   const isBookmarked = job.bookmarks && job.bookmarks.length > 0;
   const postDate = new Date(job.created_at).toLocaleDateString('en-GB');
@@ -82,14 +77,6 @@ export default async function JobDetailPage({
 
       <div className="max-w-4xl mx-auto px-4 pt-8 md:pt-12">
         
-        {/* Closed Banner */}
-        {isClosed && (
-          <div className="mb-8 w-full bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl font-semibold flex items-center shadow-sm">
-            <svg className="w-6 h-6 mr-3 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            This position has been closed by the employer and is no longer accepting applicants.
-          </div>
-        )}
-
         {/* Main Content Card */}
         <div className="relative bg-white border border-slate-200 rounded-3xl shadow-lg overflow-hidden z-10">
           
@@ -207,7 +194,10 @@ export default async function JobDetailPage({
             <h3 className="text-xl font-bold text-teal-950 mb-5">How to Apply</h3>
             
             {isClosed ? (
-              <p className="text-teal-700 font-medium text-lg flex items-center"> Contact information is hidden because this job is closed.</p>
+              <div className="w-full bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl font-semibold flex items-center shadow-sm">
+                <svg className="w-6 h-6 mr-3 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                This position has been closed by the employer and is no longer accepting applicants.
+              </div>
             ) : contactApp && contactUser ? (
               <div className="bg-white border-2 border-teal-200 rounded-2xl p-6 shadow-sm inline-block w-full md:w-auto">
                 <p className="text-sm text-slate-500 font-medium mb-3">Reach out to the employer via:</p>
