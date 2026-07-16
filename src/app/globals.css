@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+/* Heartbeat animation */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  40% { transform: scale(0.95); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 4s infinite ease-in-out;
+}

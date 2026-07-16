@@ -6,6 +6,7 @@ import Link from 'next/link';
 import CustomSelect from '../../components/CustomSelect';
 import CityTownSelect from '../../components/CityTownSelect';
 import PriceInput from '../../components/PriceInput';
+import Navbar from '../../components/Navbar';
 
 export default async function CreateJobPage() {
   const supabase = await createClient();
@@ -25,7 +26,6 @@ export default async function CreateJobPage() {
     redirect('/');
   }
 
-  // Build a self-learning dictionary of Cities and Towns from existing jobs
   const { data: locData } = await supabase.from('jobs').select('city, township').eq('status', 'open');
   const locationMap: Record<string, string[]> = {};
   
@@ -62,23 +62,28 @@ export default async function CreateJobPage() {
     const contact_app = formData.get('contact_app') as string;
     const contact_username = formData.get('contact_username') as string;
 
-    const imageFile = formData.get('image') as File;
+    const imageFile = formData.get('image') as File | null;
     let image_url = null;
 
-    if (imageFile && imageFile.size > 0) {
+    if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       
+      const arrayBuffer = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('job_images')
-        .upload(fileName, imageFile);
+        .upload(fileName, buffer, { contentType: imageFile.type, upsert: true });
       
       if (uploadData && !uploadError) {
-        image_url = supabase.storage.from('job_images').getPublicUrl(fileName).data.publicUrl;
+        const { data } = supabase.storage.from('job_images').getPublicUrl(fileName);
+        image_url = data.publicUrl;
+      } else {
+        console.error("Storage Error:", uploadError);
       }
     }
 
-    // Upsert ensures that even anonymous users get their profile created so it remembers their number next time
     if (contact_app && contact_username) {
       await supabase.from('profiles').upsert({
         id: user.id,
@@ -88,7 +93,6 @@ export default async function CreateJobPage() {
       });
     }
 
-    // Save contact info directly to the job post!
     const { error } = await supabase.from('jobs').insert({
       employer_id: user.id,
       title,
@@ -101,48 +105,42 @@ export default async function CreateJobPage() {
       expires_at: expires_at || null,
       description,
       image_url,
-      contact_app,      // Saved to job
-      contact_username, // Saved to job
+      contact_app,      
+      contact_username, 
       status: 'open'
     });
 
     if (!error) {
       redirect('/');
     } else {
-      console.error("Error posting job:", error);
+      console.error("Database Insert Error:", error);
     }
   }
 
   return (
     <main className="w-full min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-teal-200 flex flex-col items-center">
       
-      <nav className="sticky top-0 z-50 w-full bg-teal-900 px-4 py-5 md:py-7 md:px-8 flex justify-between items-center transition-all shadow-md">
-        <div className="flex items-center gap-3">
-          <img src="/logo/logo.png" alt="PartTimeMM Logo" className="w-12 h-12 md:w-14 md:h-14 object-contain drop-shadow-md" />
-          <div className="flex flex-col justify-center">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-none">PartTimeMM</h1>
-            <span className="text-xs md:text-sm font-medium text-teal-200/90 tracking-wide mt-1.5 leading-none">အချိန်ပိုင်းအလုပ်အကိုင်များ</span>
-          </div>
-        </div>
-        
-        <div>
-          <Link href="/" className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-sm font-bold text-white shadow-sm transition-all">
-            Cancel
-          </Link>
-        </div>
-      </nav>
+      {/* Universal Navigation Bar */}
+      <Navbar />
 
       <div className="w-full max-w-2xl p-4 md:p-8 mt-2 mb-12">
         
-        <div className="mb-6 px-2">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-teal-950">
-            Post a Task
-          </h1>
-          <p className="text-sm text-gray-500 font-medium mt-1">Fill out the details to find local help.</p>
+        <div className="mb-6 px-2 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-teal-950">
+              Post a Task
+            </h1>
+            <p className="text-sm text-gray-500 font-medium mt-1">Fill out the details to find local help.</p>
+          </div>
+          
+          {/* Moved the Cancel button here so it's still accessible */}
+          <Link href="/" className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-full text-sm font-bold text-gray-700 shadow-sm transition-all">
+            Cancel
+          </Link>
         </div>
 
         <section className="w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
-         <form action={submitJob} encType="multipart/form-data" className="flex flex-col gap-8 w-full">
+          <form action={submitJob} className="flex flex-col gap-8 w-full">
             
             <div className="space-y-5">
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">1. The Basics</h2>
@@ -176,7 +174,6 @@ export default async function CreateJobPage() {
                 </div>
               </div>
 
-              {/* Grab-style Cascading Location */}
               <div className="flex flex-col gap-2 relative z-10 mt-5">
                 <label className="font-bold text-sm text-gray-800">
                   City & Township <span className="text-rose-500">*</span>
@@ -257,18 +254,20 @@ export default async function CreateJobPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-0">
                 <div className="flex flex-col gap-2">
-                  <label className="font-bold text-sm text-gray-800">Contact Method <span className="text-rose-500">*</span></label>
-                  <CustomSelect 
+                  <label htmlFor="contact_app" className="font-bold text-sm text-gray-800">Contact Method <span className="text-rose-500">*</span></label>
+                  <select 
+                    id="contact_app"
                     name="contact_app"
+                    required
                     defaultValue={profile?.contact_app || ''}
-                    placeholder="e.g., Viber, Telegram"
-                    options={[
-                      { value: 'Viber', label: 'Viber' },
-                      { value: 'Telegram', label: 'Telegram' },
-                      { value: 'Phone', label: 'Phone Call / SMS' },
-                      { value: 'Facebook', label: 'Facebook / Messenger' },
-                    ]}
-                  />
+                    className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-gray-700 shadow-sm"
+                  >
+                    <option value="" disabled>Select an app...</option>
+                    <option value="Viber">Viber</option>
+                    <option value="Telegram">Telegram</option>
+                    <option value="Phone">Phone Call / SMS</option>
+                    <option value="Facebook">Facebook / Messenger</option>
+                  </select>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="contact_username" className="font-bold text-sm text-gray-800">Username / Phone Number <span className="text-rose-500">*</span></label>

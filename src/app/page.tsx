@@ -1,13 +1,14 @@
 //src/app/page.tsx
 
-//src/app/page.tsx
-
 import { createClient } from './utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
+import Navbar from '../components/Navbar';
 import AnimatedCard from '../components/AnimatedCard';
 import CustomSelect from '../components/CustomSelect';
 import CityTownSelect from '../components/CityTownSelect';
+import BookmarkButton from '../components/BookmarkButton';
+import CloseJobButton from '../components/CloseJobButton';
 import { Noto_Sans_Myanmar } from 'next/font/google';
 
 const notoSans = Noto_Sans_Myanmar({ 
@@ -67,7 +68,7 @@ export default async function Home({
 
   let query = supabase
     .from('jobs')
-    .select(`*, profiles(contact_app, contact_username)`)
+    .select(`*, profiles(contact_app, contact_username), bookmarks(id)`)
     .eq('status', 'open') 
     .gte('expires_at', today)
     .order('created_at', { ascending: false });
@@ -98,67 +99,13 @@ export default async function Home({
   return (
     <main className={`w-full min-h-screen bg-[#f3f4f6] text-gray-900 antialiased selection:bg-teal-200 ${notoSans.className}`}>
       
-      {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 w-full bg-teal-900 px-4 py-3 md:px-8 flex justify-between items-center shadow-md border-b border-teal-800/50">
-        <div className="flex items-center">
-          <img src="/logo/logo.png" alt="PartTimeMM Logo" className="h-8 md:h-10 w-auto object-contain" />
-        </div>
-  
-        <div className="flex items-center gap-3">
-            {user ? (
-            <>
-              <div className="w-11 h-11 rounded-full bg-emerald-500/20 text-emerald-100 flex items-center justify-center font-bold text-lg border border-emerald-500/30 shadow-sm">
-                {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
-              </div>
-              <details className="group">
-                <summary className="list-none cursor-pointer p-2 hover:bg-teal-800 rounded-lg transition-colors [&::-webkit-details-marker]:hidden">
-                  <svg className="w-8 h-8 text-teal-50 group-open:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                  <svg className="w-8 h-8 text-teal-50 hidden group-open:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                </summary>
-                <div className="absolute top-full left-0 w-full h-[calc(100vh-80px)] bg-teal-950/95 backdrop-blur-xl border-t border-teal-900 z-50 flex flex-col overflow-y-auto">
-                  <div className="w-full flex flex-col min-h-full">
-                    {userRole === 'employer' && (
-                      <Link href="/create" className="px-6 py-5 text-base font-bold text-teal-50 border-b border-teal-900/50 flex items-center gap-3 hover:bg-teal-900 transition-colors">
-                        <span className="bg-emerald-500 text-white w-7 h-7 rounded-full flex items-center justify-center text-xl leading-none pb-0.5 shadow-lg shadow-emerald-500/20">+</span> 
-                        Post a Job
-                      </Link>
-                    )}
-                    <Link href="/history" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">History</Link>
-                    <Link href="/profile" className="px-6 py-5 text-base font-medium text-teal-100 border-b border-teal-900/50 hover:bg-teal-900 transition-colors">Settings</Link>
-                    
-                    <div className="mt-6 px-6">
-                      <div className="bg-orange-950/40 backdrop-blur-md border border-orange-500/20 p-5 rounded-3xl relative overflow-hidden shadow-inner">
-                        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-500 to-red-500 rounded-l-3xl"></div>
-                        <h3 className="text-orange-400 font-extrabold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-                          <span className="text-lg">⚠️</span> Safety Protocol
-                        </h3>
-                        <p className="text-orange-200/70 text-sm leading-relaxed font-medium">
-                          100% anonymous directory. We do not verify identities. <strong className="text-orange-300">Always meet in public daylight within your immediate ward.</strong> Never share real names or NRC.
-                        </p>
-                      </div>
-                    </div>
-
-                    <form action={signOut} className="w-full mt-6 px-6 pb-8">
-                      <button className="w-full text-center px-5 py-3.5 rounded-full text-base font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-colors">Log out</button>
-                    </form>
-                  </div>
-                </div>
-              </details>
-            </>
-          ) : (
-            <form action={signInAnonymously} className="flex gap-2">
-              <button name="role" value="employer" className="px-5 py-3 bg-emerald-500 text-white rounded-full text-sm font-bold shadow-lg shadow-emerald-900/20 hover:bg-emerald-400 transition-colors">Employer</button>
-              <button name="role" value="seeker" className="px-5 py-3 bg-teal-800 text-teal-50 border border-teal-700 rounded-full text-sm font-bold hover:bg-teal-700 transition-colors">Seeker</button>
-            </form>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Job Search Bar */}
       <div className="w-full bg-teal-900 px-4 pb-8 pt-5 md:px-8 md:pb-10 md:pt-6">
         <div className="max-w-3xl mx-auto mb-5 px-2">
           <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-wide drop-shadow-sm leading-snug">
-            အချိန်ပိုင်းအလုပ်အကိုင်များ
+           Part Time Jobs in Myanmar
           </h1>
         </div>
         <form method="GET" action="/" className="max-w-3xl mx-auto flex items-center bg-white rounded-full p-2 shadow-lg border border-teal-700/50">
@@ -245,102 +192,66 @@ export default async function Home({
                   daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 }
 
+                const isBookmarked = job.bookmarks && job.bookmarks.length > 0;
+
                 return (
                   <AnimatedCard key={job.id} index={index}>
-                    <div className="bg-white border border-gray-200 rounded-xl p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
-                      
-                      <h2 className="font-bold text-lg md:text-xl text-[#0a1930] mb-1.5 uppercase tracking-wide">
-                        {job.title}
-                      </h2>
-                      
-                      {/* Pull from Category Dictionary */}
-                      <div className="text-base text-gray-700 mb-3 capitalize">
-                        {job.category ? (CATEGORY_MAP[job.category] || job.category) : 'Private Advertiser'}
-                      </div>
-                      
-                      {/* Dynamic New Badge */}
-                      {isNew && (
-                        <div className="inline-block px-3 py-1 bg-[#e6f4ea] text-[#137333] text-xs font-bold rounded mb-4">
-                          New
+                    <Link 
+                      href={`/jobs/${job.id}`} 
+                      className="block relative bg-white border border-slate-200 rounded-xl p-5 hover:shadow-lg hover:border-slate-300 transition-all duration-200 group"
+                    >
+                      {/* Header Area */}
+                      <div className="pr-12">
+                        <h2 className="text-lg font-semibold text-slate-900 line-clamp-2 leading-snug group-hover:text-teal-700 transition-colors">
+                          {job.title}
+                        </h2>
+                        <div className="text-sm text-slate-500 mt-1 capitalize">
+                          {job.category ? (CATEGORY_MAP[job.category] || job.category) : 'Private Advertiser'}
                         </div>
-                      )}
-
-                      {/* Display Dates & Days Left */}
-                      {(job.task_date || job.expires_at) && (
-                        <div className="flex flex-col gap-1 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                          {job.task_date && (
-                            <div className="text-sm font-medium text-slate-800">
-                              📅 Task Date: {taskDateFormatted}
-                            </div>
-                          )}
-                          {job.expires_at && daysLeft !== null && daysLeft >= 0 && (
-                            <div className="text-sm font-medium text-orange-600">
-                              ⏳ Expires in {daysLeft} {daysLeft === 1 ? 'day' : 'days'}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {job.city && job.township && (
-                        <div className="text-base text-gray-700 mb-1">
-                          📍 {job.township}, {job.city.split(' ')[0]}
-                        </div>
-                      )}
-
-                      <div className="text-base text-gray-900 font-medium mb-4">
-                        {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : 'Price Negotiable'}
-                        {job.pay_period === 'hourly' && ' per hour'}
-                        {job.pay_period === 'daily' && ' per day'}
-                        {job.pay_period === 'monthly' && ' per month'}
-                        {job.pay_period === 'fixed' && ' per task'}
-                      </div>
-
-                      <p className="text-base text-gray-600 leading-relaxed mb-4 line-clamp-3">
-                        {job.description}
-                      </p>
-
-                      {/* Display Attached Photo if it exists */}
-                      {job.image_url && (
-                        <div className="mb-6 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
-                          <img src={job.image_url} alt="Task Attachment" className="w-full h-48 md:h-64 object-cover object-center" />
-                        </div>
-                      )}
-
-                      <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        
-                        {/* Left Side: Contact Info */}
-                        {(job.contact_app || job.profiles?.contact_app) && (job.contact_username || job.profiles?.contact_username) ? (
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-md">
-                              {job.contact_app || job.profiles?.contact_app}
-                            </span>
-                            <span className="text-sm font-mono font-medium text-gray-800 bg-white px-3 py-1.5 rounded-md border border-gray-200 select-all">
-                              {job.contact_username || job.profiles?.contact_username}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-sm font-medium text-gray-400">No contact linked</span>
+                        {isNew && (
+                          <span className="inline-block mt-2 px-2 py-0.5 bg-teal-50 text-teal-700 text-xs font-medium rounded">
+                            New to you
+                          </span>
                         )}
+                      </div>
 
-                        {/* Right Side: Action Buttons */}
-                        <div className="flex items-center gap-2 self-end sm:self-auto">
-                          {/* Save/Bookmark Button for Seekers */}
+                      {/* Key Details (Location & Pay) */}
+                      <div className="mt-4 space-y-2">
+                        {job.city && job.township && (
+                          <div className="flex items-center text-slate-600 text-sm">
+                            <svg className="w-4 h-4 mr-2 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            {job.township}, {job.city.split(' ')[0]}
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center text-slate-600 text-sm">
+                          <svg className="w-4 h-4 mr-2 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : 'Price Negotiable'}
+                          {job.pay_period && ` per ${job.pay_period}`}
+                        </div>
+                      </div>
+
+                      {/* Footer Area */}
+                      <div className="mt-6 flex justify-between items-end">
+                        <div className="text-xs text-slate-400 font-medium">
+                          {daysLeft !== null && daysLeft >= 0 
+                            ? `${daysLeft}d+ ago` 
+                            : 'Expired'
+                          }
+                        </div>
+                        
+                        {/* Absolute positioned Action Buttons so they don't break flex layout on small screens */}
+                        <div className="absolute bottom-4 right-4 flex items-center gap-2">
                           {userRole === 'seeker' && (
-                            <button className="p-2.5 text-gray-400 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors" title="Save Task">
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
-                            </button>
+                            <BookmarkButton jobId={job.id} initialIsBookmarked={isBookmarked} />
                           )}
                           
-                          {/* Mark Complete Button for the Employer */}
                           {user?.id === job.employer_id && (
-                            <Link href={`/complete/${job.id}`} className="px-5 py-2.5 bg-white text-teal-900 border border-teal-800 hover:bg-teal-50 rounded-lg text-sm font-bold transition-colors text-center ml-2">
-                              Mark Complete
-                            </Link>
+                            <CloseJobButton jobId={job.id} />
                           )}
                         </div>
-
                       </div>
-                    </div>
+                    </Link>
                   </AnimatedCard>
                 );
               })}
