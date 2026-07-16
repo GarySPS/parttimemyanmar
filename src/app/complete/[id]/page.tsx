@@ -1,5 +1,6 @@
 // src/app/complete/[id]/page.tsx
 
+import CloseJobClient from './CloseJobClient';
 import { createClient } from '../../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -34,23 +35,25 @@ export default async function CompleteJobPage({
   }
 
   // 3. Server Action for closing the job directly
-  async function closeJob() {
+  async function closeJobAction() {
     'use server';
     
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) return { error: "Not authenticated" };
 
     // Update the job status to closed
-    await supabase
+    const { error } = await supabase
       .from('jobs')
       .update({ status: 'closed' })
       .eq('id', jobId)
       .eq('employer_id', user.id); 
 
+    if (error) return { error: error.message };
+
     // Refresh the home feed so the new status reflects
     revalidatePath('/');
-    redirect('/');
+    return { success: true };
   }
 
   return (
@@ -80,14 +83,7 @@ export default async function CompleteJobPage({
             </p>
           </div>
 
-          <form action={closeJob} className="flex flex-col w-full">
-            <button 
-              type="submit" 
-              className="w-full bg-[#0a473e] hover:bg-[#07362f] text-white py-3.5 rounded-full font-bold text-base shadow-sm transition-colors"
-            >
-              Close Task
-            </button>
-          </form>
+          <CloseJobClient closeAction={closeJobAction} />
           
         </section>
       </div>
