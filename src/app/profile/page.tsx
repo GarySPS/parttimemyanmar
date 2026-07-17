@@ -77,6 +77,18 @@ export default async function ProfilePage() {
       }
     }
 
+    // Handle Resume/CV Upload (For Seekers)
+    const resumeFile = formData.get('resume') as File | null;
+    if (resumeFile && resumeFile.size > 0) {
+      const ext = resumeFile.name.split('.').pop();
+      const fileName = `resume_${user.id}_${Date.now()}.${ext}`;
+      const { data } = await supabase.storage.from('profiles').upload(fileName, resumeFile, { upsert: true });
+      if (data) {
+        const { data: { publicUrl } } = supabase.storage.from('profiles').getPublicUrl(fileName);
+        updates.resume_url = publicUrl;
+      }
+    }
+
     // Handle Dynamic Platforms (Loop through array)
     const platformCount = parseInt(formData.get('platform_count') as string || '0');
     const platforms = [];
