@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Briefcase, User } from 'lucide-react';
 import { signup } from '../auth/actions';
+import Button from '@/components/Button';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +42,7 @@ export default function RegisterPage() {
               src="/logo/logo.png" 
               alt="PartTimeMM Logo" 
               fill
+              sizes="192px"
               className="object-contain"
               priority
             />
@@ -108,14 +110,13 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <button 
-              type="submit" disabled={isLoading}
-              className="w-full py-4 mt-2 bg-[#045D5D] hover:bg-[#034A4A] text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group"
+            <Button 
+              type="submit" 
+              isLoading={isLoading}
+              className="w-full mt-2"
             >
-              {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
-                <>Register <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
-              )}
-            </button>
+              Register <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-200/60 text-center text-sm text-gray-600">

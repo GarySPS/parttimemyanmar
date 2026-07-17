@@ -46,5 +46,5 @@ export async function signup(formData: FormData) {
     ]);
   }
 
-  return redirect('/login?success=Account created! You can now log in.');
+  redirect('/')
 }

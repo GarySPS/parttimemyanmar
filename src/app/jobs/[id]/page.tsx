@@ -99,7 +99,7 @@ export default async function JobDetailPage({
               <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
                 <Link 
                   href={`/complete/${job.id}`} 
-                  className="block w-full text-center px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-sm font-bold transition-all whitespace-nowrap shadow-sm"
+                  className="block w-full text-center px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-sm font-bold transition-all active:scale-[0.97] whitespace-nowrap shadow-sm"
                 >
                   Close Job
                 </Link>
@@ -174,7 +174,7 @@ export default async function JobDetailPage({
               )}
 
               {userRole === 'seeker' && !isClosed && (
-                <div className="bg-white border-2 border-slate-100 p-3 rounded-2xl hover:border-slate-300 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                <div className="bg-white border-2 border-slate-100 p-3 rounded-2xl hover:border-slate-300 transition-all active:scale-95 cursor-pointer shadow-sm hover:shadow-md">
                   <BookmarkButton jobId={job.id} initialIsBookmarked={isBookmarked} />
                 </div>
               )}
@@ -228,7 +228,7 @@ export default async function JobDetailPage({
             
             <Link 
               href={`/user/${job.employer_id}`} 
-              className="w-full sm:w-auto px-6 py-3 bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all text-center text-sm shadow-sm"
+              className="w-full sm:w-auto px-6 py-3 bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-[0.97] text-center text-sm shadow-sm"
             >
               View Profile
             </Link>

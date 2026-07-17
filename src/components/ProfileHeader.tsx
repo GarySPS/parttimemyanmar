@@ -125,20 +125,20 @@ export default function ProfileHeader({
           {isOwnProfile ? (
             isEditing ? (
               <>
-                <button type="button" onClick={onCancel} disabled={isSaving} className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 transition-colors">
+                <button type="button" onClick={onCancel} disabled={isSaving} className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] disabled:active:scale-100 transition-all">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSaving} className="flex-1 bg-[#0f4c5c] text-white py-2.5 rounded-lg text-sm font-bold hover:bg-[#0f4c5c]/90 transition-colors disabled:opacity-50">
+                <button type="submit" disabled={isSaving} className="flex-1 bg-[#0f4c5c] text-white py-2.5 rounded-lg text-sm font-bold hover:bg-[#0f4c5c]/90 active:scale-[0.97] disabled:active:scale-100 transition-all shadow-sm disabled:opacity-50">
                   {isSaving ? 'Saving...' : 'Save'}
                 </button>
               </>
             ) : (
               <>
-                <button type="button" onClick={onEdit} className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={onEdit} className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   Edit Profile
                 </button>
-                <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
+                <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm flex items-center justify-center gap-2">
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
                   {copied ? 'Copied!' : 'Share'}
                 </button>
@@ -147,7 +147,7 @@ export default function ProfileHeader({
           ) : (
             <>
               <FollowButton employerId={profile.id} initialIsFollowing={isFollowing} path={`/user/${profile.id}`} />
-              <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 transition-colors">
+              <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm">
                 {copied ? 'Copied!' : 'Share'}
               </button>
             </>

@@ -86,7 +86,7 @@ export default async function EmployerProfilePage({
                 href={p.url?.startsWith('http') ? p.url : `https://${p.url}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-200 bg-gray-50 group"
+                className="block relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.97] border border-gray-200 bg-gray-50 group"
               >
                 {p.screenshot_url ? (
                   <img src={p.screenshot_url} alt="Platform" className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-700" />

@@ -99,7 +99,7 @@ export default async function Home({
               placeholder="Search job title..." 
               className="flex-1 w-full bg-transparent border-none text-base font-medium text-white focus:outline-none focus:ring-0 placeholder-[#a4c3d2]/70 py-3" 
             />
-            <button type="submit" className="px-6 py-3 bg-[#e3b23c] text-[#0f4c5c] rounded-xl text-sm font-bold shadow-lg hover:bg-[#f0c254] hover:-translate-y-0.5 transition-all">
+            <button type="submit" className="px-6 py-3 bg-[#e3b23c] text-[#0f4c5c] rounded-xl text-sm font-bold shadow-lg hover:bg-[#f0c254] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 active:shadow-sm transition-all">
               Search
             </button>
           </form>
@@ -116,7 +116,7 @@ export default async function Home({
                 <div className="flex flex-col sm:flex-row gap-4 relative z-40">
                   <Link 
                     href="/" 
-                    className={`shrink-0 text-center px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${!selectedCity && !selectedCategory && !selectedPayPeriod ? 'bg-[#0f4c5c] text-white border-[#0f4c5c] shadow-md' : 'bg-white/50 text-[#0f4c5c]/70 border-white/60 hover:bg-white hover:text-[#0f4c5c] shadow-sm'}`}
+                    className={`shrink-0 text-center px-6 py-3 rounded-2xl text-sm font-bold transition-all border active:scale-[0.97] active:shadow-sm ${!selectedCity && !selectedCategory && !selectedPayPeriod ? 'bg-[#0f4c5c] text-white border-[#0f4c5c] shadow-md' : 'bg-white/50 text-[#0f4c5c]/70 border-white/60 hover:bg-white hover:text-[#0f4c5c] shadow-sm'}`}
                   >
                     Clear Filters
                   </Link>
@@ -152,7 +152,7 @@ export default async function Home({
                       { value: 'fixed', label: 'Fixed Price' },
                     ]}
                   />
-                  <button type="submit" className="px-8 py-3 bg-[#0f4c5c] text-white rounded-2xl text-sm font-bold hover:bg-[#0f4c5c]/90 hover:shadow-lg transition-all shadow-sm">
+                  <button type="submit" className="px-8 py-3 bg-[#0f4c5c] text-white rounded-2xl text-sm font-bold hover:bg-[#0f4c5c]/90 hover:shadow-lg active:scale-[0.97] active:translate-y-0 active:shadow-sm transition-all shadow-sm">
                     Apply
                   </button>
                 </div>
