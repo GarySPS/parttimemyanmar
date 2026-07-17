@@ -17,6 +17,15 @@ export default async function ProfilePage() {
   // 1. Fetch current user profile
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
+  // 1.5 Fetch initial Activity/Posts (Limit to 5)
+  const isEmployer = profile?.role === 'employer';
+  let initialPosts = [];
+  
+  if (isEmployer) {
+    const { data } = await supabase.from('jobs').select('*').eq('employer_id', user.id).order('created_at', { ascending: false }).limit(5);
+    initialPosts = data || [];
+  }
+
   // 2. Fetch dynamic locations from jobs (exactly like your search page)
   const { data: locData } = await supabase.from('jobs').select('city, township').eq('status', 'open');
   const locationMap: Record<string, string[]> = {};
@@ -127,6 +136,8 @@ export default async function ProfilePage() {
         profile={profile} 
         locationMap={locationMap} 
         saveProfile={saveProfile} 
+        initialPosts={initialPosts}
+        isEmployer={isEmployer}
       />
     </main>
   );

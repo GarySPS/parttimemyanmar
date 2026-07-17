@@ -31,7 +31,11 @@ const staggerContainer: Variants = {
   }
 };
 
-export default function ProfileClient({ profile, locationMap, saveProfile }: any) {
+export default function ProfileClient({ profile, locationMap, saveProfile, initialPosts = [], isEmployer }: any) {
+  const [posts, setPosts] = useState(initialPosts);
+  const [page, setPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(initialPosts.length === 5);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -91,6 +95,28 @@ export default function ProfileClient({ profile, locationMap, saveProfile }: any
     setSelectedTownship(profile?.township || '');
   };
   
+  const loadMore = async () => {
+    setIsLoadingMore(true);
+    const nextPage = page + 1;
+    
+    // NOTE: You will map this to an API route later: fetch(`/api/posts?page=${nextPage}`)
+    const newPosts: any[] = []; 
+    
+    if (newPosts.length < 5) setHasMore(false);
+    setPosts([...posts, ...newPosts]);
+    setPage(nextPage);
+    setIsLoadingMore(false);
+  };
+
+  const deletePost = async (postId: string) => {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+    
+    // Instantly removes the post from the screen
+    setPosts(posts.filter((p: any) => p.id !== postId));
+    
+    // NOTE: You will map this to an API route later: fetch(`/api/posts/${postId}`, { method: 'DELETE' })
+  };
+
   async function handleSubmit(formData: FormData) {
     if (!isEditing) return; 
 
@@ -315,6 +341,65 @@ export default function ProfileClient({ profile, locationMap, saveProfile }: any
             </>
           )}
         </motion.section>
+
+        {/* ================= NEW ACTIVITY / POSTS SECTION (EMPLOYERS ONLY) ================= */}
+        {isEmployer && (
+          <>
+            {/* Thick Divider */}
+            <div className="w-full h-2 bg-[#F0F2F5]"></div>
+            
+            <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-4 md:p-6 shadow-sm">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                My Posted Jobs
+              </h2>
+
+              {posts.length === 0 ? (
+                <div className="bg-gray-50 p-6 text-center rounded-xl border border-dashed border-gray-300">
+                  <p className="text-gray-500 text-sm">No activity found.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {posts.map((post: any) => (
+                    <div key={post.id} className="bg-white p-4 rounded-xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{post.title}</h3>
+                        <p className="text-xs text-gray-500 mt-1">{post.category} • {post.township}, {post.city}</p>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${
+                          post.status === 'open' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {post.status}
+                        </span>
+                        
+                        <button 
+                          type="button" 
+                          onClick={() => deletePost(post.id)}
+                          className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                          title="Delete Post"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {hasMore && (
+                    <button 
+                      type="button"
+                      onClick={loadMore}
+                      disabled={isLoadingMore}
+                      className="w-full py-3 mt-4 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors border border-gray-200"
+                    >
+                      {isLoadingMore ? 'Loading...' : 'Load More'}
+                    </button>
+                  )}
+                </div>
+              )}
+            </motion.section>
+          </>
+        )}
       </form>
     </div>
   );

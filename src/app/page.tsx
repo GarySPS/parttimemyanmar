@@ -73,34 +73,9 @@ export default async function Home({
   
   const { data: jobs } = await query;
 
-  async function signInAnonymously(formData: FormData) {
-    'use server';
-    const role = formData.get('role') as string;
-    const supabase = await createClient();
-    await supabase.auth.signInAnonymously({ options: { data: { role } } });
-    revalidatePath('/');
-  }
-
-  async function signOut() {
-    'use server';
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    revalidatePath('/');
-  }
-
   return (
     <main className={`relative w-full min-h-screen text-[#0f4c5c] antialiased selection:bg-[#a4c3d2]/40`}>
       
-      {/* Premium Glassmorphism Background */}
-      <div className="fixed inset-0 z-0">
-        <img 
-          src="/images/desk-plant-bg.jpg" 
-          alt="Desk Background" 
-          className="w-full h-full object-cover opacity-40 scale-105"
-        />
-        <div className="absolute inset-0 bg-[#fdfbf7]/80 backdrop-blur-2xl"></div>
-      </div>
-
       <div className="relative z-10 flex flex-col h-full">
         <Navbar />
 
