@@ -81,7 +81,7 @@ export default async function SavedJobsPage() {
 
                 return (
                   <AnimatedCard key={job.id} index={index}>
-                    <div className="relative z-0 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 hover:border-teal-300 transition-all duration-300 group flex flex-col h-full overflow-hidden">
+                    <div className="relative z-0 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 hover:border-teal-300 transition-all duration-300 active:scale-[0.98] group flex flex-col h-full overflow-hidden">
                       
                       <Link href={`/jobs/${job.id}`} className="absolute inset-0 z-0" aria-label={`View details for ${job.title}`}></Link>
                       
@@ -157,7 +157,7 @@ export default async function SavedJobsPage() {
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-1">No saved jobs yet</h3>
               <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">Jobs you bookmark will appear here so you can easily find them later.</p>
-              <Link href="/" className="px-6 py-2.5 bg-teal-800 text-white rounded-full text-sm font-bold shadow-md hover:bg-teal-700 transition-colors">
+              <Link href="/" className="px-6 py-2.5 bg-teal-800 text-white rounded-full text-sm font-bold shadow-md hover:bg-teal-700 transition-all active:scale-[0.97]">
                 Browse Jobs
               </Link>
             </div>

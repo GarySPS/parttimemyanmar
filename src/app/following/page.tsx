@@ -85,7 +85,7 @@ export default async function FollowingPage({
               placeholder="Search profiles by name (e.g. Mg Mg)..." 
               className="w-full pl-12 pr-24 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] focus:bg-white transition-all font-medium text-gray-900"
             />
-            <button type="submit" className="absolute right-2 px-4 py-2 bg-[#0f4c5c] text-white font-bold text-sm rounded-lg hover:bg-[#0f4c5c]/90 transition-colors">
+            <button type="submit" className="absolute right-2 px-4 py-2 bg-[#0f4c5c] text-white font-bold text-sm rounded-lg hover:bg-[#0f4c5c]/90 transition-all active:scale-[0.95]">
               Search
             </button>
           </form>
@@ -93,7 +93,7 @@ export default async function FollowingPage({
           {isSearching && (
             <div className="mt-4 flex justify-between items-center text-sm">
               <p className="text-gray-500 font-medium">Found {profiles.length} results for "{searchQuery}"</p>
-              <Link href="/following" className="text-blue-600 font-bold hover:underline">
+              <Link href="/following" className="text-blue-600 font-bold hover:underline active:scale-[0.95] inline-block transition-transform">
                 Clear Search
               </Link>
             </div>
@@ -116,7 +116,7 @@ export default async function FollowingPage({
             </div>
           ) : (
             profiles.map((p) => (
-              <Link key={p.id} href={`/user/${p.id}`} className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md hover:border-gray-300 transition-all flex items-center gap-4 group">
+              <Link key={p.id} href={`/user/${p.id}`} className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md hover:border-gray-300 transition-all active:scale-[0.98] flex items-center gap-4 group">
                 <div className="w-14 h-14 rounded-full border-[3px] border-white bg-white shadow-sm shrink-0 overflow-hidden flex items-center justify-center">
                   {p.avatar_url ? (
                     <img src={p.avatar_url} alt="Avatar" className="w-full h-full object-cover" />

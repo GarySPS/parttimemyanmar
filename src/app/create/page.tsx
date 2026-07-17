@@ -134,7 +134,7 @@ export default async function CreateJobPage() {
           </div>
           
           {/* Moved the Cancel button here so it's still accessible */}
-          <Link href="/" className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-full text-sm font-bold text-gray-700 shadow-sm transition-all">
+          <Link href="/" className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-full text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-[0.95]">
             Cancel
           </Link>
         </div>
@@ -284,7 +284,7 @@ export default async function CreateJobPage() {
             <div className="pt-4">
               <button 
                 type="submit" 
-                className="w-full bg-teal-900 text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-teal-800 active:scale-[0.98] transition-all"
+                className="w-full bg-teal-900 text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-teal-800 active:scale-[0.97] active:shadow-sm transition-all"
               >
                 Publish Job Post
               </button>

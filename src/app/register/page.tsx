@@ -1,4 +1,4 @@
-//src>app>register/page.tsx
+// src/app/register/page.tsx
 
 "use client";
 
@@ -53,15 +53,18 @@ export default function RegisterPage() {
         <div className="p-8 pt-6">
           <form action={signup} onSubmit={handleSubmit} className="space-y-5">
             
+            {/* FOOLPROOF HIDDEN INPUT: This guarantees the server action gets the correct role */}
+            <input type="hidden" name="role" value={role} />
+
             {/* Role Selection */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-[#045D5D] ml-1">Account Type</label>
               <div className="grid grid-cols-2 gap-3">
                 {['seeker', 'employer'].map((r) => (
                   <label key={r} className="cursor-pointer">
+                    {/* Removed name="role" here to prevent form data conflicts */}
                     <input 
                       type="radio" 
-                      name="role" 
                       value={r} 
                       className="hidden" 
                       checked={role === r}
