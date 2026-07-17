@@ -142,6 +142,7 @@ export default async function CreateJobPage() {
         <section className="w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
           <form action={submitJob} className="flex flex-col gap-8 w-full">
             
+            {/* SECTION 1 */}
             <div className="space-y-5">
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">1. The Basics</h2>
               
@@ -168,6 +169,7 @@ export default async function CreateJobPage() {
                       { value: 'education', label: 'Education & Tutoring' },
                       { value: 'admin', label: 'Admin & Office' },
                       { value: 'retail', label: 'Retail & Sales' },
+                      { value: 'freelancer', label: 'Freelancer & Independent' },
                       { value: 'other', label: 'Other' },
                     ]}
                   />
@@ -182,6 +184,7 @@ export default async function CreateJobPage() {
               </div>
             </div>
 
+            {/* SECTION 2 */}
             <div className="space-y-5">
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">2. Payment & Schedule</h2>
               
@@ -224,6 +227,7 @@ export default async function CreateJobPage() {
               </div>
             </div>
 
+            {/* SECTION 3 */}
             <div className="space-y-5">
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">3. Details & Media</h2>
               
@@ -248,26 +252,26 @@ export default async function CreateJobPage() {
               </div>
             </div>
 
+            {/* SECTION 4 */}
             <div className="space-y-5">
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">4. Contact Information</h2>
               <p className="text-xs text-gray-500 font-medium mb-2">How should seekers reach out to you? (We will save this for your next post).</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-0">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="contact_app" className="font-bold text-sm text-gray-800">Contact Method <span className="text-rose-500">*</span></label>
-                  <select 
-                    id="contact_app"
+                  <label className="font-bold text-sm text-gray-800">Contact Method <span className="text-rose-500">*</span></label>
+                  <CustomSelect 
                     name="contact_app"
-                    required
+                    placeholder="Select an app..."
                     defaultValue={profile?.contact_app || ''}
-                    className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-gray-700 shadow-sm"
-                  >
-                    <option value="" disabled>Select an app...</option>
-                    <option value="Viber">Viber</option>
-                    <option value="Telegram">Telegram</option>
-                    <option value="Phone">Phone Call / SMS</option>
-                    <option value="Facebook">Facebook / Messenger</option>
-                  </select>
+                    options={[
+                      { value: 'Viber', label: 'Viber' },
+                      { value: 'Telegram', label: 'Telegram' },
+                      { value: 'Phone', label: 'Phone Call / SMS' },
+                      { value: 'Facebook', label: 'Facebook / Messenger' },
+                      { value: 'Email', label: 'Email' }
+                    ]}
+                  />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="contact_username" className="font-bold text-sm text-gray-800">Username / Phone Number <span className="text-rose-500">*</span></label>

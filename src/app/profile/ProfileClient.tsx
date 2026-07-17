@@ -15,6 +15,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'education': 'Education & Tutoring',
   'admin': 'Admin & Office',
   'retail': 'Retail & Sales',
+  'freelancer': 'Freelancer & Independent',
   'other': 'Other'
 };
 

@@ -1,4 +1,4 @@
-//src/app/auth/actions.ts
+// src/app/auth/actions.ts
 
 'use server';
 
@@ -24,32 +24,39 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string;
   const role = formData.get('role') as string;
   
-  // Removed phone variable since it's removed from the UI and DB schema
-
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  // 1. Pass the role into user_metadata. 
+  // If your Supabase trigger is configured to read metadata, it will apply it instantly.
+  const { data, error } = await supabase.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      data: {
+        role: role,
+      }
+    }
+  });
 
   if (error) {
     return redirect('/register?error=Could not create user');
   }
 
-  // Generate a random 8-character hex string for the handle (e.g., user_f954a0ad)
-  const handle = `user_${Math.random().toString(16).slice(2, 10)}`;
-
-  // Create or update the user's profile right after signup
+  // 2. Wait for the user to be returned, then manually UPDATE the row 
+  // that the database trigger just automatically created.
   if (data.user) {
-    const { error: profileError } = await supabase.from('profiles').upsert([
-      { 
-        id: data.user.id, 
+    const handle = `user_${Math.random().toString(16).slice(2, 10)}`;
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ 
         role: role,
         handle: handle,
-        // Removed phone field from insertion to match DB schema
-      }
-    ]);
+      })
+      .eq('id', data.user.id); // Force update the specific user's row
 
     if (profileError) {
-      console.error("Profile creation error:", profileError.message);
+      console.error("Profile update error:", profileError.message);
     }
   }
 
-  redirect('/')
+  redirect('/');
 }
