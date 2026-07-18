@@ -4,6 +4,8 @@ import { createClient } from '../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import Link from 'next/link';
+import { getLang } from '../utils/getLang';
+import { dictionaries } from '../utils/dictionaries';
 
 export default async function FollowingPage({
   searchParams,
@@ -14,16 +16,16 @@ export default async function FollowingPage({
   const searchQuery = resolvedParams.q || '';
   
   const supabase = await createClient();
+  const lang = await getLang();
+  const t = dictionaries[lang].following;
+  
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) redirect('/');
 
   let profiles: any[] = [];
   const isSearching = searchQuery.length > 0;
 
   if (isSearching) {
-    // 1. GLOBAL SEARCH MODE: Query across all profiles matching the name structure
-    // Leveraging relational count aggregations on the fly to gauge popularity
     const { data } = await supabase
       .from('profiles')
       .select(`
@@ -33,7 +35,6 @@ export default async function FollowingPage({
       .ilike('contact_username', `%${searchQuery}%`);
 
     if (data) {
-      // Map properties cleanly and sort from most popular to least popular
       profiles = data
         .map((p: any) => ({
           ...p,
@@ -42,7 +43,6 @@ export default async function FollowingPage({
         .sort((a, b) => b.followerCount - a.followerCount);
     }
   } else {
-    // 2. DEFAULT LIST MODE: Maintain your current follow records pull
     const { data: followRecords } = await supabase
       .from('follows')
       .select('following_id')
@@ -69,7 +69,7 @@ export default async function FollowingPage({
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
           <h1 className="text-2xl font-extrabold mb-4 flex items-center gap-3 text-[#0f4c5c]">
             <span className="w-2 h-6 bg-[#e3b23c] rounded-full inline-block"></span>
-            {isSearching ? 'Search Results' : 'Following'}
+            {isSearching ? t.searchResults : t.following}
           </h1>
 
           <form method="GET" action="/following" className="relative flex items-center w-full">
@@ -82,19 +82,24 @@ export default async function FollowingPage({
               type="text" 
               name="q" 
               defaultValue={searchQuery}
-              placeholder="Search profiles by name (e.g. Mg Mg)..." 
+              placeholder={t.searchPlaceholder}
               className="w-full pl-12 pr-24 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] focus:bg-white transition-all font-medium text-gray-900"
             />
             <button type="submit" className="absolute right-2 px-4 py-2 bg-[#0f4c5c] text-white font-bold text-sm rounded-lg hover:bg-[#0f4c5c]/90 transition-all active:scale-[0.95]">
-              Search
+              {t.searchBtn}
             </button>
           </form>
 
           {isSearching && (
             <div className="mt-4 flex justify-between items-center text-sm">
-              <p className="text-gray-500 font-medium">Found {profiles.length} results for "{searchQuery}"</p>
+              <p className="text-gray-500 font-medium">
+                {lang === 'en' 
+                  ? `Found ${profiles.length} results for "${searchQuery}"` 
+                  : `"${searchQuery}" အတွက် ရလဒ် ${profiles.length} ခု တွေ့ပါသည်`
+                }
+              </p>
               <Link href="/following" className="text-blue-600 font-bold hover:underline active:scale-[0.95] inline-block transition-transform">
-                Clear Search
+                {t.clearSearch}
               </Link>
             </div>
           )}
@@ -109,9 +114,9 @@ export default async function FollowingPage({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <p className="text-gray-900 font-bold text-lg mb-1">No accounts found</p>
+              <p className="text-gray-900 font-bold text-lg mb-1">{t.noAccounts}</p>
               <p className="text-gray-500 text-sm">
-                {isSearching ? "Check your spelling or look for alternative variants." : "You are not following anyone yet."}
+                {isSearching ? t.searchEmptyDesc : t.followingEmptyDesc}
               </p>
             </div>
           ) : (
@@ -128,7 +133,7 @@ export default async function FollowingPage({
                 <div className="flex-1 overflow-hidden text-left">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <h2 className="font-bold text-gray-900 text-lg truncate group-hover:text-[#0f4c5c] transition-colors">
-                      {p.contact_username || 'Anonymous User'}
+                      {p.contact_username || t.anonymousUser}
                     </h2>
                     {p.is_verified && (
                       <svg className="w-4 h-4 text-[#e3b23c] shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -139,11 +144,11 @@ export default async function FollowingPage({
                   
                   {isSearching && p.followerCount !== undefined && (
                     <p className="text-xs font-semibold text-gray-500 mb-1">
-                      <span className="text-gray-900">{p.followerCount}</span> {p.followerCount === 1 ? 'follower' : 'followers'}
+                      <span className="text-gray-900">{p.followerCount}</span> {p.followerCount === 1 ? t.follower : t.followers}
                     </p>
                   )}
                   
-                  <p className="text-sm text-gray-600 truncate">{p.bio || 'No bio provided.'}</p>
+                  <p className="text-sm text-gray-600 truncate">{p.bio || t.noBio}</p>
                 </div>
               </Link>
             ))

@@ -32,7 +32,7 @@ const staggerContainer: Variants = {
   }
 };
 
-export default function ProfileClient({ profile, locationMap, saveProfile, initialPosts = [], isEmployer }: any) {
+export default function ProfileClient({ profile, locationMap, saveProfile, initialPosts = [], isEmployer, t }: any) {
   const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -110,7 +110,7 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
   };
 
   const deletePost = async (postId: string) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    if (!confirm(t.confirmDelete)) return;
     
     // Instantly removes the post from the screen
     setPosts(posts.filter((p: any) => p.id !== postId));
@@ -127,8 +127,8 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
     setIsEditing(false);
   }
 
-  const displayCategory = profile?.category ? (CATEGORY_MAP[profile.category] || profile.category) : 'Not specified';
-  const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : 'Location not set';
+  const displayCategory = profile?.category ? (CATEGORY_MAP[profile.category] || profile.category) : t.notSpecified;
+  const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : t.locationNotSet;
   
   return (
     <div className="relative w-full min-h-screen bg-[#F0F2F5] text-gray-900">
@@ -166,15 +166,15 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
         {/* Details Section (Flat White Container) */}
         <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-4 md:p-6 shadow-sm">
           <h2 className="text-xl font-bold mb-4 text-gray-900">
-            Details
+            {t.details}
           </h2>
           
           {isEditing ? (
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Category</label>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.category}</label>
                 <select name="category" defaultValue={profile?.category || ''} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-900">
-                  <option value="">Select a category</option>
+                  <option value="">{t.selectCategory}</option>
                   {Object.entries(CATEGORY_MAP).map(([val, label]) => (
                     <option key={val} value={val}>{label}</option>
                   ))}
@@ -182,23 +182,18 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
               </div>
               
               <div className="flex flex-col gap-2 relative z-20">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">City & Township</label>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.cityTownship}</label>
                 <CityTownSelect locationMap={locationMap} defaultCity={profile?.city || ''} defaultTown={profile?.township || ''} />
               </div>
             </div>
           ) : (
             <div className="space-y-4 text-[0.95rem] text-gray-800">
               <div className="flex items-center gap-3">
-                <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>Category: <span className="font-semibold text-gray-900 capitalize ml-1">{displayCategory}</span></span>
+                <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                <span>{t.category}: <span className="font-semibold text-gray-900 capitalize ml-1">{displayCategory}</span></span>
               </div>
               <div className="flex items-center gap-3">
-                 <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                 <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <span>Location: <span className="font-semibold text-gray-900 ml-1">{displayLocation}</span></span>
               </div>
             </div>
@@ -215,25 +210,17 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
             // ================= SEEKER: CV/RESUME SECTION =================
             <>
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">CV / Resume</h2>
+                <h2 className="text-xl font-bold text-gray-900">{t.cvResume}</h2>
               </div>
 
               {isEditing ? (
                 <div className="w-full p-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center relative hover:border-blue-400 transition-colors">
-                  <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+                  <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                   <span className="text-sm font-semibold text-gray-800 mb-1">
-                    {resumeFileName ? resumeFileName : "Upload your CV (PDF or DOC)"}
+                    {resumeFileName ? resumeFileName : t.uploadCv}
                   </span>
-                  <span className="text-xs text-gray-500">Click or drag file here</span>
-                  <input 
-                    type="file" 
-                    name="resume" 
-                    accept=".pdf,.doc,.docx" 
-                    onChange={handleResumeChange} 
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" 
-                  />
+                  <span className="text-xs text-gray-500">{t.clickDrag}</span>
+                  <input type="file" name="resume" accept=".pdf,.doc,.docx" onChange={handleResumeChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
                 </div>
               ) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -244,16 +231,16 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900 text-sm">Resume uploaded</p>
-                          <p className="text-xs text-gray-500 mt-0.5">Available for employers to view</p>
+                          <p className="font-semibold text-gray-900 text-sm">{t.resumeUploaded}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{t.availableToEmployers}</p>
                         </div>
                       </div>
                       <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto text-center bg-gray-200 text-gray-900 px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-300 active:scale-[0.97] transition-all">
-                        View CV
+                        {t.viewCv}
                       </a>
                     </>
                   ) : (
-                    <p className="text-sm text-gray-500 font-medium w-full text-center py-2">No CV/Resume uploaded yet.</p>
+                    <p className="text-sm text-gray-500 font-medium w-full text-center py-2">{t.noCv}</p>
                   )}
                 </div>
               )}
@@ -262,10 +249,10 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
             // ================= EMPLOYER: LINKED PLATFORMS =================
             <>
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Linked Platforms</h2>
+                <h2 className="text-xl font-bold text-gray-900">{t.linkedPlatforms}</h2>
                 {isEditing && (
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" onClick={addPlatform} className="text-xs font-semibold bg-blue-600 text-white px-3 py-1.5 rounded-lg">
-                    + Add
+                    {t.addBtn}
                   </motion.button>
                 )}
               </div>
@@ -275,7 +262,7 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                   <input type="hidden" name="platform_count" value={platforms.length} />
                   
                   {platforms.length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">Click "+ Add" to link a platform.</p>
+                    <p className="text-sm text-gray-500 text-center py-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">{t.clickToAdd}</p>
                   )}
 
                   {platforms.map((p, index) => (
@@ -288,19 +275,19 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                       
                       <div className="space-y-4">
                         <div>
-                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Link URL</label>
+                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.linkUrl}</label>
                           <input type="text" name={`platform_url_${index}`} defaultValue={p.url || ''} placeholder="www.youtube.com" className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-900" required />
                         </div>
                         
                         <div>
-                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Screenshot</label>
+                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.screenshot}</label>
                           <div className="relative w-full h-32 bg-white rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden hover:border-blue-400 transition-colors cursor-pointer">
                             {(p.preview || p.screenshot_url) ? (
                               <img src={p.preview || p.screenshot_url} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
                               <div className="text-center p-2 text-gray-400">
                                 <svg className="w-6 h-6 mx-auto mb-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                <span className="text-[10px] font-bold uppercase tracking-wider">Upload</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{t.uploadText}</span>
                               </div>
                             )}
                             <input type="file" name={`platform_screenshot_${index}`} accept="image/*" onChange={(e) => handlePlatformScreenshot(e, index)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
@@ -317,14 +304,12 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                       {p.screenshot_url ? (
                         <img src={p.screenshot_url} alt="Platform" className="w-full h-40 object-cover" />
                       ) : (
-                        <div className="w-full h-40 flex items-center justify-center text-gray-400 font-medium text-sm bg-gray-100">No Screenshot</div>
+                        <div className="w-full h-40 flex items-center justify-center text-gray-400 font-medium text-sm bg-gray-100">{t.noScreenshot}</div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90"></div>
                       <div className="absolute bottom-0 left-0 w-full p-4 flex items-center justify-between">
                         <div className="overflow-hidden pr-3">
-                          <p className="text-white font-bold text-sm truncate">
-                            Visit Page
-                          </p>
+                          <p className="text-white font-bold text-sm truncate">{t.visitPage}</p>
                           <p className="text-gray-300 text-xs mt-0.5 truncate w-full">{p.url.replace(/^https?:\/\//, '')}</p>
                         </div>
                         <div className="w-8 h-8 shrink-0 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-blue-600 transition-colors">
@@ -334,7 +319,7 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                     </motion.a>
                   )) : (
                     <div className="col-span-full py-8 border border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50">
-                      <p className="text-sm text-gray-500 font-medium">No platforms linked yet.</p>
+                      <p className="text-sm text-gray-500 font-medium">{t.noPlatforms}</p>
                     </div>
                   )}
                 </motion.div>
@@ -350,13 +335,11 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
             <div className="w-full h-2 bg-[#F0F2F5]"></div>
             
             <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-4 md:p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                My Posted Jobs
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">{t.myPostedJobs}</h2>
 
               {posts.length === 0 ? (
                 <div className="bg-gray-50 p-6 text-center rounded-xl border border-dashed border-gray-300">
-                  <p className="text-gray-500 text-sm">No activity found.</p>
+                  <p className="text-gray-500 text-sm">{t.noActivity}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -393,7 +376,7 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                       disabled={isLoadingMore}
                       className="w-full py-3 mt-4 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl active:scale-[0.98] disabled:active:scale-100 transition-all border border-gray-200"
                     >
-                      {isLoadingMore ? 'Loading...' : 'Load More'}
+                      {isLoadingMore ? t.loading : t.loadMore}
                     </button>
                   )}
                 </div>

@@ -5,8 +5,12 @@ import { createClient } from '../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import ProfileClient from './ProfileClient';
+import { getLang } from '../utils/getLang';
+import { dictionaries } from '../utils/dictionaries';
 
 export default async function ProfilePage() {
+  const lang = await getLang();
+  const t = dictionaries[lang].profile;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -138,6 +142,7 @@ export default async function ProfilePage() {
         saveProfile={saveProfile} 
         initialPosts={initialPosts}
         isEmployer={isEmployer}
+        t={t}
       />
     </main>
   );

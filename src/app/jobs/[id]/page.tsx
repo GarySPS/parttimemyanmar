@@ -6,6 +6,8 @@ import Link from 'next/link';
 import BookmarkButton from '../../../components/BookmarkButton';
 import Navbar from '../../../components/Navbar';
 import { Noto_Sans_Myanmar } from 'next/font/google';
+import { getLang } from '../../utils/getLang';
+import { dictionaries } from '../../utils/dictionaries';
 
 const notoSans = Noto_Sans_Myanmar({ 
   weight: ['400', '500', '700', '900'],
@@ -31,6 +33,11 @@ export default async function JobDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
+  
+  // Add these two lines to get the translations
+  const lang = await getLang();
+  const t = dictionaries[lang].jobDetail;
+
   const supabase = await createClient();
   
   // 1. Get current user & role
@@ -102,7 +109,7 @@ export default async function JobDetailPage({
                   href={`/complete/${job.id}`} 
                   className="block w-full text-center px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-sm font-bold transition-all active:scale-[0.97] whitespace-nowrap shadow-sm"
                 >
-                  Close Job
+                  {t.closeJob}
                 </Link>
               </div>
             )}
@@ -114,13 +121,10 @@ export default async function JobDetailPage({
             {/* Location */}
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center shrink-0 text-indigo-600 shadow-sm border border-indigo-100/50">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                </svg>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
               </div>
               <div className="pt-1">
-                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Location</p>
+                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.location}</p>
                 <p className="text-[1rem] font-semibold text-slate-800 leading-snug">{job.township}, {job.city}</p>
               </div>
             </div>
@@ -128,14 +132,12 @@ export default async function JobDetailPage({
             {/* Salary / Pay */}
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center shrink-0 text-emerald-600 shadow-sm border border-emerald-100/50">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
               <div className="pt-1">
-                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Compensation</p>
+                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.compensation}</p>
                 <p className="text-[1rem] font-semibold text-slate-800 leading-snug">
-                  {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : 'Price Negotiable'}
+                  {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
                   {job.pay_period && <span className="font-medium text-slate-500 text-sm ml-1">/{job.pay_period}</span>}
                 </p>
               </div>
@@ -144,12 +146,10 @@ export default async function JobDetailPage({
             {/* Posted On */}
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center shrink-0 text-sky-600 shadow-sm border border-sky-100/50">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               </div>
               <div className="pt-1">
-                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Posted On</p>
+                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.postedOn}</p>
                 <p className="text-[1rem] font-semibold text-slate-800 leading-snug">{postDate}</p>
               </div>
             </div>
@@ -159,14 +159,12 @@ export default async function JobDetailPage({
               {daysLeft !== null && !isClosed ? (
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border ${daysLeft < 3 ? 'bg-rose-50 text-rose-600 border-rose-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
                   <div className="pt-1">
-                    <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                    <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.status}</p>
                     <p className={`text-[1rem] font-semibold leading-snug ${daysLeft < 0 ? 'text-rose-600' : 'text-slate-800'}`}>
-                      {daysLeft < 0 ? 'Expired' : `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`}
+                      {daysLeft < 0 ? t.expired : `${daysLeft} ${t.daysLeft}`}
                     </p>
                   </div>
                 </div>
@@ -185,7 +183,7 @@ export default async function JobDetailPage({
           {/* Full Description & Image */}
           <div className="p-6 sm:p-8 bg-white">
             <h3 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">
-              Job Description
+              {t.jobDescription}
             </h3>
             <div className="text-[1rem] text-slate-600 leading-relaxed whitespace-pre-wrap font-medium">
               {job.description}
@@ -209,19 +207,15 @@ export default async function JobDetailPage({
                 {employerAvatar ? (
                   <img src={employerAvatar} alt="Employer" className="w-full h-full object-cover" />
                 ) : (
-                  <svg className="w-8 h-8 text-slate-300" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
+                  <svg className="w-8 h-8 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 )}
               </div>
               <div>
-                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Posted By</p>
+                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.postedBy}</p>
                 <div className="flex items-center gap-1.5">
-                  <p className="text-lg font-bold text-slate-900">{contactUser || 'Anonymous Employer'}</p>
+                  <p className="text-lg font-bold text-slate-900">{contactUser || t.anonymousEmployer}</p>
                   {job.profiles?.is_verified && (
-                    <svg className="w-5 h-5 text-[#e3b23c]" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
+                    <svg className="w-5 h-5 text-[#e3b23c]" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
                   )}
                 </div>
               </div>
@@ -231,7 +225,7 @@ export default async function JobDetailPage({
               href={`/user/${job.employer_id}`} 
               className="w-full sm:w-auto px-6 py-3 bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-[0.97] text-center text-sm shadow-sm"
             >
-              View Profile
+              {t.viewProfile}
             </Link>
           </div>
 
@@ -240,18 +234,17 @@ export default async function JobDetailPage({
             {isClosed ? (
               <div className="w-full bg-rose-50 border-2 border-rose-100 text-rose-700 px-6 py-5 rounded-2xl font-semibold flex items-start sm:items-center text-sm shadow-sm">
                 <svg className="w-6 h-6 mr-3 text-rose-500 shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                This position has been closed by the employer and is no longer accepting applicants.
+                {t.jobClosed}
               </div>
             ) : contactApp && contactUser ? (
               <div className="w-full bg-gradient-to-br from-[#0f4c5c] to-[#166073] rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-[#0f4c5c]/20 relative overflow-hidden">
-                {/* Decorative Elements */}
                 <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#e3b23c]/20 rounded-full blur-2xl"></div>
 
                 <div className="relative z-10">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2 tracking-tight">Ready to Apply?</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2 tracking-tight">{t.readyToApply}</h3>
                   <p className="text-[#a4c3d2] text-sm sm:text-base font-medium mb-6 max-w-lg">
-                    Reach out directly to the employer via {contactApp} to discuss this opportunity and secure your position.
+                    {t.reachOut1} {contactApp} {t.reachOut2}
                   </p>
                   
                   <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-4 bg-black/20 p-1.5 sm:pr-6 rounded-xl sm:rounded-full border border-white/10 backdrop-blur-md w-full sm:w-auto">
@@ -267,8 +260,8 @@ export default async function JobDetailPage({
             ) : (
               <div className="w-full bg-slate-100 border-2 border-dashed border-slate-300 text-slate-500 px-6 py-8 rounded-2xl flex flex-col items-center justify-center text-center">
                  <svg className="w-8 h-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                 <p className="font-semibold">Contact Hidden</p>
-                 <p className="text-sm mt-1">The employer did not provide contact information for this listing.</p>
+                 <p className="font-semibold">{t.contactHidden}</p>
+                 <p className="text-sm mt-1">{t.noContactDesc}</p>
               </div>
             )}
           </div>

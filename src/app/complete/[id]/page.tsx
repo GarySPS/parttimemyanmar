@@ -6,12 +6,16 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 import Navbar from '../../../components/Navbar';
+import { getLang } from '../../utils/getLang';
+import { dictionaries } from '../../utils/dictionaries';
 
 export default async function CompleteJobPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const lang = await getLang();
+  const t = dictionaries[lang].completeJob;
   const supabase = await createClient();
   const resolvedParams = await params;
   const jobId = resolvedParams.id;
@@ -58,32 +62,28 @@ export default async function CompleteJobPage({
 
   return (
     <main className="w-full min-h-screen bg-[#f3f4f6] text-slate-900 antialiased font-sans">
-      
-      {/* Universal Navigation Bar */}
       <Navbar />
 
       <div className="max-w-md mx-auto px-4 pt-8 md:pt-12">
-        
-        {/* Main Card */}
         <section className="w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
           
           <header className="mb-6 w-full flex items-center justify-between">
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Complete Task
+              {t.title}
             </h1>
             <Link href="/" className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full text-sm font-semibold transition-colors">
-              Cancel
+              {t.cancel}
             </Link>
           </header>
 
           <div className="mb-8">
             <h2 className="font-bold text-xl text-slate-900 mb-2 leading-tight">{job.title}</h2>
             <p className="text-sm text-slate-500 font-medium leading-relaxed">
-              Closing this task will prevent seekers from opening the job details. It will remain visible on the feed until its expiration date.
+              {t.description}
             </p>
           </div>
 
-          <CloseJobClient closeAction={closeJobAction} />
+          <CloseJobClient closeAction={closeJobAction} t={t} />
           
         </section>
       </div>

@@ -18,12 +18,13 @@ export default function ProfileHeader({
   onEdit,
   onCancel,
   onAvatarChange,
-  onCoverChange
+  onCoverChange,
+  t // <-- Receive dictionary here
 }: any) {
-  const displayName = profile?.contact_username || 'Anonymous User';
+  const displayName = profile?.contact_username || t?.anonymousUser || 'Anonymous User';
   const displayBio = profile?.bio || (isOwnProfile 
-    ? 'No bio provided yet. Update your profile to tell others about yourself.' 
-    : 'This user has not provided a bio yet.');
+    ? (t?.noBioOwn || 'No bio provided yet.') 
+    : (t?.noBioOther || 'This user has not provided a bio yet.'));
 
   const [copied, setCopied] = useState(false);
 
@@ -32,7 +33,7 @@ export default function ProfileHeader({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${displayName}'s Profile on PartTimeMM`,
+          title: `${displayName}${t?.profileOn || "'s Profile"}`,
           url: url,
         });
       } catch (err) {
@@ -55,7 +56,6 @@ export default function ProfileHeader({
         ) : profile?.cover_url ? (
           <img src={profile.cover_url} alt="Cover" className="w-full h-full object-cover" />
         ) : (
-          /* This uses the default-cover.jpg file from your public/images folder */
           <img src="/images/default-cover.jpg" alt="Default Cover" className="w-full h-full object-cover" />
         )}
         
@@ -97,8 +97,8 @@ export default function ProfileHeader({
         <div className="mt-3 text-left">
           {isEditing ? (
             <div className="space-y-4 mt-4">
-              <input type="text" name="contact_username" defaultValue={profile?.contact_username || ''} placeholder="Your Name" className="w-full text-2xl font-bold text-gray-900 border-b-2 border-gray-300 focus:outline-none focus:border-[#0f4c5c] bg-transparent pb-1 transition-colors" required />
-              <textarea name="bio" defaultValue={profile?.bio || ''} placeholder="Write a short bio..." rows={3} className="w-full text-[0.95rem] text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] resize-none" />
+              <input type="text" name="contact_username" defaultValue={profile?.contact_username || ''} placeholder={t?.namePlaceholder || "Your Name"} className="w-full text-2xl font-bold text-gray-900 border-b-2 border-gray-300 focus:outline-none focus:border-[#0f4c5c] bg-transparent pb-1 transition-colors" required />
+              <textarea name="bio" defaultValue={profile?.bio || ''} placeholder={t?.bioPlaceholder || "Write a short bio..."} rows={3} className="w-full text-[0.95rem] text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] resize-none" />
             </div>
           ) : (
             <>
@@ -111,7 +111,7 @@ export default function ProfileHeader({
               
               {!isOwnProfile && (
                 <p className="text-sm font-medium text-gray-600 mt-1">
-                  <span className="font-bold text-gray-900">{followerCount}</span> {followerCount === 1 ? 'follower' : 'followers'}
+                  <span className="font-bold text-gray-900">{followerCount}</span> {followerCount === 1 ? (t?.follower || 'follower') : (t?.followers || 'followers')}
                 </p>
               )}
               
@@ -126,21 +126,21 @@ export default function ProfileHeader({
             isEditing ? (
               <>
                 <button type="button" onClick={onCancel} disabled={isSaving} className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] disabled:active:scale-100 transition-all">
-                  Cancel
+                  {t?.cancel || 'Cancel'}
                 </button>
                 <button type="submit" disabled={isSaving} className="flex-1 bg-[#0f4c5c] text-white py-2.5 rounded-lg text-sm font-bold hover:bg-[#0f4c5c]/90 active:scale-[0.97] disabled:active:scale-100 transition-all shadow-sm disabled:opacity-50">
-                  {isSaving ? 'Saving...' : 'Save'}
+                  {isSaving ? (t?.saving || 'Saving...') : (t?.save || 'Save')}
                 </button>
               </>
             ) : (
               <>
                 <button type="button" onClick={onEdit} className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                  Edit Profile
+                  {t?.editProfile || 'Edit Profile'}
                 </button>
                 <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm flex items-center justify-center gap-2">
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
-                  {copied ? 'Copied!' : 'Share'}
+                  {copied ? (t?.copied || 'Copied!') : (t?.share || 'Share')}
                 </button>
               </>
             )
@@ -148,7 +148,7 @@ export default function ProfileHeader({
             <>
               <FollowButton employerId={profile.id} initialIsFollowing={isFollowing} path={`/user/${profile.id}`} />
               <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm">
-                {copied ? 'Copied!' : 'Share'}
+                {copied ? (t?.copied || 'Copied!') : (t?.share || 'Share')}
               </button>
             </>
           )}

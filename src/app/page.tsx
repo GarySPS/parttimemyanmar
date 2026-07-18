@@ -9,6 +9,8 @@ import CustomSelect from '../components/CustomSelect';
 import CityTownSelect from '../components/CityTownSelect';
 import BookmarkButton from '../components/BookmarkButton';
 import CloseJobButton from '../components/CloseJobButton';
+import { getLang } from './utils/getLang';
+import { dictionaries } from './utils/dictionaries';
 
 // Map database category values to full display labels
 const CATEGORY_MAP: Record<string, string> = {
@@ -28,6 +30,9 @@ export default async function Home({
 }: {
  searchParams: Promise<{ city?: string, township?: string, q?: string, category?: string, pay_period?: string }>;
 }) {
+  const lang = await getLang();
+  const t = dictionaries[lang].home;
+
   const supabase = await createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
@@ -84,8 +89,8 @@ export default async function Home({
         <div className="w-full bg-[#0f4c5c] px-4 pb-8 pt-5 md:px-8 md:pb-10 md:pt-6 relative z-10 shadow-md">
           <div className="max-w-3xl mx-auto mb-5 px-2">
             <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              Part Time Jobs 
-              <span className="text-[#a4c3d2] font-medium text-lg md:text-2xl">in Myanmar</span>
+              {t.title} 
+              <span className="text-[#a4c3d2] font-medium text-lg md:text-2xl">{t.subtitle}</span>
             </h1>
           </div>
           
@@ -97,11 +102,11 @@ export default async function Home({
               type="text" 
               name="q" 
               defaultValue={searchTerm} 
-              placeholder="Search job title..." 
+              placeholder={t.searchPlaceholder} 
               className="flex-1 w-full bg-transparent border-none text-base font-medium text-white focus:outline-none focus:ring-0 placeholder-[#a4c3d2]/70 py-3" 
             />
             <button type="submit" className="px-6 py-3 bg-[#e3b23c] text-[#0f4c5c] rounded-xl text-sm font-bold shadow-lg hover:bg-[#f0c254] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 active:shadow-sm transition-all">
-              Search
+              {t.searchBtn}
             </button>
           </form>
         </div>
@@ -119,7 +124,7 @@ export default async function Home({
                     href="/" 
                     className={`shrink-0 text-center px-6 py-3 rounded-2xl text-sm font-bold transition-all border active:scale-[0.97] active:shadow-sm ${!selectedCity && !selectedCategory && !selectedPayPeriod ? 'bg-[#0f4c5c] text-white border-[#0f4c5c] shadow-md' : 'bg-white/50 text-[#0f4c5c]/70 border-white/60 hover:bg-white hover:text-[#0f4c5c] shadow-sm'}`}
                   >
-                    Clear Filters
+                    {t.clearFilters}
                   </Link>
                   <div className="flex-1">
                     <CityTownSelect defaultCity={selectedCity} defaultTown={selectedTownship} locationMap={locationMap} />
@@ -154,7 +159,7 @@ export default async function Home({
                     ]}
                   />
                   <button type="submit" className="px-8 py-3 bg-[#0f4c5c] text-white rounded-2xl text-sm font-bold hover:bg-[#0f4c5c]/90 hover:shadow-lg active:scale-[0.97] active:translate-y-0 active:shadow-sm transition-all shadow-sm">
-                    Apply
+                    {t.apply}
                   </button>
                 </div>
               </form>
@@ -286,8 +291,8 @@ export default async function Home({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-extrabold text-[#0f4c5c] mb-2">No jobs found</h3>
-                <p className="text-[#0f4c5c]/60 text-sm max-w-xs mx-auto font-medium">Try adjusting your filters or search terms to find what you're looking for.</p>
+                <h3 className="text-xl font-extrabold text-[#0f4c5c] mb-2">{t.noJobs}</h3>
+                <p className="text-[#0f4c5c]/60 text-sm max-w-xs mx-auto font-medium">{t.noJobsDesc}</p>
               </div>
             )}
           </section>

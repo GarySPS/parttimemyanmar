@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import AnimatedCard from '../../components/AnimatedCard';
 import BookmarkButton from '../../components/BookmarkButton';
+import { getLang } from '../utils/getLang';
+import { dictionaries } from '../utils/dictionaries';
 
 const CATEGORY_MAP: Record<string, string> = {
   'delivery': 'Delivery & Logistics',
@@ -21,17 +23,18 @@ const CATEGORY_MAP: Record<string, string> = {
 export default async function SavedJobsPage() {
   const supabase = await createClient();
   
-  // 1. Check Authentication
+  // Get dictionary translations
+  const lang = await getLang();
+  const t = dictionaries[lang].saved;
+  
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
-    redirect('/'); // Send guests back to home
+    redirect('/'); 
   }
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
   const userRole = profile?.role;
 
-  // 2. Fetch Only Bookmarked Jobs
-  // The !inner forces Supabase to only return jobs that have a matching bookmark for this user
   const { data: jobs } = await supabase
     .from('jobs')
     .select(`
@@ -50,9 +53,9 @@ export default async function SavedJobsPage() {
       <div className="w-full bg-teal-900 px-4 pb-8 pt-5 md:px-8 md:pb-10 md:pt-6">
         <div className="max-w-3xl mx-auto px-2">
           <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-wide drop-shadow-sm leading-snug">
-           Saved Jobs
+            {t.title}
           </h1>
-          <p className="text-teal-100 mt-2 font-medium">Jobs you have bookmarked for later.</p>
+          <p className="text-teal-100 mt-2 font-medium">{t.subtitle}</p>
         </div>
       </div>
 
@@ -62,7 +65,6 @@ export default async function SavedJobsPage() {
             <div className="flex flex-col gap-5">
               {jobs.map((job, index) => {
                 
-                // Date Calculations
                 const postDate = new Date(job.created_at);
                 const now = new Date();
                 const isNew = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60) < 24;
@@ -76,7 +78,6 @@ export default async function SavedJobsPage() {
                   daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 }
 
-                // If it showed up in this query, it is guaranteed to be bookmarked by the user
                 const isBookmarked = true; 
 
                 return (
@@ -92,14 +93,14 @@ export default async function SavedJobsPage() {
                             {job.title}
                           </h2>
                           <p className="text-sm md:text-base text-slate-600 font-medium mt-1.5 capitalize">
-                            {job.category ? (CATEGORY_MAP[job.category] || job.category) : 'Private Advertiser'}
+                            {job.category ? (CATEGORY_MAP[job.category] || job.category) : t.privateAdvertiser}
                           </p>
                         </div>
 
                         {isNew && (
                           <div className="mt-3.5">
                             <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100/50">
-                              New to you
+                              {t.newToYou}
                             </span>
                           </div>
                         )}
@@ -120,8 +121,8 @@ export default async function SavedJobsPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span className="text-[0.95rem] font-medium text-slate-700">
-                              {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : 'Price Negotiable'}
-                              <span className="font-normal text-slate-500">{job.pay_period && ` per ${job.pay_period}`}</span>
+                              {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
+                              <span className="font-normal text-slate-500">{job.pay_period && `${t.per}${job.pay_period}`}</span>
                             </span>
                           </div>
                         </div>
@@ -131,8 +132,8 @@ export default async function SavedJobsPage() {
                       <div className="px-5 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center relative z-20">
                         <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                           {daysLeft !== null && daysLeft >= 0 
-                            ? `${daysLeft}d+ left` 
-                            : 'Expired'
+                            ? `${daysLeft} ${t.daysLeft}` 
+                            : t.expired
                           }
                         </div>
                         
@@ -155,10 +156,10 @@ export default async function SavedJobsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">No saved jobs yet</h3>
-              <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">Jobs you bookmark will appear here so you can easily find them later.</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">{t.noSavedJobs}</h3>
+              <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">{t.noSavedJobsDesc}</p>
               <Link href="/" className="px-6 py-2.5 bg-teal-800 text-white rounded-full text-sm font-bold shadow-md hover:bg-teal-700 transition-all active:scale-[0.97]">
-                Browse Jobs
+                {t.browseJobs}
               </Link>
             </div>
           )}

@@ -7,8 +7,12 @@ import CustomSelect from '../../components/CustomSelect';
 import CityTownSelect from '../../components/CityTownSelect';
 import PriceInput from '../../components/PriceInput';
 import Navbar from '../../components/Navbar';
+import { getLang } from '../utils/getLang';
+import { dictionaries } from '../utils/dictionaries';
 
 export default async function CreateJobPage() {
+  const lang = await getLang();
+  const t = dictionaries[lang].createJob;
   const supabase = await createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
@@ -119,23 +123,19 @@ export default async function CreateJobPage() {
 
   return (
     <main className="w-full min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-teal-200 flex flex-col items-center">
-      
-      {/* Universal Navigation Bar */}
       <Navbar />
 
       <div className="w-full max-w-2xl p-4 md:p-8 mt-2 mb-12">
-        
         <div className="mb-6 px-2 flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-teal-950">
-              Post a Task
+              {t.title}
             </h1>
-            <p className="text-sm text-gray-500 font-medium mt-1">Fill out the details to find local help.</p>
+            <p className="text-sm text-gray-500 font-medium mt-1">{t.subtitle}</p>
           </div>
           
-          {/* Moved the Cancel button here so it's still accessible */}
           <Link href="/" className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-full text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-[0.95]">
-            Cancel
+            {t.cancel}
           </Link>
         </div>
 
@@ -144,33 +144,33 @@ export default async function CreateJobPage() {
             
             {/* SECTION 1 */}
             <div className="space-y-5">
-              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">1. The Basics</h2>
+              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">{t.section1}</h2>
               
               <div className="flex flex-col gap-2">
-                <label htmlFor="title" className="font-bold text-sm text-gray-800">Task Title <span className="text-rose-500">*</span></label>
+                <label htmlFor="title" className="font-bold text-sm text-gray-800">{t.taskTitle} <span className="text-rose-500">*</span></label>
                 <input 
                   type="text" id="title" name="title" required 
-                  placeholder="e.g., Need help carrying 5 rice bags to 3rd floor" 
+                  placeholder={t.titlePlaceholder} 
                   className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all placeholder:text-gray-400 shadow-sm"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="flex flex-col gap-2 relative z-20">
-                  <label className="font-bold text-sm text-gray-800">Category <span className="text-rose-500">*</span></label>
+                  <label className="font-bold text-sm text-gray-800">{t.category} <span className="text-rose-500">*</span></label>
                   <CustomSelect 
                     name="category"
-                    placeholder="Select a category"
+                    placeholder={t.categoryPlaceholder}
                     options={[
-                      { value: 'delivery', label: 'Delivery & Logistics' },
-                      { value: 'manual', label: 'Manual Labor & Cleaning' },
-                      { value: 'tech', label: 'Tech & Digital' },
-                      { value: 'events', label: 'Events & Hospitality' },
-                      { value: 'education', label: 'Education & Tutoring' },
-                      { value: 'admin', label: 'Admin & Office' },
-                      { value: 'retail', label: 'Retail & Sales' },
-                      { value: 'freelancer', label: 'Freelancer & Independent' },
-                      { value: 'other', label: 'Other' },
+                      { value: 'delivery', label: t.cats.delivery },
+                      { value: 'manual', label: t.cats.manual },
+                      { value: 'tech', label: t.cats.tech },
+                      { value: 'events', label: t.cats.events },
+                      { value: 'education', label: t.cats.education },
+                      { value: 'admin', label: t.cats.admin },
+                      { value: 'retail', label: t.cats.retail },
+                      { value: 'freelancer', label: t.cats.freelancer },
+                      { value: 'other', label: t.cats.other },
                     ]}
                   />
                 </div>
@@ -178,7 +178,7 @@ export default async function CreateJobPage() {
 
               <div className="flex flex-col gap-2 relative z-10 mt-5">
                 <label className="font-bold text-sm text-gray-800">
-                  City & Township <span className="text-rose-500">*</span>
+                  {t.cityTown} <span className="text-rose-500">*</span>
                 </label>
                 <CityTownSelect locationMap={locationMap} />
               </div>
@@ -186,99 +186,99 @@ export default async function CreateJobPage() {
 
             {/* SECTION 2 */}
             <div className="space-y-5">
-              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">2. Payment & Schedule</h2>
+              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">{t.section2}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-0">
                 <div className="flex flex-col gap-2">
-                  <label className="font-bold text-sm text-gray-800">Pay Type <span className="text-rose-500">*</span></label>
+                  <label className="font-bold text-sm text-gray-800">{t.payType} <span className="text-rose-500">*</span></label>
                   <CustomSelect 
                     name="pay_period"
-                    placeholder="How are you paying?"
+                    placeholder={t.payPlaceholder}
                     options={[
-                      { value: 'fixed', label: 'Fixed Price (One-time Task)' },
-                      { value: 'hourly', label: 'Hourly' },
-                      { value: 'daily', label: 'Daily' },
-                      { value: 'monthly', label: 'Monthly' },
+                      { value: 'fixed', label: t.pays.fixed },
+                      { value: 'hourly', label: t.pays.hourly },
+                      { value: 'daily', label: t.pays.daily },
+                      { value: 'monthly', label: t.pays.monthly },
                     ]}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="price" className="font-bold text-sm text-gray-800">Amount (MMK) <span className="text-rose-500">*</span></label>
+                  <label htmlFor="price" className="font-bold text-sm text-gray-800">{t.amount} <span className="text-rose-500">*</span></label>
                   <PriceInput />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="task_date" className="font-bold text-sm text-gray-800">Task Date (Optional)</label>
+                  <label htmlFor="task_date" className="font-bold text-sm text-gray-800">{t.taskDate}</label>
                   <input 
                     type="date" id="task_date" name="task_date" 
                     className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-gray-700 shadow-sm cursor-pointer"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="expires_at" className="font-bold text-sm text-gray-800">Expiration Date <span className="text-rose-500">*</span></label>
+                  <label htmlFor="expires_at" className="font-bold text-sm text-gray-800">{t.expireDate} <span className="text-rose-500">*</span></label>
                   <input 
                     type="date" id="expires_at" name="expires_at" required
                     className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-gray-700 shadow-sm cursor-pointer border-rose-200/50 bg-rose-50/10"
                   />
-                  <p className="text-xs text-gray-500 font-medium">Post will automatically close after this date.</p>
+                  <p className="text-xs text-gray-500 font-medium">{t.expireDesc}</p>
                 </div>
               </div>
             </div>
 
             {/* SECTION 3 */}
             <div className="space-y-5">
-              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">3. Details & Media</h2>
+              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">{t.section3}</h2>
               
               <div className="flex flex-col gap-2">
-                <label htmlFor="description" className="font-bold text-sm text-gray-800">Description & Requirements <span className="text-rose-500">*</span></label>
+                <label htmlFor="description" className="font-bold text-sm text-gray-800">{t.desc} <span className="text-rose-500">*</span></label>
                 <textarea 
                   id="description" name="description" required rows={4}
-                  placeholder="Explain exactly what needs to be done, any tools required, etc..." 
+                  placeholder={t.descPlaceholder} 
                   className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all placeholder:text-gray-400 resize-none shadow-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="image" className="font-bold text-sm text-gray-800">Attach a Photo (Optional)</label>
+                <label htmlFor="image" className="font-bold text-sm text-gray-800">{t.attachPhoto}</label>
                 <div className="relative">
                   <input 
                     type="file" id="image" name="image" accept="image/*"
                     className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer border border-gray-200 rounded-xl p-2 shadow-sm"
                   />
                 </div>
-                <p className="text-xs text-gray-400 font-medium">Upload a picture of the items, location, or task context.</p>
+                <p className="text-xs text-gray-400 font-medium">{t.attachDesc}</p>
               </div>
             </div>
 
             {/* SECTION 4 */}
             <div className="space-y-5">
-              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">4. Contact Information</h2>
-              <p className="text-xs text-gray-500 font-medium mb-2">How should seekers reach out to you? (We will save this for your next post).</p>
+              <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">{t.section4}</h2>
+              <p className="text-xs text-gray-500 font-medium mb-2">{t.contactDesc}</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-0">
                 <div className="flex flex-col gap-2">
-                  <label className="font-bold text-sm text-gray-800">Contact Method <span className="text-rose-500">*</span></label>
+                  <label className="font-bold text-sm text-gray-800">{t.contactMethod} <span className="text-rose-500">*</span></label>
                   <CustomSelect 
                     name="contact_app"
-                    placeholder="Select an app..."
+                    placeholder={t.contactPlaceholder}
                     defaultValue={profile?.contact_app || ''}
                     options={[
                       { value: 'Viber', label: 'Viber' },
                       { value: 'Telegram', label: 'Telegram' },
-                      { value: 'Phone', label: 'Phone Call / SMS' },
-                      { value: 'Facebook', label: 'Facebook / Messenger' },
+                      { value: 'Phone', label: t.apps.phone },
+                      { value: 'Facebook', label: t.apps.facebook },
                       { value: 'Email', label: 'Email' }
                     ]}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="contact_username" className="font-bold text-sm text-gray-800">Username / Phone Number <span className="text-rose-500">*</span></label>
+                  <label htmlFor="contact_username" className="font-bold text-sm text-gray-800">{t.usernamePhone} <span className="text-rose-500">*</span></label>
                   <input 
                     type="text" id="contact_username" name="contact_username" required 
                     defaultValue={profile?.contact_username || ''}
-                    placeholder="e.g., +95 9..." 
+                    placeholder={t.usernamePlaceholder} 
                     className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all placeholder:text-gray-400 shadow-sm"
                   />
                 </div>
@@ -290,7 +290,7 @@ export default async function CreateJobPage() {
                 type="submit" 
                 className="w-full bg-teal-900 text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-teal-800 active:scale-[0.97] active:shadow-sm transition-all"
               >
-                Publish Job Post
+                {t.publishBtn}
               </button>
             </div>
           </form>

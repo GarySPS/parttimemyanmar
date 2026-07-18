@@ -7,12 +7,14 @@ export default function LocationInput({
   name, 
   defaultValue = '', 
   locations = [], 
-  isRoundedFull = false 
+  isRoundedFull = false,
+  t // <-- Receive dictionary here
 }: { 
   name: string, 
   defaultValue?: string, 
   locations: string[], 
-  isRoundedFull?: boolean 
+  isRoundedFull?: boolean,
+  t?: any
 }) {
   const [value, setValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
@@ -46,7 +48,7 @@ export default function LocationInput({
         value={value}
         onChange={(e) => { setValue(e.target.value); setIsOpen(true); }}
         onFocus={() => setIsOpen(true)}
-        placeholder="City & Town (ဥပမာ - ရန်ကုန်၊ စမ်းချောင်း)"
+        placeholder={t?.placeholder || "ဥပမာ - ရန်ကုန်၊ စမ်းချောင်း"}
         autoComplete="off"
         className={inputClass}
       />
@@ -55,7 +57,7 @@ export default function LocationInput({
         <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] max-h-60 overflow-y-auto p-1 animate-in fade-in zoom-in-95 duration-200">
            {/* Helper text at the top of the dropdown */}
            <div className="px-4 py-2 text-xs font-bold text-teal-800 bg-teal-50/50 rounded-t-xl border-b border-teal-100/50 mb-1">
-             Select or type a location
+             {t?.helperText || "Select or type a location"}
            </div>
            
            {filtered.map(loc => (
