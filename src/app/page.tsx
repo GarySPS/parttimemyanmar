@@ -75,10 +75,16 @@ export default async function Home({
         {/* Full-width Search Hero */}
         <div className="w-full bg-[#0f4c5c] px-4 pb-8 pt-5 md:px-8 md:pb-10 md:pt-6 relative z-10 shadow-md">
           <div className="max-w-3xl mx-auto mb-5 px-2">
-            <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              {t.title} 
+            {/* SEO BOOST: H1 now includes the exact brand name alongside your translation */}
+            <h1 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight flex flex-wrap items-center gap-3">
+              PartTimeMM {t.title} 
               <span className="text-[#a4c3d2] font-medium text-lg md:text-2xl">{t.subtitle}</span>
             </h1>
+
+          {/* SEO BOOST: H2 adds natural keyword repetition for Google's bots */}
+            <h2 className="mt-2 text-white/80 text-sm md:text-base font-medium max-w-2xl">
+              Search the best part time jobs (အချိန်ပိုင်း အလုပ်), freelance work, and student roles in Myanmar on PartTimeMM.
+            </h2>
           </div>
           
           <form method="GET" action="/" className="max-w-3xl mx-auto relative z-10 flex items-center bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20 focus-within:border-[#e3b23c] focus-within:bg-white/15 transition-all shadow-inner">
@@ -155,6 +161,9 @@ export default async function Home({
 
           {/* Job Feed */}
           <section className="w-full relative z-20">
+            {/* SEO BOOST: Hidden title for screen readers and Google bots */}
+            <h2 className="sr-only">Latest အချိန်ပိုင်း အလုပ် (Part Time Jobs) in Myanmar</h2>
+            
             {jobs && jobs.length > 0 ? (
               <div className="flex flex-col gap-5">
                 {jobs.map((job, index) => {

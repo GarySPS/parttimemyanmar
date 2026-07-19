@@ -216,6 +216,19 @@ bookmark: {
   remove: "မှတ်သားထားမှု ဖြုတ်မည်",
   add: "အလုပ်ကို မှတ်သားမည်"
 },
+installGuide: {
+  title: "PartTimeMM ကို ဖုန်းတွင် ထည့်သွင်းနည်း",
+  subtitle: "သင့်ဖုန်းစခရင်မှ အလွယ်တကူနှင့် လုံခြုံစွာ အသုံးပြုပါ။",
+  iosTitle: "iPhone နှင့် iPad အတွက် (iOS)",
+  iosStep1: "၁။ ဤဝဘ်ဆိုက်ကို Safari ဖြင့်ဖွင့်ပါ။",
+  iosStep2: "၂။ အောက်ခြေရှိ Share ခလုတ် (အပေါ်သို့မြှားပြထားသော လေးထောင့်ကွက်) ကို နှိပ်ပါ။",
+  iosStep3: "၃။ အောက်သို့ဆင်းပြီး 'Add to Home Screen' ကို နှိပ်ပါ။",
+  androidTitle: "Android အတွက်",
+  androidStep1: "၁။ ဤဝဘ်ဆိုက်ကို Chrome ဖြင့်ဖွင့်ပါ။",
+  androidStep2: "၂။ အပေါ်ညာဘက်ထောင့်ရှိ Menu ခလုတ် (အစက်သုံးစက်) ကို နှိပ်ပါ။",
+  androidStep3: "၃။ 'Add to Home screen' သို့မဟုတ် 'Install App' ကို နှိပ်ပါ။",
+  backBtn: "ပင်မစာမျက်နှာသို့ ပြန်သွားမည်"
+}
   },
 
 
@@ -431,6 +444,19 @@ cityTownSelect: {
 bookmark: {
   remove: "Remove bookmark",
   add: "Bookmark job"
+},
+installGuide: {
+  title: "How to Install PartTimeMM",
+  subtitle: "Get fast, secure access straight from your home screen.",
+  iosTitle: "For iPhone & iPad (iOS)",
+  iosStep1: "1. Open this website in Safari.",
+  iosStep2: "2. Tap the Share button at the bottom (the square with an arrow pointing up).",
+  iosStep3: "3. Scroll down and tap 'Add to Home Screen'.",
+  androidTitle: "For Android",
+  androidStep1: "1. Open this website in Chrome.",
+  androidStep2: "2. Tap the Menu button (three dots in the top right corner).",
+  androidStep3: "3. Tap 'Add to Home screen' or 'Install App'.",
+  backBtn: "Back to Home"
 }
   }
 };

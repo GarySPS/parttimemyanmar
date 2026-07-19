@@ -18,8 +18,16 @@ const notoSans = Noto_Sans_Myanmar({
 });
 
 export const metadata: Metadata = {
-  title: "PartTimeMM",
-  description: "Part time jobs in Myanmar",
+  title: "PartTimeMM - အချိန်ပိုင်း အလုပ် (Part Time Jobs in Myanmar)",
+  description: "Find the best part-time jobs (အချိန်ပိုင်း အလုပ်) in Myanmar. Browse delivery, tech, admin, and more roles across your city.",
+  keywords: "အချိန်ပိုင်း အလုပ်, part time job Myanmar, freelance jobs Myanmar, student jobs Myanmar, PartTimeMM",
+  openGraph: {
+    title: "PartTimeMM - အချိန်ပိုင်း အလုပ်",
+    description: "Find the best part-time jobs in Myanmar.",
+    siteName: "PartTimeMM",
+    locale: "my_MM",
+    type: "website",
+  },
   manifest: "/manifest.json",
 };
 
