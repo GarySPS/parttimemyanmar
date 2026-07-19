@@ -291,8 +291,25 @@ export default async function Home({
                 <p className="text-[#0f4c5c]/60 text-sm max-w-xs mx-auto font-medium">{t.noJobsDesc}</p>
               </div>
             )}
-          </section>
+         </section>
         </div>
+
+        {/* SEO Structured Data: Google Sitelinks Search Box */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": "https://parttimemm.com",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://parttimemm.com/?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
       </div>
     </main>
   );

@@ -70,6 +70,50 @@ export default async function JobDetailPage({
   return (
     <main className={`relative w-full min-h-screen bg-[#F4F6F8] text-slate-900 antialiased pb-24 ${notoSans.className}`}>
       
+      {/* SEO BOOST: Google Jobs JSON-LD Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "JobPosting",
+            "title": job.title,
+            "description": job.description,
+            "datePosted": job.created_at,
+            "validThrough": job.expires_at || undefined,
+            "employmentType": "PART_TIME",
+            "hiringOrganization": {
+              "@type": "Organization",
+              "name": contactUser || "Private Employer",
+              "sameAs": "https://parttimemm.com",
+              "logo": employerAvatar || "https://parttimemm.com/icon.png"
+            },
+            "jobLocation": {
+              "@type": "Place",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": job.township,
+                "addressRegion": job.city,
+                "addressCountry": "MM"
+              }
+            },
+            ...(job.price ? {
+              "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "MMK",
+                "value": {
+                  "@type": "QuantitativeValue",
+                  "value": job.price,
+                  "unitText": job.pay_period === 'hourly' ? 'HOUR' : 
+                              job.pay_period === 'daily' ? 'DAY' : 
+                              job.pay_period === 'monthly' ? 'MONTH' : 'YEAR'
+                }
+              }
+            } : {})
+          })
+        }}
+      />
+
       <Navbar />
 
       {/* Main Container - Added safe padding (px-4 sm:px-6) so it NEVER touches the screen edges */}
@@ -257,6 +301,7 @@ export default async function JobDetailPage({
 
         </div>
       </div>
+      
     </main>
   );
 }
