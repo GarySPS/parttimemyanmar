@@ -192,6 +192,14 @@ createJob: {
 locationInput: {
   placeholder: "ဥပမာ - ရန်ကုန်၊ စမ်းချောင်း",
   helperText: "တည်နေရာ ရွေးချယ်ပါ သို့မဟုတ် ရိုက်ထည့်ပါ"
+},
+cityTownSelect: {
+  cityPlaceholder: "မြို့ (ဥပမာ - ရန်ကုန်)",
+  townPlaceholder: "မြို့နယ် (ဥပမာ - စမ်းချောင်း)"
+},
+bookmark: {
+  remove: "မှတ်သားထားမှု ဖြုတ်မည်",
+  add: "အလုပ်ကို မှတ်သားမည်"
 }
   },
 
@@ -385,6 +393,14 @@ createJob: {
 locationInput: {
   placeholder: "e.g., Yangon, Sanchaung",
   helperText: "Select or type a location"
+},
+cityTownSelect: {
+  cityPlaceholder: "City (e.g. Yangon)",
+  townPlaceholder: "Township (e.g. Sanchaung)"
+},
+bookmark: {
+  remove: "Remove bookmark",
+  add: "Bookmark job"
 }
   }
 };

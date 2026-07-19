@@ -4,15 +4,22 @@
 
 import { useRouter } from 'next/navigation';
 import type { Language } from '../app/utils/dictionaries';
+import { updateUserLanguage } from '../app/actions/language';
 
 export default function LanguageToggle({ currentLang }: { currentLang: Language }) {
   const router = useRouter();
 
-  const toggleLanguage = () => {
+  const toggleLanguage = async () => {
     const newLang = currentLang === 'my' ? 'en' : 'my';
-    // Set cookie for 1 year
+    
+    // 1. Instantly set the cookie for the UI
     document.cookie = `NEXT_LOCALE=${newLang}; path=/; max-age=31536000`;
+    
+    // 2. Refresh the page so server components re-render with the new language
     router.refresh(); 
+
+    // 3. Save to Supabase in the background (won't block the UI refresh)
+    await updateUserLanguage(newLang);
   };
 
   return (

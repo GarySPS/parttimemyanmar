@@ -8,11 +8,13 @@ import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 export default function CityTownSelect({ 
   defaultCity = '', 
   defaultTown = '',
-  locationMap = {}
+  locationMap = {},
+  t
 }: { 
   defaultCity?: string; 
   defaultTown?: string;
   locationMap?: Record<string, string[]>;
+  t?: any;
 }) {
   const [city, setCity] = useState(defaultCity);
   const [town, setTown] = useState(defaultTown);
@@ -141,14 +143,13 @@ export default function CityTownSelect({
             setCity(e.target.value); 
             setTown(''); 
             setCityOpen(true); 
-            setCityActiveIndex(-1); // Reset active index on type
+            setCityActiveIndex(-1);
           }}
           onFocus={() => setCityOpen(true)}
           onKeyDown={handleCityKeyDown}
-          placeholder="City (ဥပမာ - ရန်ကုန်)"
+          placeholder={t?.cityPlaceholder || "City (ဥပမာ - ရန်ကုန်)"}
           autoComplete="off"
           className={inputClass}
-          // Accessibility
           role="combobox"
           aria-expanded={cityOpen}
           aria-haspopup="listbox"
@@ -196,15 +197,14 @@ export default function CityTownSelect({
           onChange={(e) => { 
             setTown(e.target.value); 
             setTownOpen(true); 
-            setTownActiveIndex(-1); // Reset active index on type
+            setTownActiveIndex(-1);
           }}
           onFocus={() => { if(city) setTownOpen(true); }}
           onKeyDown={handleTownKeyDown}
           disabled={!city}
-          placeholder="Township (ဥပမာ - စမ်းချောင်း)"
+          placeholder={t?.townPlaceholder || "Township (ဥပမာ - စမ်းချောင်း)"}
           autoComplete="off"
           className={`${inputClass} ${!city ? 'bg-slate-50 opacity-60 cursor-not-allowed' : ''}`}
-          // Accessibility
           role="combobox"
           aria-expanded={townOpen && !!city}
           aria-haspopup="listbox"

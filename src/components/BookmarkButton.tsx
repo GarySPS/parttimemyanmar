@@ -7,33 +7,34 @@ import { toggleBookmark } from '@/app/actions/bookmark';
 interface BookmarkButtonProps {
   jobId: string;
   initialIsBookmarked: boolean;
+  t?: any; // <-- Add optional dictionary prop
 }
 
-export default function BookmarkButton({ jobId, initialIsBookmarked }: BookmarkButtonProps) {
+export default function BookmarkButton({ jobId, initialIsBookmarked, t }: BookmarkButtonProps) {
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [isPending, startTransition] = useTransition();
 
   const handleToggle = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevents clicking the card container itself if nested
+    e.preventDefault(); 
     if (isPending) return;
 
     const nextState = !isBookmarked;
-    setIsBookmarked(nextState); // Optimistic visual change
+    setIsBookmarked(nextState); 
 
     startTransition(async () => {
       const result = await toggleBookmark(jobId, isBookmarked);
       if (result?.error) {
-        setIsBookmarked(!nextState); // Revert back if backend fails
+        setIsBookmarked(!nextState); 
       }
     });
   };
 
-return (
+  return (
     <button 
       onClick={handleToggle}
       disabled={isPending}
       className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      aria-label={isBookmarked ? "Remove bookmark" : "Bookmark job"}
+      aria-label={isBookmarked ? (t?.remove || "Remove bookmark") : (t?.add || "Bookmark job")}
     >
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
