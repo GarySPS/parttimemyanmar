@@ -7,18 +7,6 @@ import { motion, Variants } from 'framer-motion';
 import CityTownSelect from '../../components/CityTownSelect';
 import ProfileHeader from '../../components/ProfileHeader';
 
-const CATEGORY_MAP: Record<string, string> = {
-  'delivery': 'Delivery & Logistics',
-  'manual': 'Manual Labor & Cleaning',
-  'tech': 'Tech & Digital',
-  'events': 'Events & Hospitality',
-  'education': 'Education & Tutoring',
-  'admin': 'Admin & Office',
-  'retail': 'Retail & Sales',
-  'freelancer': 'Freelancer & Independent',
-  'other': 'Other'
-};
-
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -32,7 +20,9 @@ const staggerContainer: Variants = {
   }
 };
 
-export default function ProfileClient({ profile, locationMap, saveProfile, initialPosts = [], isEmployer, t }: any) {
+export default function ProfileClient({ 
+  profile, locationMap, saveProfile, initialPosts = [], isEmployer, t, tHome, tCityTown 
+}: any) {
   const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -127,8 +117,8 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
     setIsEditing(false);
   }
 
-  const displayCategory = profile?.category ? (CATEGORY_MAP[profile.category] || profile.category) : t.notSpecified;
-  const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : t.locationNotSet;
+const displayCategory = profile?.category ? (tHome.cats[profile.category] || profile.category) : t.notSpecified;
+const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : t.locationNotSet;
   
   return (
     <div className="relative w-full min-h-screen bg-[#F0F2F5] text-gray-900">
@@ -175,15 +165,16 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.category}</label>
                 <select name="category" defaultValue={profile?.category || ''} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-900">
                   <option value="">{t.selectCategory}</option>
-                  {Object.entries(CATEGORY_MAP).map(([val, label]) => (
-                    <option key={val} value={val}>{label}</option>
+                  {/* Loop through tHome.cats instead of CATEGORY_MAP */}
+                  {Object.entries(tHome.cats).map(([val, label]) => (
+                    <option key={val} value={val}>{label as string}</option>
                   ))}
                 </select>
               </div>
               
               <div className="flex flex-col gap-2 relative z-20">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.cityTownship}</label>
-                <CityTownSelect locationMap={locationMap} defaultCity={profile?.city || ''} defaultTown={profile?.township || ''} />
+                <CityTownSelect locationMap={locationMap} defaultCity={profile?.city || ''} defaultTown={profile?.township || ''} t={tCityTown} />
               </div>
             </div>
           ) : (
@@ -354,7 +345,7 @@ export default function ProfileClient({ profile, locationMap, saveProfile, initi
                         <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${
                           post.status === 'open' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {post.status}
+                          {post.status === 'open' ? 'Open' : tHome.closed}
                         </span>
                         
                         <button 

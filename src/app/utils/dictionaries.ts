@@ -5,24 +5,39 @@ export type Language = 'my' | 'en';
 export const dictionaries = {
   my: {
     nav: {
-      postJob: "အလုပ်တင်ရန်",
+      postJob: "အလုပ် Post တင်ရန်",
       profile: "ပရိုဖိုင်",
-      savedJobs: "သိမ်းထားသော အလုပ်များ",
+      savedJobs: "မှတ်ထားသော အလုပ်များ",
       following: "Follow လုပ်ထားသူများ",
       settings: "ဆက်တင်များ",
       logout: "ထွက်မည်",
-      login: "အကောင့်ဝင်မည်",
-      safetyAlert: "၁၀၀% အမည်မဖော်ပြသော လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။"
+      login: "ဝင်မည်",
+      safetyAlert: "၁၀၀% အမည်မဖော်ပြသောတိုက်ရိုက်လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။ ကြိုတင်ငွေပေးချေမှုတောင်းဆိုခြင်းများသတိပြုပါ။"
     },
     home: {
       title: "Part Time Jobs",
-      subtitle: "မြန်မာနိုင်ငံတွင်",
+      subtitle: "မြန်မာပြည်တွင်ရှိသည်",
       searchPlaceholder: "အလုပ်အမည် ရှာရန်...",
       searchBtn: "ရှာမည်",
       clearFilters: "စစ်ထုတ်မှုများ ဖျက်မည်",
       apply: "အသုံးပြုမည်",
       noJobs: "အလုပ်မတွေ့ပါ",
-      noJobsDesc: "သင်ရှာဖွေနေသည့် အရာကိုရှာတွေ့ရန် စစ်ထုတ်မှုများ သို့မဟုတ် ရှာဖွေရေးစကားလုံးများကို ပြင်ဆင်ကြည့်ပါ။"
+      noJobsDesc: "သင်ရှာဖွေနေသည့် အရာကိုရှာတွေ့ရန် စစ်ထုတ်မှုများ(သို့)ရှာဖွေရေးစကားလုံးများကို ပြင်ဆင်ကြည့်ပါ။",
+      allCategories: "အမျိုးအစားအားလုံး",
+  anyPayType: "မည်သည့်ပေးချေမှုပုံစံမဆို",
+  cats: {
+    delivery: "ပို့ဆောင်ရေး", manual: "ကာယလုပ်အားနှင့် သန့်ရှင်းရေး", tech: "နည်းပညာနှင့် ဒစ်ဂျစ်တယ်",
+    events: "ပွဲအခမ်းအနားနှင့် ဧည့်ခံကျွေးမွေးရေး", education: "ပညာရေးနှင့် ကျူရှင်", admin: "ရုံးလုပ်ငန်း",
+    retail: "အရောင်းအဝယ်", freelancer: "အလွတ်တန်း", other: "အခြား"
+  },
+  pays: { hourly: "နာရီအလိုက်", daily: "နေ့စား", monthly: "လစဉ်", fixed: "ပြတ်တမ်း" },
+  privateAdvertiser: "ပုဂ္ဂလိက ကြော်ငြာရှင်",
+  closed: "ပိတ်ထားသည်",
+  newToYou: "အသစ်",
+  priceNegotiable: "ညှိနှိုင်းနိုင်သည်",
+  per: "/",
+  expired: "သက်တမ်းကုန်သွားပါပြီ",
+  daysLeft: "ရက် ကျန်သေးသည်"
     },
     login: {
   emailLabel: "အီးမေးလ်လိပ်စာ",
@@ -200,7 +215,7 @@ cityTownSelect: {
 bookmark: {
   remove: "မှတ်သားထားမှု ဖြုတ်မည်",
   add: "အလုပ်ကို မှတ်သားမည်"
-}
+},
   },
 
 
@@ -213,7 +228,7 @@ bookmark: {
       settings: "Settings",
       logout: "Log Out",
       login: "Log In",
-      safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward."
+      safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward. Never pay in advance for no reason."
     },
     home: {
       title: "Part Time Jobs",
@@ -223,7 +238,22 @@ bookmark: {
       clearFilters: "Clear Filters",
       apply: "Apply",
       noJobs: "No jobs found",
-      noJobsDesc: "Try adjusting your filters or search terms to find what you're looking for."
+      noJobsDesc: "Try adjusting your filters or search terms to find what you're looking for.",
+      allCategories: "All Categories",
+  anyPayType: "Any Pay Type",
+  cats: {
+    delivery: "Delivery & Logistics", manual: "Manual Labor & Cleaning", tech: "Tech & Digital",
+    events: "Events & Hospitality", education: "Education & Tutoring", admin: "Admin & Office",
+    retail: "Retail & Sales", freelancer: "Freelancer & Independent", other: "Other"
+  },
+  pays: { hourly: "Hourly", daily: "Daily", monthly: "Monthly", fixed: "Fixed Price" },
+  privateAdvertiser: "Private Advertiser",
+  closed: "Closed",
+  newToYou: "New to you",
+  priceNegotiable: "Price Negotiable",
+  per: " per ",
+  expired: "Expired",
+  daysLeft: "d+ left"
     },
     login: {
   emailLabel: "Email Address",

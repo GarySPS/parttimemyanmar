@@ -13,6 +13,7 @@ import { dictionaries } from '../utils/dictionaries';
 export default async function CreateJobPage() {
   const lang = await getLang();
   const t = dictionaries[lang].createJob;
+  const tCityTown = dictionaries[lang].cityTownSelect;
   const supabase = await createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
@@ -180,7 +181,7 @@ export default async function CreateJobPage() {
                 <label className="font-bold text-sm text-gray-800">
                   {t.cityTown} <span className="text-rose-500">*</span>
                 </label>
-                <CityTownSelect locationMap={locationMap} />
+                <CityTownSelect locationMap={locationMap} t={tCityTown} />
               </div>
             </div>
 

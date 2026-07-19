@@ -12,19 +12,6 @@ import CloseJobButton from '../components/CloseJobButton';
 import { getLang } from './utils/getLang';
 import { dictionaries } from './utils/dictionaries';
 
-// Map database category values to full display labels
-const CATEGORY_MAP: Record<string, string> = {
-  'delivery': 'Delivery & Logistics',
-  'manual': 'Manual Labor & Cleaning',
-  'tech': 'Tech & Digital',
-  'events': 'Events & Hospitality',
-  'education': 'Education & Tutoring',
-  'admin': 'Admin & Office',
-  'retail': 'Retail & Sales',
-  'freelancer': 'Freelancer & Independent',
-  'other': 'Other'
-};
-
 export default async function Home({
   searchParams,
 }: {
@@ -135,27 +122,27 @@ export default async function Home({
                   <CustomSelect 
                     name="category"
                     defaultValue={selectedCategory}
-                    placeholder="All Categories"
+                    placeholder={t.allCategories}
                     options={[
-                      { value: 'delivery', label: 'Delivery & Logistics' },
-                      { value: 'manual', label: 'Manual Labor & Cleaning' },
-                      { value: 'tech', label: 'Tech & Digital' },
-                      { value: 'events', label: 'Events & Hospitality' },
-                      { value: 'education', label: 'Education & Tutoring' },
-                      { value: 'admin', label: 'Admin & Office' },
-                      { value: 'retail', label: 'Retail & Sales' },
-                      { value: 'other', label: 'Other' },
+                      { value: 'delivery', label: t.cats.delivery },
+                      { value: 'manual', label: t.cats.manual },
+                      { value: 'tech', label: t.cats.tech },
+                      { value: 'events', label: t.cats.events },
+                      { value: 'education', label: t.cats.education },
+                      { value: 'admin', label: t.cats.admin },
+                      { value: 'retail', label: t.cats.retail },
+                      { value: 'other', label: t.cats.other },
                     ]}
                   />
                   <CustomSelect 
                     name="pay_period"
                     defaultValue={selectedPayPeriod}
-                    placeholder="Any Pay Type"
+                    placeholder={t.anyPayType}
                     options={[
-                      { value: 'hourly', label: 'Hourly' },
-                      { value: 'daily', label: 'Daily' },
-                      { value: 'monthly', label: 'Monthly' },
-                      { value: 'fixed', label: 'Fixed Price' },
+                      { value: 'hourly', label: t.pays.hourly },
+                      { value: 'daily', label: t.pays.daily },
+                      { value: 'monthly', label: t.pays.monthly },
+                      { value: 'fixed', label: t.pays.fixed },
                     ]}
                   />
                   <button type="submit" className="px-8 py-3 bg-[#0f4c5c] text-white rounded-2xl text-sm font-bold hover:bg-[#0f4c5c]/90 hover:shadow-lg active:scale-[0.97] active:translate-y-0 active:shadow-sm transition-all shadow-sm">
@@ -208,7 +195,7 @@ export default async function Home({
                             </h2>
                             <p className="text-sm md:text-base text-[#0f4c5c]/60 font-medium mt-1.5 capitalize flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-[#a4c3d2]"></span>
-                              {job.category ? (CATEGORY_MAP[job.category] || job.category) : 'Private Advertiser'}
+                              {job.category ? ((t.cats as any)[job.category] || job.category) : t.privateAdvertiser}
                             </p>
                           </div>
 
@@ -217,11 +204,11 @@ export default async function Home({
                             <div className="mt-4">
                               {isClosed ? (
                                 <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                                  Closed
+                                  {t.closed}
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-[#a4c3d2]/20 text-[#0f4c5c] border border-[#a4c3d2]/30 shadow-sm">
-                                  New to you
+                                  {t.newToYou}
                                 </span>
                               )}
                             </div>
@@ -248,8 +235,8 @@ export default async function Home({
                                 </svg>
                               </div>
                               <span className="text-[0.95rem] font-bold text-[#0f4c5c]">
-                                {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : 'Price Negotiable'}
-                                <span className="font-medium text-[#0f4c5c]/60">{job.pay_period && ` per ${job.pay_period}`}</span>
+                                {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
+                                <span className="font-medium text-[#0f4c5c]/60">{job.pay_period && `${t.per}${job.pay_period}`}</span>
                               </span>
                             </div>
                           </div>
@@ -262,9 +249,9 @@ export default async function Home({
                             {daysLeft !== null && daysLeft >= 0 ? (
                                <>
                                 <svg className="w-4 h-4 text-[#a4c3d2]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                {`${daysLeft}d+ left`}
+                                {`${daysLeft} ${t.daysLeft}`}
                                </>
-                            ) : 'Expired'}
+                            ) : t.expired}
                           </div>
                           
                           {/* Interactive Buttons */}

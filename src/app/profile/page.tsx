@@ -11,6 +11,8 @@ import { dictionaries } from '../utils/dictionaries';
 export default async function ProfilePage() {
   const lang = await getLang();
   const t = dictionaries[lang].profile;
+  const tHome = dictionaries[lang].home;
+  const tCityTown = dictionaries[lang].cityTownSelect;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -143,6 +145,8 @@ export default async function ProfilePage() {
         initialPosts={initialPosts}
         isEmployer={isEmployer}
         t={t}
+        tHome={tHome}
+        tCityTown={tCityTown}
       />
     </main>
   );

@@ -15,18 +15,6 @@ const notoSans = Noto_Sans_Myanmar({
   display: 'swap',
 });
 
-const CATEGORY_MAP: Record<string, string> = {
-  'delivery': 'Delivery & Logistics',
-  'manual': 'Manual Labor & Cleaning',
-  'tech': 'Tech & Digital',
-  'events': 'Events & Hospitality',
-  'education': 'Education & Tutoring',
-  'admin': 'Admin & Office',
-  'retail': 'Retail & Sales',
-  'freelancer': 'Freelancer & Independent',
-  'other': 'Other'
-};
-
 export default async function JobDetailPage({
   params,
 }: {
@@ -37,6 +25,7 @@ export default async function JobDetailPage({
   // Add these two lines to get the translations
   const lang = await getLang();
   const t = dictionaries[lang].jobDetail;
+  const tHome = dictionaries[lang].home;
 
   const supabase = await createClient();
   
@@ -95,7 +84,7 @@ export default async function JobDetailPage({
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-100 mb-4">
                 <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
                 <span className="text-xs font-bold text-teal-700 tracking-wide uppercase">
-                  {job.category ? (CATEGORY_MAP[job.category] || job.category) : 'Private Advertiser'}
+                  {job.category ? ((tHome.cats as any)[job.category] || job.category) : tHome.privateAdvertiser}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
@@ -138,7 +127,7 @@ export default async function JobDetailPage({
                 <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.compensation}</p>
                 <p className="text-[1rem] font-semibold text-slate-800 leading-snug">
                   {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
-                  {job.pay_period && <span className="font-medium text-slate-500 text-sm ml-1">/{job.pay_period}</span>}
+                  {job.pay_period && <span className="font-medium text-slate-500 text-sm ml-1">{tHome.per}{job.pay_period}</span>}
                 </p>
               </div>
             </div>
