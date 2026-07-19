@@ -1,0 +1,21 @@
+{
+  "short_name": "PartTimeMM",
+  "name": "PartTimeMM Casual Labor Directory",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f4c5c",
+  "theme_color": "#0f4c5c",
+  "display": "standalone",
+  "orientation": "portrait"
+}

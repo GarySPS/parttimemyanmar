@@ -20,6 +20,7 @@ const notoSans = Noto_Sans_Myanmar({
 export const metadata: Metadata = {
   title: "PartTimeMM",
   description: "Part time jobs in Myanmar",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

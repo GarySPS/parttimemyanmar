@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getLang } from '../app/utils/getLang';
 import { dictionaries } from '../app/utils/dictionaries';
 import LanguageToggle from './LanguageToggle';
+import InstallAppButton from './InstallAppButton';
 
 export default async function Navbar() {
   const lang = await getLang();
@@ -35,9 +36,14 @@ export default async function Navbar() {
         </Link>
       </div>
 
-      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
+        {/* Inject Install Button Here */}
+        <InstallAppButton />
+
         {/* Inject Toggle Here */}
         <LanguageToggle currentLang={lang} />
+
+        
 
         {user ? (
           <>
