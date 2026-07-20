@@ -8,6 +8,7 @@ import Navbar from '../../../components/Navbar';
 import { Noto_Sans_Myanmar } from 'next/font/google';
 import { getLang } from '../../utils/getLang';
 import { dictionaries } from '../../utils/dictionaries';
+import ShareButtons from '../../../components/ShareButtons';
 
 const notoSans = Noto_Sans_Myanmar({ 
   weight: ['400', '500', '700', '900'],
@@ -134,6 +135,7 @@ export default async function JobDetailPage({
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
                 {job.title}
               </h1>
+              <ShareButtons jobTitle={job.title} jobId={job.id} />
             </div>
 
             {user?.id === job.employer_id && !isClosed && (

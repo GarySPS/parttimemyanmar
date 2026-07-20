@@ -98,7 +98,8 @@ export default async function CreateJobPage() {
       });
     }
 
-    const { error } = await supabase.from('jobs').insert({
+    // 1. Insert job and return the created job ID
+    const { data: newJob, error } = await supabase.from('jobs').insert({
       employer_id: user.id,
       title,
       category,
@@ -113,7 +114,31 @@ export default async function CreateJobPage() {
       contact_app,      
       contact_username, 
       status: 'open'
-    });
+    }).select('id').single();
+
+    if (!error && newJob) {
+      // 2. Automatically trigger Telegram Channel Notification
+      try {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://parttimemm.com';
+        await fetch(`${siteUrl}/api/telegram`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            company: contact_username || 'Employer',
+            location: `${township}, ${city.split(' ')[0]}`,
+            salary: price ? `${new Intl.NumberFormat('en-MM').format(price)} MMK` : 'Negotiable',
+            jobId: newJob.id,
+          }),
+        });
+      } catch (telegramErr) {
+        console.error("Telegram Notification Error:", telegramErr);
+      }
+
+      redirect('/');
+    } else {
+      console.error("Database Insert Error:", error);
+    }
 
     if (!error) {
       redirect('/');
