@@ -19,7 +19,7 @@ export const dictionaries = {
       subtitle: "မြန်မာပြည်တွင်ရှိသည်",
       searchPlaceholder: "အလုပ်အမည် ရှာရန်...",
       searchBtn: "ရှာမည်",
-      clearFilters: "စစ်ထုတ်မှုများ ဖျက်မည်",
+      clearFilters: "ပြန်ဖျက်မည်",
       apply: "အသုံးပြုမည်",
       noJobs: "အလုပ်မတွေ့ပါ",
       noJobsDesc: "သင်ရှာဖွေနေသည့် အရာကိုရှာတွေ့ရန် စစ်ထုတ်မှုများ(သို့)ရှာဖွေရေးစကားလုံးများကို ပြင်ဆင်ကြည့်ပါ။",
@@ -30,14 +30,15 @@ export const dictionaries = {
     events: "ပွဲအခမ်းအနားနှင့် ဧည့်ခံကျွေးမွေးရေး", education: "ပညာရေးနှင့် ကျူရှင်", admin: "ရုံးလုပ်ငန်း",
     retail: "အရောင်းအဝယ်", freelancer: "အလွတ်တန်း", other: "အခြား"
   },
-  pays: { hourly: "နာရီအလိုက်", daily: "နေ့စား", monthly: "လစဉ်", fixed: "ပြတ်တမ်း" },
+  pays: { hourly: "နာရီအလိုက်", daily: "နေ့စား", monthly: "လစဉ်", fixed: "ပုဒ်ပြတ်" },
   privateAdvertiser: "ပုဂ္ဂလိက ကြော်ငြာရှင်",
   closed: "ပိတ်ထားသည်",
   newToYou: "အသစ်",
   priceNegotiable: "ညှိနှိုင်းနိုင်သည်",
   per: "/",
   expired: "သက်တမ်းကုန်သွားပါပြီ",
-  daysLeft: "ရက် ကျန်သေးသည်"
+  daysLeft: "ရက် ကျန်သေးသည်",
+  all: "အားလုံး"
     },
     login: {
   emailLabel: "အီးမေးလ်လိပ်စာ",
@@ -139,6 +140,7 @@ saved: {
   per: "/",
   expired: "သက်တမ်းကုန်သွားပါပြီ",
   daysLeft: "ရက် ကျန်သေးသည်",
+  all: "အားလုံး",
   noSavedJobs: "သိမ်းထားသော အလုပ်များ မရှိသေးပါ",
   noSavedJobsDesc: "သင်သိမ်းထားသော အလုပ်များ ဤနေရာတွင် ပေါ်လာမည်ဖြစ်သည်။",
   browseJobs: "အလုပ်များ ရှာဖွေမည်"
@@ -185,7 +187,7 @@ createJob: {
   section2: "၂။ ငွေပေးချေမှုနှင့် အချိန်စာရင်း",
   payType: "ပေးချေမည့်ပုံစံ",
   payPlaceholder: "မည်သို့ပေးချေမည်နည်း?",
-  pays: { fixed: "ပြတ်တမ်း (တစ်ကြိမ်စာအလုပ်)", hourly: "နာရီအလိုက်", daily: "နေ့စား", monthly: "လစဉ်" },
+  pays: { fixed: "ပုဒ်ပြတ်(တစ်ကြိမ်စာအလုပ်)", hourly: "နာရီအလိုက်", daily: "နေ့စား", monthly: "လစဉ်" },
   amount: "ပမာဏ (MMK)",
   taskDate: "အလုပ်လုပ်မည့်ရက် (ရွေးချယ်နိုင်သည်)",
   expireDate: "သက်တမ်းကုန်မည့်ရက်",
@@ -266,7 +268,8 @@ installGuide: {
   priceNegotiable: "Price Negotiable",
   per: " per ",
   expired: "Expired",
-  daysLeft: "d+ left"
+  daysLeft: "d+ left",
+  all: "All"
     },
     login: {
   emailLabel: "Email Address",
@@ -297,6 +300,7 @@ jobDetail: {
   status: "Status",
   expired: "Expired",
   daysLeft: "days left",
+  all: "All",
   jobDescription: "Job Description",
   postedBy: "Posted By",
   anonymousEmployer: "Anonymous Employer",
