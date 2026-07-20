@@ -105,7 +105,10 @@ export default async function Home({
           </form>
         </div>
 
-        <div className="px-4 md:px-8 pb-12 max-w-3xl mx-auto w-full space-y-6">
+        {/* EDGE-TO-EDGE TELEGRAM BANNER */}
+        <TelegramBanner />
+
+        <div className="px-4 md:px-8 pb-12 pt-6 max-w-3xl mx-auto w-full space-y-6">
           
           {/* Glassmorphism Filters Area */}
           <section className="w-full relative z-30">
@@ -159,9 +162,6 @@ export default async function Home({
               </form>
             </div>
           </section>
-
-          {/* Telegram Community Banner */}
-          <TelegramBanner />
 
           {/* Job Feed */}
           <section className="w-full relative z-20">
