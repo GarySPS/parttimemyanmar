@@ -5,6 +5,7 @@ export type Language = 'my' | 'en';
 export const dictionaries = {
   my: {
     nav: {
+      jobs: "အလုပ်များ",
       postJob: "အလုပ် Post တင်ရန်",
       profile: "ပရိုဖိုင်",
       savedJobs: "မှတ်ထားသော အလုပ်များ",
@@ -15,6 +16,9 @@ export const dictionaries = {
       safetyAlert: "၁၀၀% အမည်မဖော်ပြသောတိုက်ရိုက်လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။ ကြိုတင်ငွေပေးချေမှုတောင်းဆိုခြင်းများသတိပြုပါ။"
     },
     home: {
+      heroFind: "", 
+      heroPartTime: "အချိန်ပိုင်း",
+      heroJobs: " အလုပ်ရှာရန်",
       title: "Part Time Jobs",
       subtitle: "မြန်မာပြည်တွင်ရှိသည်",
       searchPlaceholder: "အလုပ်အမည် ရှာရန်...",
@@ -38,7 +42,18 @@ export const dictionaries = {
   per: "/",
   expired: "သက်တမ်းကုန်သွားပါပြီ",
   daysLeft: "ရက် ကျန်သေးသည်",
-  all: "အားလုံး"
+  all: "အားလုံး",
+  trustTop: "၁၀၀% အခမဲ့။ မည်သည့်အခကြေးငွေမှ ပေးရန်မလိုပါ။",
+  emptyStateTitle: "သင်၏လုံခြုံရေးသည် ကျွန်ုပ်တို့၏ ဦးစားပေးဖြစ်သည်",
+  emptyStateDesc: "ဤရှာဖွေမှုနှင့် ကိုက်ညီသော အလုပ်များကို မတွေ့ပါ။ PartTimeMM ကို ယုံကြည်စိတ်ချရစေရန်အတွက် လိမ်လည်သော ပို့စ် ၉၀% ကို ကျွန်ုပ်တို့ ပယ်ချထားပါသည်။",
+  footerTitle: "လုံခြုံစိတ်ချရသော အလုပ်ရှာဖွေရေး",
+  footerSub: "၁၀၀% အခမဲ့။ စပေါ်ငွေပေးရန်မလိုပါ။",
+  badge1Title: "အတည်ပြုထားသော အလုပ်ရှင်များ",
+  badge1Desc: "လိမ်လည်သူများမရှိစေရန် တင်းကျပ်စွာ စိစစ်ထားပါသည်။",
+  badge2Title: "အေဂျင်စီခ ပေးရန်မလို",
+  badge2Desc: "အလုပ်လျှောက်ရန် ငွေတစ်ပြားမှ ပေးစရာမလိုပါ။",
+  badge3Title: "ပွင့်လင်းမြင်သာမှုရှိခြင်း",
+  badge3Desc: "လစာနှင့် တာဝန်များကို ရှင်းလင်းစွာ ဖော်ပြထားပါသည်။"
     },
     login: {
   emailLabel: "အီးမေးလ်လိပ်စာ",
@@ -230,12 +245,18 @@ installGuide: {
   androidStep2: "၂။ အပေါ်ညာဘက်ထောင့်ရှိ Menu ခလုတ် (အစက်သုံးစက်) ကို နှိပ်ပါ။",
   androidStep3: "၃။ 'Add to Home screen' သို့မဟုတ် 'Install App' ကို နှိပ်ပါ။",
   backBtn: "ပင်မစာမျက်နှာသို့ ပြန်သွားမည်"
-}
+},
+telegram: {
+      title: "Telegram သို့ ဝင်ရောက်ပါ",
+      subtitle: "အလုပ်သစ်များကို အသိပေးချက်ရယူပါ",
+      joinBtn: "Join"
+    },
   },
 
 
   en: {
     nav: {
+      jobs: "Jobs",
       postJob: "Post a Job",
       profile: "Profile",
       savedJobs: "Saved Jobs",
@@ -246,6 +267,9 @@ installGuide: {
       safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward. Never pay in advance for no reason."
     },
     home: {
+      heroFind: "Find ",
+      heroPartTime: "Part Time",
+      heroJobs: " Jobs",
       title: "Part Time Jobs",
       subtitle: "in Myanmar",
       searchPlaceholder: "Search job title...",
@@ -269,7 +293,18 @@ installGuide: {
   per: " per ",
   expired: "Expired",
   daysLeft: "d+ left",
-  all: "All"
+  all: "All",
+  trustTop: "100% Free for Job Seekers. No fees ever.",
+  emptyStateTitle: "Your Safety is our Priority",
+  emptyStateDesc: "We couldn't find any jobs matching this filter. We actively reject 90% of sketchy listings and social media scams to keep PartTimeMM clean.",
+  footerTitle: "Your Safe Job Platform",
+  footerSub: "100% Free for Job Seekers. No fees ever.",
+  badge1Title: "Verified Employers",
+  badge1Desc: "Strict platform vetting process keeps scammers out.",
+  badge2Title: "Zero Deposit Fees",
+  badge2Desc: "You never pay a single kyat to apply or interview.",
+  badge3Title: "Clear Salary & Duties",
+  badge3Desc: "Transparent job postings with no hidden traps."
     },
     login: {
   emailLabel: "Email Address",
@@ -461,6 +496,11 @@ installGuide: {
   androidStep2: "2. Tap the Menu button (three dots in the top right corner).",
   androidStep3: "3. Tap 'Add to Home screen' or 'Install App'.",
   backBtn: "Back to Home"
-}
+},
+telegram: {
+      title: "Join Telegram Channel",
+      subtitle: "Get instant alerts for new jobs.",
+      joinBtn: "Join"
+    },
   }
 };

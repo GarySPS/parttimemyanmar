@@ -1,6 +1,12 @@
 //src/components/TelegramBanner.ts
 
-export default function TelegramBanner() {
+import { getLang } from '../app/utils/getLang'; // Adjust path if your utils are in src/utils/
+import { dictionaries } from '../app/utils/dictionaries';
+
+export default async function TelegramBanner() {
+  const lang = await getLang();
+  const t = dictionaries[lang].telegram;
+
   return (
     <div className="w-full bg-[#e8f5fb] border-b border-[#229ED9]/20 shadow-sm py-3 px-4 md:px-8 relative z-20">
       <div className="w-full max-w-3xl mx-auto flex flex-row items-center justify-between gap-3">
@@ -14,10 +20,10 @@ export default function TelegramBanner() {
           </div>
           <div className="text-left flex-1 min-w-0">
             <h3 className="text-[0.95rem] font-bold text-[#0f4c5c] leading-tight truncate">
-              Join Telegram Channel
+              {t.title}
             </h3>
             <p className="text-[0.75rem] text-[#0f4c5c]/80 font-medium mt-0.5 truncate">
-              Get instant alerts for new jobs.
+              {t.subtitle}
             </p>
           </div>
         </div>
@@ -29,7 +35,7 @@ export default function TelegramBanner() {
           rel="noopener noreferrer"
           className="shrink-0 px-5 py-2 bg-[#229ED9] hover:bg-[#1d82b3] text-white rounded-lg text-xs font-bold transition-all shadow-md active:scale-[0.97]"
         >
-          Join
+          {t.joinBtn}
         </a>
         
       </div>

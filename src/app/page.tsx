@@ -12,6 +12,7 @@ import CloseJobButton from '../components/CloseJobButton';
 import { getLang } from './utils/getLang';
 import { dictionaries } from './utils/dictionaries';
 import TelegramBanner from '../components/TelegramBanner';
+import { ShieldCheck, Wallet, Sparkles, Lock } from 'lucide-react';
 
 export default async function Home({
   searchParams,
@@ -87,36 +88,32 @@ export default async function Home({
       <div className="relative z-10 flex flex-col h-full">
         <Navbar />
 
-        {/* Full-width Search Hero (Sleek) */}
-        <div className="w-full bg-[#0f4c5c] pt-8 pb-12 px-4 md:px-8 relative z-10 overflow-hidden shadow-md">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#e3b23c]/10 blur-[100px] rounded-full pointer-events-none"></div>
+        {/* HIGH-END PREMIUM HERO SECTION */}
+        <div className="w-full bg-[#0f4c5c] pt-10 pb-12 px-4 md:px-8 relative z-10 overflow-hidden shadow-md">
+          {/* Subtle Claude-style gradient mesh background */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-r from-[#e3b23c]/15 via-emerald-500/10 to-[#0f4c5c] blur-[100px] rounded-full pointer-events-none opacity-80"></div>
           
           <div className="max-w-4xl mx-auto relative z-10">
-            <div className="text-center mb-8 px-2">
-              {/* Visually clean title for humans */}
-              <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">
-                Find <span className="text-[#e3b23c]">Part Time</span> Jobs
+            <div className="text-center mb-10 px-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-sm leading-tight whitespace-nowrap">
+                {t.heroFind}<span className="text-[#e3b23c]">{t.heroPartTime}</span>{t.heroJobs}
               </h1>
-              <p className="text-[#a4c3d2] text-sm md:text-base font-medium">
-                {t.subtitle}
-              </p>
-              
-              {/* SEO TEXT: Hidden visually, but read perfectly by Google bots */}
               <h2 className="sr-only">
                 PartTimeMM Part Time Jobs မြန်မာပြည်. Search the best part time jobs (အချိန်ပိုင်း အလုပ်), freelance work, and student roles in Myanmar on PartTimeMM.
               </h2>
             </div>
             
-            <form method="GET" action="/" className="max-w-2xl mx-auto flex items-center bg-white rounded-full p-1.5 pl-5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] focus-within:ring-4 focus-within:ring-[#e3b23c]/30 transition-all">
-              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            {/* Premium Floating Search Bar */}
+            <form method="GET" action="/" className="max-w-2xl mx-auto flex items-center bg-white/95 backdrop-blur-xl rounded-full p-2 pl-6 shadow-[0_15px_35px_rgb(0,0,0,0.2)] focus-within:ring-4 focus-within:ring-[#e3b23c]/40 focus-within:bg-white transition-all duration-300 border border-white/20">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               <input 
                 type="text" 
                 name="q" 
                 defaultValue={searchTerm} 
                 placeholder={t.searchPlaceholder} 
-                className="flex-1 w-full bg-transparent border-none text-base font-medium text-gray-900 focus:outline-none focus:ring-0 placeholder-gray-400 py-3 px-3" 
+                className="flex-1 w-full bg-transparent border-none text-[15px] font-medium text-gray-900 focus:outline-none focus:ring-0 placeholder-gray-400 py-3 px-3" 
               />
-              <button type="submit" className="px-6 md:px-8 py-3 bg-[#e3b23c] text-[#0f4c5c] rounded-full text-sm font-bold hover:bg-[#f0c254] transition-colors">
+              <button type="submit" className="px-8 py-3.5 bg-[#e3b23c] text-[#0f4c5c] rounded-full text-sm font-bold hover:bg-[#f0c254] hover:shadow-lg hover:shadow-[#e3b23c]/40 transition-all active:scale-95">
                 {t.searchBtn}
               </button>
             </form>
@@ -127,7 +124,7 @@ export default async function Home({
         <TelegramBanner />
 
         {/* PREMIUM EXPANDABLE FILTER SECTION */}
-        <section className="w-full bg-white border-b border-gray-100 relative z-30 shadow-sm">
+        <section className="w-full bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-[64px] z-40 shadow-sm">
           <div className="max-w-3xl mx-auto px-4 md:px-8">
             <details className="group [&_summary::-webkit-details-marker]:hidden">
               
@@ -360,17 +357,76 @@ export default async function Home({
                 })}
               </div>
             ) : (
-              <div className="w-full py-24 bg-white/60 backdrop-blur-md rounded-3xl border border-white/50 text-center shadow-sm flex flex-col items-center justify-center">
-                <div className="w-20 h-20 bg-white/80 rounded-2xl flex items-center justify-center mb-5 shadow-inner">
-                  <svg className="w-10 h-10 text-[#a4c3d2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+              /* PREMIUM ANTI-SCAM EMPTY STATE */
+              <div className="w-full py-24 px-6 bg-white/70 backdrop-blur-2xl rounded-[2rem] border border-gray-100 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center">
+                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-gray-100">
+                  <ShieldCheck className="w-10 h-10 text-emerald-500" />
                 </div>
-                <h3 className="text-xl font-extrabold text-[#0f4c5c] mb-2">{t.noJobs}</h3>
-                <p className="text-[#0f4c5c]/60 text-sm max-w-xs mx-auto font-medium">{t.noJobsDesc}</p>
+                <h3 className="text-2xl font-extrabold text-gray-900 mb-3 tracking-tight">{t.emptyStateTitle}</h3>
+                <p className="text-gray-500 text-base max-w-md mx-auto font-medium leading-relaxed">
+                  {t.emptyStateDesc}
+                </p>
+                {hasActiveFilters && (
+                  <Link href="/" className="mt-8 px-8 py-3 bg-gray-900 text-white rounded-full text-sm font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20 active:scale-95">
+                    {t.clearFilters}
+                  </Link>
+                )}
               </div>
             )}
           </section>
+        </div>
+
+        {/* PREMIUM COMPACT TRUST FOOTER */}
+        <div className="w-full bg-gradient-to-b from-[#f8fafc] to-white border-t border-gray-100 pt-12 pb-16 mt-auto relative overflow-hidden">
+          {/* Subtle background flair */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[#0f4c5c]/5 to-transparent blur-[80px] rounded-full pointer-events-none"></div>
+
+          <div className="max-w-5xl mx-auto px-4 md:px-8 relative z-10">
+            
+            {/* Header & Lock Micro-copy */}
+            <div className="flex flex-col items-center text-center mb-8">
+              <h3 className="text-xl md:text-2xl font-extrabold text-[#0f4c5c] tracking-tight">{t.footerTitle}</h3>
+              <div className="flex items-center justify-center gap-1.5 mt-3 px-4 py-1.5 bg-[#e3b23c]/10 rounded-full border border-[#e3b23c]/20">
+                <Lock className="w-3.5 h-3.5 text-[#e3b23c]" />
+                <span className="text-[#0f4c5c] text-[13px] font-bold tracking-wide">{t.footerSub}</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Premium Compact Badge 1 */}
+              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
+                  <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge1Title}</p>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge1Desc}</p>
+                </div>
+              </div>
+
+              {/* Premium Compact Badge 2 */}
+              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-rose-50 to-rose-100/50 border border-rose-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
+                  <Wallet className="w-6 h-6 text-rose-600" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge2Title}</p>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge2Desc}</p>
+                </div>
+              </div>
+
+              {/* Premium Compact Badge 3 */}
+              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
+                  <Sparkles className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge3Title}</p>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge3Desc}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* SEO Structured Data: Google Sitelinks Search Box */}
