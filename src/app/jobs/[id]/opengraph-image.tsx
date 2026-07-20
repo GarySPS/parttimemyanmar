@@ -1,5 +1,3 @@
-//src/app/jobs/[id]/opengraph-image.tsx
-
 // src/app/jobs/[id]/opengraph-image.tsx
 
 import { ImageResponse } from 'next/og';
@@ -21,6 +19,12 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     .eq('id', resolvedParams.id)
     .single();
 
+  // 1. Fetch Noto Sans Myanmar Font to support Burmese Text
+  const fontResponse = await fetch(
+    'https://raw.githubusercontent.com/google/fonts/main/ofl/notosansmyanmar/NotoSansMyanmar-Bold.ttf'
+  );
+  const myanmarFontData = await fontResponse.arrayBuffer();
+
   // Fallback text if data is missing
   const title = job?.title || 'Part-Time Job in Myanmar';
   const location = job?.township && job?.city ? `${job.township}, ${job.city.split(' ')[0]}` : 'Myanmar';
@@ -35,23 +39,21 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           flexDirection: 'column',
           width: '100%',
           height: '100%',
-          backgroundColor: '#0f4c5c', // PartTimeMM Brand Blue
+          backgroundColor: '#0f4c5c',
           padding: '80px',
           justifyContent: 'center',
-          fontFamily: 'sans-serif',
+          // 2. Apply the newly loaded font here
+          fontFamily: '"Noto Sans Myanmar", sans-serif',
         }}
       >
-        {/* Brand Tag */}
         <div style={{ display: 'flex', fontSize: 32, color: '#e3b23c', marginBottom: 20, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px' }}>
           PARTTIMEMM
         </div>
         
-        {/* Dynamic Job Title */}
         <div style={{ display: 'flex', fontSize: 68, color: 'white', fontWeight: 900, marginBottom: 50, lineHeight: 1.2 }}>
           {title}
         </div>
         
-        {/* Dynamic Footer Details */}
         <div style={{ display: 'flex', gap: '40px', fontSize: 36, color: '#a4c3d2', fontWeight: 600 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: 42 }}>📍</span> {location}
@@ -64,6 +66,15 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     ),
     {
       ...size,
+      // 3. Inject the downloaded font into the ImageResponse engine
+      fonts: [
+        {
+          name: 'Noto Sans Myanmar',
+          data: myanmarFontData,
+          style: 'normal',
+          weight: 700,
+        },
+      ],
     }
   );
 }
