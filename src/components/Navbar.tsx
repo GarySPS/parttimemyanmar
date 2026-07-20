@@ -39,7 +39,7 @@ export default async function Navbar() {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 md:gap-4 pl-4 ml-auto relative">
+      <div className="flex items-center gap-2 md:gap-4 pl-2 ml-auto relative">
         
         {/* Inject Install Button Here */}
         <InstallAppButton />
@@ -51,7 +51,7 @@ export default async function Navbar() {
           <details className="group relative">
             
             {/* Sleek Profile Trigger Button */}
-            <summary className="list-none cursor-pointer w-10 h-10 rounded-full bg-gradient-to-tr from-[#e3b23c] to-[#f0c254] shadow-md hover:shadow-lg transition-all flex items-center justify-center active:scale-95 [&::-webkit-details-marker]:hidden">
+            <summary className="animate-heartbeat group-open:animate-none list-none cursor-pointer w-10 h-10 rounded-full bg-gradient-to-tr from-[#e3b23c] to-[#f0c254] shadow-md hover:shadow-lg transition-all flex items-center justify-center active:scale-95 [&::-webkit-details-marker]:hidden">
               <svg className="w-5 h-5 text-[#0f4c5c] group-open:hidden transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16m-7 6h7" /></svg>
               <svg className="w-5 h-5 text-[#0f4c5c] hidden group-open:block transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
             </summary>
@@ -59,6 +59,16 @@ export default async function Navbar() {
             {/* iOS-Style Floating Dropdown Menu */}
             <div className="absolute right-0 top-12 w-72 bg-white rounded-3xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] border border-gray-100 p-2 z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
               
+              <div className="space-y-1 p-1 mb-1">
+                {/* Jobs Link - Placed at the very top */}
+                <Link href="/" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 font-medium hover:bg-gray-50 hover:text-[#0f4c5c] transition-colors active:bg-gray-100">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Jobs
+                </Link>
+              </div>
+
               {userRole === 'employer' && (
                 <Link href="/create" className="flex items-center justify-between p-4 mb-2 bg-[#0f4c5c] rounded-2xl hover:bg-[#0a3844] transition-colors group/post">
                   <span className="font-bold text-white text-sm">{t.postJob}</span>

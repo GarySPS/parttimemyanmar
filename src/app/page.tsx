@@ -36,7 +36,7 @@ export default async function Home({
   const searchTerm = resolvedParams?.q || '';
   const selectedCategory = resolvedParams?.category || '';
   const selectedPayPeriod = resolvedParams?.pay_period || '';
-  const selectedStatus = resolvedParams?.status || ''; // Added Status
+  const selectedStatus = resolvedParams?.status || '';
 
   const { data: locData } = await supabase.from('jobs').select('city, township').eq('status', 'open');
   const locationMap: Record<string, string[]> = {};
@@ -77,6 +77,9 @@ export default async function Home({
   if (selectedTownship) query = query.eq('township', selectedTownship);
   
   const { data: jobs } = await query;
+
+  // Check if any filters are active to show the premium glowing indicator
+  const hasActiveFilters = Boolean(selectedCity || selectedCategory || selectedPayPeriod || (selectedStatus && selectedStatus !== 'all'));
 
   return (
     <main className={`relative w-full min-h-screen bg-[#f8fafc] text-[#0f4c5c] antialiased selection:bg-[#a4c3d2]/40`}>
@@ -123,79 +126,106 @@ export default async function Home({
         {/* EDGE-TO-EDGE TELEGRAM BANNER */}
         <TelegramBanner />
 
-        {/* EDGE-TO-EDGE FILTER SECTION */}
-        <section className="w-full bg-white border-b border-gray-200 py-5 relative z-30 shadow-sm">
+        {/* PREMIUM EXPANDABLE FILTER SECTION */}
+        <section className="w-full bg-white border-b border-gray-100 relative z-30 shadow-sm">
           <div className="max-w-3xl mx-auto px-4 md:px-8">
-            <form method="GET" action="/" className="flex flex-col gap-3">
-              {searchTerm && <input type="hidden" name="q" value={searchTerm} />}
+            <details className="group [&_summary::-webkit-details-marker]:hidden">
               
-              {/* Stacked on mobile (flex-col), side-by-side on desktop (md:flex-row) */}
-              <div className="flex flex-col md:flex-row items-center gap-3 w-full">
-                
-                <div className="w-full md:flex-1">
-                  <CityTownSelect defaultCity={selectedCity} defaultTown={selectedTownship} locationMap={locationMap} />
+              {/* The "Hamburger" / Filter Toggle Bar */}
+              <summary className="flex items-center justify-between py-4 cursor-pointer list-none select-none">
+                <div className="flex items-center gap-3 text-[#0f4c5c] font-bold">
+                  <div className="w-9 h-9 rounded-full bg-[#0f4c5c]/5 flex items-center justify-center text-[#0f4c5c]">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                  </div>
+                  <span className="text-[15px]">Filters / စစ်ထုတ်မည်</span>
                 </div>
                 
-                <div className="w-full md:w-[150px]">
-                  <CustomSelect 
-                    name="category"
-                    defaultValue={selectedCategory}
-                    placeholder={t.allCategories}
-                    options={[
-                      { value: 'delivery', label: t.cats.delivery },
-                      { value: 'manual', label: t.cats.manual },
-                      { value: 'tech', label: t.cats.tech },
-                      { value: 'events', label: t.cats.events },
-                      { value: 'education', label: t.cats.education },
-                      { value: 'admin', label: t.cats.admin },
-                      { value: 'retail', label: t.cats.retail },
-                      { value: 'other', label: t.cats.other },
-                    ]}
-                  />
+                <div className="flex items-center gap-3">
+                  {/* Glowing Indicator if filters are active */}
+                  {hasActiveFilters && (
+                    <span className="flex h-2.5 w-2.5 relative">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e3b23c] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#e3b23c]"></span>
+                    </span>
+                  )}
+                  
+                  {/* Animated Chevron */}
+                  <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center group-open:rotate-180 transition-transform duration-300">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                  </div>
                 </div>
-
-                <div className="w-full md:w-[150px]">
-                  <CustomSelect 
-                    name="pay_period"
-                    defaultValue={selectedPayPeriod}
-                    placeholder={t.anyPayType}
-                    options={[
-                      { value: 'hourly', label: t.pays.hourly },
-                      { value: 'daily', label: t.pays.daily },
-                      { value: 'monthly', label: t.pays.monthly },
-                      { value: 'fixed', label: t.pays.fixed },
-                    ]}
-                  />
-                </div>
-
-                {/* The New Status Filter */}
-                <div className="w-full md:w-[120px]">
-                  <CustomSelect 
-                    name="status"
-                    defaultValue={selectedStatus}
-                    placeholder={t.all}
-                    options={[
-                      { value: 'all', label: t.all },
-                      { value: 'new', label: t.newToYou },
-                      { value: 'closed', label: t.closed },
-                    ]}
-                  />
-                </div>
-              </div>
+              </summary>
               
-              {/* Filter Buttons */}
-              <div className="flex items-center gap-3 w-full mt-2">
-                <Link 
-                  href="/" 
-                  className="flex-1 text-center px-4 py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
-                >
-                  {t.clearFilters}
-                </Link>
-                <button type="submit" className="flex-1 px-4 py-3 bg-[#0f4c5c] text-white rounded-xl text-sm font-bold hover:bg-[#0a3844] transition-colors shadow-md">
-                  {t.apply}
-                </button>
+              {/* The Filter Form (Hidden until clicked) */}
+              <div className="pb-6 pt-2 animate-in slide-in-from-top-4 fade-in duration-300">
+                <form method="GET" action="/" className="flex flex-col gap-4">
+                  {searchTerm && <input type="hidden" name="q" value={searchTerm} />}
+                  
+                  {/* Filter Grid - 2 columns on tablet/desktop, 1 on mobile */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <div className="md:col-span-2">
+                      <CityTownSelect defaultCity={selectedCity} defaultTown={selectedTownship} locationMap={locationMap} />
+                    </div>
+                    
+                    <CustomSelect 
+                      name="category"
+                      defaultValue={selectedCategory}
+                      placeholder={t.allCategories}
+                      options={[
+                        { value: 'delivery', label: t.cats.delivery },
+                        { value: 'manual', label: t.cats.manual },
+                        { value: 'tech', label: t.cats.tech },
+                        { value: 'events', label: t.cats.events },
+                        { value: 'education', label: t.cats.education },
+                        { value: 'admin', label: t.cats.admin },
+                        { value: 'retail', label: t.cats.retail },
+                        { value: 'other', label: t.cats.other },
+                      ]}
+                    />
+
+                    <CustomSelect 
+                      name="pay_period"
+                      defaultValue={selectedPayPeriod}
+                      placeholder={t.anyPayType}
+                      options={[
+                        { value: 'hourly', label: t.pays.hourly },
+                        { value: 'daily', label: t.pays.daily },
+                        { value: 'monthly', label: t.pays.monthly },
+                        { value: 'fixed', label: t.pays.fixed },
+                      ]}
+                    />
+
+                    <div className="md:col-span-2">
+                      <CustomSelect 
+                        name="status"
+                        defaultValue={selectedStatus}
+                        placeholder={t.all}
+                        options={[
+                          { value: 'all', label: t.all },
+                          { value: 'new', label: t.newToYou },
+                          { value: 'closed', label: t.closed },
+                        ]}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Filter Buttons */}
+                  <div className="flex items-center gap-3 w-full mt-2 pt-5 border-t border-gray-100">
+                    <Link 
+                      href="/" 
+                      className="flex-1 text-center px-4 py-3.5 rounded-xl text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
+                    >
+                      {t.clearFilters}
+                    </Link>
+                    <button type="submit" className="flex-1 px-4 py-3.5 bg-[#0f4c5c] text-white rounded-xl text-sm font-bold hover:bg-[#0a3844] transition-colors shadow-md active:scale-[0.98]">
+                      {t.apply}
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </details>
           </div>
         </section>
 
@@ -340,7 +370,7 @@ export default async function Home({
                 <p className="text-[#0f4c5c]/60 text-sm max-w-xs mx-auto font-medium">{t.noJobsDesc}</p>
               </div>
             )}
-         </section>
+          </section>
         </div>
 
         {/* SEO Structured Data: Google Sitelinks Search Box */}

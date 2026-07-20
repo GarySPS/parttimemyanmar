@@ -3,3 +3,16 @@
 body {
   font-family: var(--font-inter), var(--font-noto), sans-serif;
 }
+
+/* Premium Double-Pulse Heartbeat */
+@keyframes heartbeat {
+  0% { transform: scale(1); box-shadow: 0 4px 6px -1px rgba(227, 178, 60, 0.3); }
+  10% { transform: scale(1.08); box-shadow: 0 10px 15px -3px rgba(227, 178, 60, 0.6); }
+  20% { transform: scale(1); box-shadow: 0 4px 6px -1px rgba(227, 178, 60, 0.3); }
+  30% { transform: scale(1.08); box-shadow: 0 10px 15px -3px rgba(227, 178, 60, 0.6); }
+  40%, 100% { transform: scale(1); box-shadow: 0 4px 6px -1px rgba(227, 178, 60, 0.3); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 3s infinite;
+}
