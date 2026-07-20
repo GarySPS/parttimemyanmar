@@ -11,6 +11,7 @@ import BookmarkButton from '../components/BookmarkButton';
 import CloseJobButton from '../components/CloseJobButton';
 import { getLang } from './utils/getLang';
 import { dictionaries } from './utils/dictionaries';
+import TelegramBanner from '../components/TelegramBanner';
 
 export default async function Home({
   searchParams,
@@ -158,6 +159,9 @@ export default async function Home({
               </form>
             </div>
           </section>
+
+          {/* Telegram Community Banner */}
+          <TelegramBanner />
 
           {/* Job Feed */}
           <section className="w-full relative z-20">
