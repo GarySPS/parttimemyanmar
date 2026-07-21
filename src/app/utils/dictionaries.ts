@@ -13,7 +13,11 @@ export const dictionaries = {
       settings: "ဆက်တင်များ",
       logout: "ထွက်မည်",
       login: "ဝင်မည်",
-      safetyAlert: "၁၀၀% အမည်မဖော်ပြသောတိုက်ရိုက်လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။ ကြိုတင်ငွေပေးချေမှုတောင်းဆိုခြင်းများသတိပြုပါ။"
+      safetyAlert: "၁၀၀% အမည်မဖော်ပြသောတိုက်ရိုက်လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။ ကြိုတင်ငွေပေးချေမှုတောင်းဆိုခြင်းများသတိပြုပါ။",
+      installApp: "App ကိုသွင်းမည်",
+      installDesc: "ပိုမိုမြန်ဆန်စွာအသုံးပြုရန် ပင်မစခရင်သို့ထည့်ပါ",
+      installBtn: "သွင်းမည်",
+      guideBtn: "လမ်းညွှန်"
     },
     home: {
       heroFind: "", 
@@ -264,7 +268,11 @@ telegram: {
       settings: "Settings",
       logout: "Log Out",
       login: "Log In",
-      safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward. Never pay in advance for no reason."
+      safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward. Never pay in advance for no reason.",
+      installApp: "Install App",
+      installDesc: "Add to home screen for fast access",
+      installBtn: "Install",
+      guideBtn: "Guide"
     },
     home: {
       heroFind: "Find ",
