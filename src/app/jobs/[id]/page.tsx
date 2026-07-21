@@ -172,9 +172,9 @@ export default async function JobDetailPage({
               <div className="pt-1">
                 <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.compensation}</p>
                 <p className="text-[1rem] font-semibold text-slate-800 leading-snug">
-                  {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
-                  {job.pay_period && <span className="font-medium text-slate-500 text-sm ml-1">{tHome.per}{job.pay_period}</span>}
-                </p>
+  {job.price ? `${new Intl.NumberFormat('en-MM').format(job.price)} MMK` : t.priceNegotiable}
+  {job.pay_period && <span className="font-medium text-slate-500 text-sm ml-1">{tHome.per}{(tHome.pays as any)[job.pay_period] || job.pay_period}</span>}
+</p>
               </div>
             </div>
 
