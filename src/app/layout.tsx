@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_Myanmar } from "next/font/google";
 import "./globals.css";
+import { getLang } from "./utils/getLang";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,14 +32,16 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = await getLang();
+
   return (
     <html
-      lang="en"
+      lang={lang}
       className={`${inter.variable} ${notoSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
