@@ -178,6 +178,7 @@ export default async function Home({
                         { value: 'education', label: t.cats.education },
                         { value: 'admin', label: t.cats.admin },
                         { value: 'retail', label: t.cats.retail },
+                        { value: 'freelancer', label: t.cats.freelancer },
                         { value: 'other', label: t.cats.other },
                       ]}
                     />
