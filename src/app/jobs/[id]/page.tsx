@@ -84,11 +84,11 @@ export default async function JobDetailPage({
             "validThrough": job.expires_at || undefined,
             "employmentType": "PART_TIME",
             "hiringOrganization": {
-              "@type": "Organization",
-              "name": contactUser || "Private Employer",
-              "sameAs": "https://parttimemm.com",
-              "logo": employerAvatar || "https://parttimemm.com/icon.png"
-            },
+    "@type": "Organization",
+    "name": job.profiles?.contact_username || "Private Employer",
+    "sameAs": "https://parttimemm.com",
+    "logo": employerAvatar || "https://parttimemm.com/icon.png"
+  },
             "jobLocation": {
               "@type": "Place",
               "address": {
@@ -246,10 +246,10 @@ export default async function JobDetailPage({
                 )}
               </div>
               <div>
-                <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.postedBy}</p>
-                <div className="flex items-center gap-1.5">
-                  <p className="text-lg font-bold text-slate-900">{contactUser || t.anonymousEmployer}</p>
-                  {job.profiles?.is_verified && (
+    <p className="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">{t.postedBy}</p>
+    <div className="flex items-center gap-1.5">
+      <p className="text-lg font-bold text-slate-900">{job.profiles?.contact_username || t.anonymousEmployer}</p>
+      {job.profiles?.is_verified && (
                     <svg className="w-5 h-5 text-[#e3b23c]" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
                   )}
                 </div>

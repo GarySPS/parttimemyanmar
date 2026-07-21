@@ -32,16 +32,16 @@ export default async function ProfilePage() {
     initialPosts = data || [];
   }
 
-  // 2. Fetch dynamic locations from jobs (exactly like your search page)
-  const { data: locData } = await supabase.from('jobs').select('city, township').eq('status', 'open');
+  // 2. Fetch clean locations from the dedicated table
+  const { data: locData } = await supabase.from('locations').select('city, township');
   const locationMap: Record<string, string[]> = {};
   
   if (locData) {
-    locData.forEach(job => {
-      if (job.city && job.township) {
-        if (!locationMap[job.city]) locationMap[job.city] = [];
-        if (!locationMap[job.city].includes(job.township)) {
-          locationMap[job.city].push(job.township);
+    locData.forEach(loc => {
+      if (loc.city && loc.township) {
+        if (!locationMap[loc.city]) locationMap[loc.city] = [];
+        if (!locationMap[loc.city].includes(loc.township)) {
+          locationMap[loc.city].push(loc.township);
         }
       }
     });

@@ -13,7 +13,7 @@ export const dictionaries = {
       settings: "ဆက်တင်များ",
       logout: "ထွက်မည်",
       login: "ဝင်မည်",
-      safetyAlert: "၁၀၀% အမည်မဖော်ပြသောတိုက်ရိုက်လမ်းညွှန်။ လုံခြုံရေးအတွက် အမြဲတမ်း နေ့ဘက် လူစည်ကားသောနေရာတွင်သာ တွေ့ဆုံပါ။ ကြိုတင်ငွေပေးချေမှုတောင်းဆိုခြင်းများသတိပြုပါ။",
+      safetyAlert: "'Verified' အမှတ်အသားရှိတိုင်း ၁၀၀% စိတ်ချရသည်ဟု မဆိုလိုပါ။ သင့်လုံခြုံရေးအတွက် ပထမဆုံးအကြိမ်ကို လူစည်ကားသောနေရာတွင်သာတွေ့ပါ။ ငွေကြိုပေးခြင်း၊ OTP ကုဒ်ပေးခြင်းများ လုံးဝမလုပ်ပါနှင့်။",
       installApp: "App ကိုသွင်းမည်",
       installDesc: "ပိုမိုမြန်ဆန်စွာအသုံးပြုရန် Downloadဆွဲပါ",
       installBtn: "သွင်းမည်",
@@ -53,9 +53,9 @@ export const dictionaries = {
   footerTitle: "လုံခြုံစိတ်ချရသော အလုပ်ရှာဖွေရေး",
   footerSub: "၁၀၀% အခမဲ့။ စပေါ်ငွေပေးရန်မလိုပါ။",
   badge1Title: "အတည်ပြုထားသော အလုပ်ရှင်များ",
-  badge1Desc: "လိမ်လည်သူများမရှိစေရန် တင်းကျပ်စွာ စိစစ်ထားပါသည်။",
+  badge1Desc: "လိမ်လည်သူများမရှိစေရန် စိစစ်သောအတည်ပြုစနစ်ပါဝင်သည်။",
   badge2Title: "အေဂျင်စီခ ပေးရန်မလို",
-  badge2Desc: "အလုပ်လျှောက်ရန် ငွေတစ်ပြားမှ ပေးစရာမလိုပါ။",
+  badge2Desc: "အလုပ်လျှောက်/ အလုပ်ခေါ် ရန် ဝန်ဆောင်ခပေးစရာမလိုပါ။",
   badge3Title: "ပွင့်လင်းမြင်သာမှုရှိခြင်း",
   badge3Desc: "လစာနှင့် တာဝန်များကို ရှင်းလင်းစွာ ဖော်ပြထားပါသည်။"
     },
@@ -230,8 +230,8 @@ locationInput: {
   helperText: "တည်နေရာ ရွေးချယ်ပါ သို့မဟုတ် ရိုက်ထည့်ပါ"
 },
 cityTownSelect: {
-  cityPlaceholder: "မြို့ (ဥပမာ - ရန်ကုန်)",
-  townPlaceholder: "မြို့နယ် (ဥပမာ - စမ်းချောင်း)"
+  cityPlaceholder: "မြို့ {ရန်ကုန်(Yangon)}",
+  townPlaceholder: "မြို့နယ် {စမ်းချောင်း(Sanchaung)}"
 },
 bookmark: {
   remove: "မှတ်သားထားမှု ဖြုတ်မည်",
@@ -268,7 +268,7 @@ telegram: {
       settings: "Settings",
       logout: "Log Out",
       login: "Log In",
-      safetyAlert: "100% anonymous directory. Always meet in public daylight within your immediate ward. Never pay in advance for no reason.",
+      safetyAlert: "A 'Verified' mark doesn't guarantee a perfect match. Always protect yourself: meet in public for the first time, never pay in advance, and never share your OTP codes.",
       installApp: "Install App",
       installDesc: "Add to home screen for fast access",
       installBtn: "Install",
@@ -485,8 +485,8 @@ locationInput: {
   helperText: "Select or type a location"
 },
 cityTownSelect: {
-  cityPlaceholder: "City (e.g. Yangon)",
-  townPlaceholder: "Township (e.g. Sanchaung)"
+  cityPlaceholder: "City {ရန်ကုန်(Yangon)}",
+  townPlaceholder: "Township {စမ်းချောင်း(Sanchaung)}"
 },
 bookmark: {
   remove: "Remove bookmark",

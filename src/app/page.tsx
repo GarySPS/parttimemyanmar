@@ -39,15 +39,16 @@ export default async function Home({
   const selectedPayPeriod = resolvedParams?.pay_period || '';
   const selectedStatus = resolvedParams?.status || '';
 
-  const { data: locData } = await supabase.from('jobs').select('city, township').eq('status', 'open');
+  // Fetch clean, standardized locations from your dedicated table
+  const { data: locData } = await supabase.from('locations').select('city, township');
   const locationMap: Record<string, string[]> = {};
   
   if (locData) {
-    locData.forEach(job => {
-      if (job.city && job.township) {
-        if (!locationMap[job.city]) locationMap[job.city] = [];
-        if (!locationMap[job.city].includes(job.township)) {
-          locationMap[job.city].push(job.township);
+    locData.forEach(loc => {
+      if (loc.city && loc.township) {
+        if (!locationMap[loc.city]) locationMap[loc.city] = [];
+        if (!locationMap[loc.city].includes(loc.township)) {
+          locationMap[loc.city].push(loc.township);
         }
       }
     });
@@ -287,10 +288,10 @@ export default async function Home({
                         </div>
 
                         {/* Top: Title & Tags (Professional Reading Order) */}
-                        <div className="relative z-10 pointer-events-none pr-24 mb-6">
-                          <h2 className="text-xl md:text-[22px] font-extrabold text-gray-900 leading-[1.3] group-hover:text-[#0f4c5c] transition-colors mb-3 line-clamp-2">
-                            {job.title}
-                          </h2>
+<div className="relative z-10 pointer-events-none pr-24 mb-6">
+  <h2 className="text-xl md:text-[22px] font-extrabold text-gray-900 leading-[1.6] py-1 group-hover:text-[#0f4c5c] transition-colors mb-3 line-clamp-2">
+    {job.title}
+  </h2>
                           
                           <div className="flex flex-col gap-2.5">
                             {job.city && job.township && (
