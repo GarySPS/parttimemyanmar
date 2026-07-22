@@ -3,9 +3,11 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
+import { createClient } from '../utils/supabase/client';
 import CityTownSelect from '../../components/CityTownSelect';
 import ProfileHeader from '../../components/ProfileHeader';
+import JobCard from '../../components/JobCard';
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -23,12 +25,15 @@ const staggerContainer: Variants = {
 export default function ProfileClient({ 
   profile, locationMap, saveProfile, initialPosts = [], isEmployer, t, tHome, tCityTown 
 }: any) {
+  const supabase = createClient();
   const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(initialPosts.length === 5);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [avatarPreview, setAvatarPreview] = useState(profile?.avatar_url || null);
   const [coverPreview, setCoverPreview] = useState(profile?.cover_url || null);
@@ -99,13 +104,34 @@ export default function ProfileClient({
     setIsLoadingMore(false);
   };
 
-  const deletePost = async (postId: string) => {
-    if (!confirm(t.confirmDelete)) return;
-    
-    // Instantly removes the post from the screen
-    setPosts(posts.filter((p: any) => p.id !== postId));
-    
-    // NOTE: You will map this to an API route later: fetch(`/api/posts/${postId}`, { method: 'DELETE' })
+  // 1. Just opens the modal
+  const promptDeletePost = (postId: string) => {
+    setPostToDelete(postId);
+  };
+
+  // 2. Actually deletes from database and UI
+  const confirmDeletePost = async () => {
+    if (!postToDelete) return;
+    setIsDeleting(true);
+
+    try {
+      // Actually delete from Supabase database
+      const { error } = await supabase
+        .from('jobs')
+        .delete()
+        .eq('id', postToDelete);
+
+      if (error) throw error;
+
+      // Remove from UI
+      setPosts(posts.filter((p: any) => p.id !== postToDelete));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post. Please try again.');
+    } finally {
+      setIsDeleting(false);
+      setPostToDelete(null); // Close modal
+    }
   };
 
   async function handleSubmit(formData: FormData) {
@@ -344,46 +370,111 @@ const hasLocation = profile?.township && profile?.city;
               ) : (
                 <div className="space-y-4">
                   {posts.map((post: any) => (
-                    <div key={post.id} className="bg-white p-4 rounded-xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{post.title}</h3>
-                        <p className="text-xs text-gray-500 mt-1">{post.category} • {post.township}, {post.city}</p>
-                      </div>
-                      
-                      <div className="flex items-center gap-3">
-                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${
-                          post.status === 'open' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {post.status === 'open' ? 'Open' : tHome.closed}
-                        </span>
-                        
+                  <div key={post.id} className="h-full">
+                    <JobCard 
+                      job={post}
+                      t={tHome} 
+                      isClosed={post.status !== 'open'}
+                      isNew={false}
+                      daysLeft={null}
+                      actionButtons={
                         <button 
                           type="button" 
-                          onClick={() => deletePost(post.id)}
-                          className="text-red-500 hover:bg-red-50 p-2 rounded-lg active:scale-90 transition-all"
+                          onClick={(e) => {
+  e.preventDefault(); 
+  e.stopPropagation(); // Completely stops the background job link from opening
+  promptDeletePost(post.id);
+}}
+                          className="text-red-500 hover:bg-red-50 p-2.5 rounded-lg active:scale-90 transition-all border border-red-100 bg-red-50/50 z-20 relative"
                           title="Delete Post"
                         >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                         </button>
-                      </div>
-                    </div>
-                  ))}
+                      }
+                    />
+                  </div>
+                ))}
                   
-                  {hasMore && (
-                    <button 
-                      type="button"
-                      onClick={loadMore}
-                      disabled={isLoadingMore}
-                      className="w-full py-3 mt-4 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl active:scale-[0.98] disabled:active:scale-100 transition-all border border-gray-200"
-                    >
-                      {isLoadingMore ? t.loading : t.loadMore}
-                    </button>
-                  )}
+                {hasMore && (
+                  <button 
+                    type="button"
+                    onClick={loadMore}
+                    disabled={isLoadingMore}
+                    className="w-full py-3 mt-4 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl active:scale-[0.98] disabled:active:scale-100 transition-all border border-gray-200"
+                  >
+                    {isLoadingMore ? t.loading : t.loadMore}
+                  </button>
+                )}
+              </div>
+            )}
+          </motion.section>
+        </>
+      )}
+
+      {/* ================= BEAUTIFUL DELETE MODAL ================= */}
+      <AnimatePresence>
+        {postToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => !isDeleting && setPostToDelete(null)}
+              className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"
+            />
+            
+            {/* Modal Content */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden relative z-10 border border-gray-100"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
+                  <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
                 </div>
-              )}
-            </motion.section>
-          </>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t.deletePostTitle || "Delete Post?"}</h3>
+                <p className="text-gray-500 text-sm font-medium px-4">
+                  {t.deletePostDesc || "Are you sure you want to permanently delete this job post? This action cannot be undone."}
+                </p>
+              </div>
+              
+              <div className="flex border-t border-gray-100 bg-gray-50/50 p-3 gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setPostToDelete(null)}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                  {t.cancelBtn || "Cancel"}
+                </button>
+                <button 
+                  type="button"
+                  onClick={confirmDeletePost}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 active:scale-[0.98] transition-all disabled:opacity-70 flex items-center justify-center"
+                >
+                  {isDeleting ? (
+                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    t.deleteBtn || "Delete"
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
+      </AnimatePresence>
+
       </form>
     </div>
   );

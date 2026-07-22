@@ -126,7 +126,11 @@ profile: {
   noActivity: "လုပ်ဆောင်ချက် မရှိပါ။",
   loadMore: "ထပ်မံကြည့်ရှုမည်",
   loading: "လုပ်ဆောင်နေသည်...",
-  confirmDelete: "ဤပို့စ်ကို ဖျက်ရန် သေချာပါသလား?"
+  confirmDelete: "ဤပို့စ်ကို ဖျက်ရန် သေချာပါသလား?",
+  deletePostTitle: "ပို့စ်ကို ဖျက်မည်လား?",
+  deletePostDesc: "ဤအလုပ်ပို့စ်ကို အပြီးတိုင်ဖျက်ရန် သေချာပါသလား? ဖျက်ပြီးပါက ပြန်ယူ၍ မရနိုင်ပါ။",
+  cancelBtn: "မလုပ်တော့ပါ",
+  deleteBtn: "ဖျက်မည်"
 },
 profileHeader: {
   anonymousUser: "အမည်မသိအသုံးပြုသူ",
@@ -382,7 +386,11 @@ profile: {
   noActivity: "No activity found.",
   loadMore: "Load More",
   loading: "Loading...",
-  confirmDelete: "Are you sure you want to delete this post?"
+  confirmDelete: "Are you sure you want to delete this post?",
+  deletePostTitle: "Delete Post?",
+  deletePostDesc: "Are you sure you want to permanently delete this job post? This action cannot be undone.",
+  cancelBtn: "Cancel",
+  deleteBtn: "Delete"
 },
 profileHeader: {
   anonymousUser: "Anonymous User",

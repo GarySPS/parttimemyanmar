@@ -13,7 +13,12 @@ export async function POST(request: Request) {
 
     // Parse the incoming job data
     const body = await request.json();
-    const { title, company, location, salary, jobId } = body;
+    let { title, company, location, salary, jobId } = body;
+
+    // Filter to remove Myanmar phone numbers from title and company
+    const phoneRegex = /(?:\+?95|0)\s*9[\d\s-]{7,11}/g;
+    title = title.replace(phoneRegex, '[Contact on Website]');
+    company = company?.replace(phoneRegex, '[Contact on Website]');
 
     // Format the message with bold text and emojis (Telegram supports HTML formatting)
     const message = `
