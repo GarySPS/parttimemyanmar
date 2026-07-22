@@ -27,6 +27,7 @@ export default async function JobDetailPage({
   const lang = await getLang();
   const t = dictionaries[lang].jobDetail;
   const tHome = dictionaries[lang].home;
+  const tNav = dictionaries[lang].nav;
 
   const supabase = await createClient();
   
@@ -264,8 +265,10 @@ export default async function JobDetailPage({
             </Link>
           </div>
 
-          {/* Premium Application CTA */}
-          <div className="p-6 sm:p-8 bg-slate-50">
+          {/* Premium Application CTA & Safety Protocol */}
+          <div className="p-6 sm:p-8 bg-slate-50 flex flex-col gap-5 sm:gap-6">
+            
+            {/* 1. Application Status / Contact */}
             {isClosed ? (
               <div className="w-full bg-rose-50 border-2 border-rose-100 text-rose-700 px-6 py-5 rounded-2xl font-semibold flex items-start sm:items-center text-sm shadow-sm">
                 <svg className="w-6 h-6 mr-3 text-rose-500 shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
@@ -299,6 +302,20 @@ export default async function JobDetailPage({
                  <p className="text-sm mt-1">{t.noContactDesc}</p>
               </div>
             )}
+
+            {/* 2. Safety Protocol Card */}
+            <div className="w-full p-4 sm:p-5 bg-orange-50/60 rounded-2xl border border-orange-100/80 shadow-sm">
+              <h3 className="text-[#f97316] font-bold text-[11px] sm:text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Safety Protocol
+              </h3>
+              <p className="text-orange-900/80 text-[13px] sm:text-sm leading-relaxed font-medium">
+                {tNav.safetyAlert}
+              </p>
+            </div>
+            
           </div>
 
         </div>
