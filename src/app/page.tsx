@@ -309,58 +309,86 @@ export default async function Home({
           </section>
         </div>
 
-        {/* PREMIUM COMPACT TRUST FOOTER */}
-        <div className="w-full bg-gradient-to-b from-[#f8fafc] to-white border-t border-gray-100 pt-12 pb-16 mt-auto relative overflow-hidden">
-          {/* Subtle background flair */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[#0f4c5c]/5 to-transparent blur-[80px] rounded-full pointer-events-none"></div>
-
-          <div className="max-w-5xl mx-auto px-4 md:px-8 relative z-10">
+        {/* HYPER-PREMIUM PROFESSIONAL FOOTER */}
+        <footer className="w-full bg-white border-t border-gray-200 pt-12 pb-8 mt-auto relative z-10">
+          <div className="max-w-5xl mx-auto px-4 md:px-8">
             
-            {/* Header & Lock Micro-copy */}
-            <div className="flex flex-col items-center text-center mb-8">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#0f4c5c] tracking-tight">{t.footerTitle}</h3>
-              <div className="flex items-center justify-center gap-1.5 mt-3 px-4 py-1.5 bg-[#e3b23c]/10 rounded-full border border-[#e3b23c]/20">
-                <Lock className="w-3.5 h-3.5 text-[#e3b23c]" />
-                <span className="text-[#0f4c5c] text-[13px] font-bold tracking-wide">{t.footerSub}</span>
+            {/* Top Section: Brand & Compact Trust Indicators */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center pb-8 border-b border-gray-100 gap-6">
+              <div className="max-w-xs">
+                <h3 className="text-2xl font-extrabold text-[#0f4c5c] tracking-tight mb-2">PartTime<span className="text-[#e3b23c]">MM</span></h3>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+                  <Lock className="w-3.5 h-3.5" />
+                  <span className="text-[12px] font-bold tracking-wide">{t.footerSub}</span>
+                </div>
+              </div>
+              
+              {/* Micro-Trust Badges (Indeed style) */}
+              <div className="flex flex-wrap items-center gap-4 md:gap-6 text-gray-600">
+                <div className="flex items-center gap-2 cursor-default group">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[13px] font-bold text-gray-800">{t.badge1Title}</span>
+                </div>
+                <div className="hidden md:block w-px h-5 bg-gray-200"></div>
+                <div className="flex items-center gap-2 cursor-default group">
+                  <Wallet className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[13px] font-bold text-gray-800">{t.badge2Title}</span>
+                </div>
+                <div className="hidden md:block w-px h-5 bg-gray-200"></div>
+                <div className="flex items-center gap-2 cursor-default group">
+                  <Sparkles className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[13px] font-bold text-gray-800">{t.badge3Title}</span>
+                </div>
               </div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Premium Compact Badge 1 */}
-              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
-                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
-                  <ShieldCheck className="w-6 h-6 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge1Title}</p>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge1Desc}</p>
-                </div>
-              </div>
 
-              {/* Premium Compact Badge 2 */}
-              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
-                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-rose-50 to-rose-100/50 border border-rose-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
-                  <Wallet className="w-6 h-6 text-rose-600" />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge2Title}</p>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge2Desc}</p>
-                </div>
+            {/* Middle Section: Standard Professional Links Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10">
+              <div>
+                <h4 className="text-[14px] font-bold text-gray-900 mb-4">Job Seekers</h4>
+                <ul className="space-y-3 text-[13px] text-gray-500 font-medium">
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Browse Part-time Jobs</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Student Jobs</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Career Advice</Link></li>
+                </ul>
               </div>
+              <div>
+                <h4 className="text-[14px] font-bold text-gray-900 mb-4">Employers</h4>
+                <ul className="space-y-3 text-[13px] text-gray-500 font-medium">
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Post a Job</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Employer Guidelines</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Pricing & Trust</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-[14px] font-bold text-gray-900 mb-4">About Us</h4>
+                <ul className="space-y-3 text-[13px] text-gray-500 font-medium">
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Our Story</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Trust & Safety</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Help Center / Contact</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-[14px] font-bold text-gray-900 mb-4">Legal</h4>
+                <ul className="space-y-3 text-[13px] text-gray-500 font-medium">
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Terms of Service</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Privacy Policy</Link></li>
+                  <li><Link href="/" className="hover:text-[#0f4c5c] hover:underline transition-all">Scam Prevention</Link></li>
+                </ul>
+              </div>
+            </div>
 
-              {/* Premium Compact Badge 3 */}
-              <div className="group relative bg-white/80 backdrop-blur-md border border-gray-200/60 p-5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(15,76,92,0.06)] hover:border-[#0f4c5c]/20 hover:-translate-y-0.5 transition-all duration-300 flex items-start gap-4">
-                <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-inner">
-                  <Sparkles className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold text-gray-900 mb-0.5">{t.badge3Title}</p>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">{t.badge3Desc}</p>
-                </div>
+            {/* Bottom Section: Copyright */}
+            <div className="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-gray-100 text-[13px] text-gray-400 gap-4">
+              <p>© {new Date().getFullYear()} PartTimeMM. All rights reserved.</p>
+              <div className="flex items-center gap-6">
+                <Link href="/" className="hover:text-gray-900 transition-colors">Facebook</Link>
+                <Link href="/" className="hover:text-gray-900 transition-colors">Telegram</Link>
+                <Link href="/" className="hover:text-gray-900 transition-colors">LinkedIn</Link>
               </div>
             </div>
           </div>
-        </div>
+        </footer>
 
         {/* SEO Structured Data: Google Sitelinks Search Box */}
         <script
