@@ -4,6 +4,7 @@
 
 import { motion } from 'framer-motion';
 import FollowButton from './FollowButton';
+import ReportModal from './ReportModal'; // <-- 1. Import added
 import { useState } from 'react';
 
 export default function ProfileHeader({
@@ -19,7 +20,8 @@ export default function ProfileHeader({
   onCancel,
   onAvatarChange,
   onCoverChange,
-  t // <-- Receive dictionary here
+  t,
+  tReport // <-- 2. Prop added
 }: any) {
   const displayName = profile?.contact_username || t?.anonymousUser || 'Anonymous User';
   const displayBio = profile?.bio || (isOwnProfile 
@@ -146,10 +148,19 @@ export default function ProfileHeader({
             )
           ) : (
             <>
+              {/* 3. The Report Icon is injected perfectly right here! */}
               <FollowButton employerId={profile.id} initialIsFollowing={isFollowing} path={`/user/${profile.id}`} />
+              
               <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm">
                 {copied ? (t?.copied || 'Copied!') : (t?.share || 'Share')}
               </button>
+              
+              <ReportModal 
+                reportedUserId={profile.id} 
+                buttonText="Report User" 
+                t={tReport} 
+                iconOnly={true} 
+              />
             </>
           )}
         </div>

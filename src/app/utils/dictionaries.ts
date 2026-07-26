@@ -259,6 +259,20 @@ telegram: {
       subtitle: "အလုပ်သစ်များကို အသိပေးချက်ရယူပါ",
       joinBtn: "Join"
     },
+reportModal: {
+      title: "တိုင်ကြားရန်",
+      success: "တိုင်ကြားမှု အောင်မြင်ပါသည်!",
+      placeholder: "အကြောင်းပြချက် ရွေးချယ်ပါ...",
+      cancel: "ပယ်ဖျက်မည်",
+      submit: "ပေးပို့မည်",
+      sending: "ပေးပို့နေသည်...",
+      options: {
+        scam: "လိမ်လည်မှု (Scam or Fraud)",
+        spam: "လှည့်စားမှု / အမှိုက်စာ (Spam)",
+        inappropriate: "မသင့်လျော်သော အကြောင်းအရာ (Inappropriate)",
+        other: "အခြား (Other)"
+      }
+    },
   },
 
 
@@ -518,5 +532,19 @@ telegram: {
       subtitle: "Get instant alerts for new jobs.",
       joinBtn: "Join"
     },
+   reportModal: {
+      title: "Report",
+      success: "Report submitted successfully!",
+      placeholder: "Select a reason...",
+      cancel: "Cancel",
+      submit: "Submit",
+      sending: "Sending...",
+      options: {
+        scam: "Scam or Fraud",
+        spam: "Spam / Misleading",
+        inappropriate: "Inappropriate Content",
+        other: "Other"
+      }
+    }, 
   }
 };

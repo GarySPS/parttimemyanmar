@@ -24,15 +24,12 @@ export default function ShareButtons({ jobTitle, jobId }: { jobTitle: string; jo
   };
 
   return (
-    <div className="flex flex-wrap gap-2 mt-4">
-      {/* Copy Link */}
-      <button
-        onClick={copyToClipboard}
-        className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-200 transition-all active:scale-95"
-      >
-        {copied ? <Check size={18} className="text-emerald-600" /> : <Link2 size={18} />}
-        {copied ? 'Copied!' : 'Copy Link'}
-      </button>
-    </div>
+    <button
+      onClick={copyToClipboard}
+      className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-200 transition-all active:scale-95"
+    >
+      {copied ? <Check size={18} className="text-emerald-600 shrink-0" /> : <Link2 size={18} className="shrink-0" />}
+      <span>{copied ? 'Copied!' : 'Copy'}</span>
+    </button>
   );
 }
