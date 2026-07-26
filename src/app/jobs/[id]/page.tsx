@@ -68,6 +68,7 @@ export default async function JobDetailPage({
   const contactUser = job.contact_username || job.profiles?.contact_username;
   const employerAvatar = job.profiles?.avatar_url;
   const isClosed = job.status !== 'open';
+  const canViewContact = userRole !== 'employer' || user?.id === job.employer_id;
 
   return (
     <main className={`relative w-full min-h-screen bg-[#F4F6F8] text-slate-900 antialiased pb-24 ${notoSans.className}`}>
@@ -274,7 +275,7 @@ export default async function JobDetailPage({
                 <svg className="w-6 h-6 mr-3 text-rose-500 shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 {t.jobClosed}
               </div>
-            ) : contactApp && contactUser ? (
+            ) : canViewContact && contactApp && contactUser ? (
               <div className="w-full bg-gradient-to-br from-[#0f4c5c] to-[#166073] rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-[#0f4c5c]/20 relative overflow-hidden">
                 <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#e3b23c]/20 rounded-full blur-2xl"></div>
