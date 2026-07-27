@@ -31,7 +31,9 @@ export default function ProfileHeader({
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    const url = window.location.href;
+    // ALWAYS generate the public link, regardless of which page the user is on
+    const url = `${window.location.origin}/user/${profile.id}`;
+    
     if (navigator.share) {
       try {
         await navigator.share({
