@@ -8,6 +8,7 @@ import { createClient } from '../utils/supabase/client';
 import CityTownSelect from '../../components/CityTownSelect';
 import ProfileHeader from '../../components/ProfileHeader';
 import JobCard from '../../components/JobCard';
+import KYCModal from '../../components/KYCModal';
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -23,9 +24,10 @@ const staggerContainer: Variants = {
 };
 
 export default function ProfileClient({ 
-  profile, locationMap, saveProfile, initialPosts = [], isEmployer, t, tHome, tCityTown 
+  profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown 
 }: any) {
   const supabase = createClient();
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false)
   const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -175,6 +177,7 @@ const hasLocation = profile?.township && profile?.city;
             onCancel={handleCancel}
             onAvatarChange={handleAvatarChange}
             onCoverChange={handleCoverChange}
+            onOpenKyc={() => setIsKycModalOpen(true)}
           />
         </motion.section>
 
@@ -476,6 +479,14 @@ const hasLocation = profile?.township && profile?.city;
       </AnimatePresence>
 
       </form>
+
+      {/* KYC Modal Component */}
+      <KYCModal 
+        isOpen={isKycModalOpen} 
+        onClose={() => setIsKycModalOpen(false)} 
+        profile={profile} 
+        submitKyc={submitKyc} 
+      />
     </div>
   );
 }

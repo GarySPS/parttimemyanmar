@@ -1,10 +1,10 @@
-//src/components/ProfileHeader.tsx
+// src/components/ProfileHeader.tsx
 
 'use client';
 
 import { motion } from 'framer-motion';
 import FollowButton from './FollowButton';
-import ReportModal from './ReportModal'; // <-- 1. Import added
+import ReportModal from './ReportModal';
 import { useState } from 'react';
 
 export default function ProfileHeader({
@@ -20,8 +20,9 @@ export default function ProfileHeader({
   onCancel,
   onAvatarChange,
   onCoverChange,
+  onOpenKyc,
   t,
-  tReport // <-- 2. Prop added
+  tReport
 }: any) {
   const displayName = profile?.contact_username || t?.anonymousUser || 'Anonymous User';
   const displayBio = profile?.bio || (isOwnProfile 
@@ -31,7 +32,6 @@ export default function ProfileHeader({
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    // ALWAYS generate the public link, regardless of which page the user is on
     const url = `${window.location.origin}/user/${profile.id}`;
     
     if (navigator.share) {
@@ -109,7 +109,9 @@ export default function ProfileHeader({
               <div className="flex items-center gap-1.5">
                 <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">{displayName}</h1>
                 {profile?.is_verified && (
-                  <svg className="w-6 h-6 text-[#e3b23c] mt-1" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
+                  <svg className={`w-6 h-6 mt-1 ${profile?.kyc_status === 'verified_business' ? 'text-[#e3b23c]' : 'text-blue-500'}`} viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
                 )}
               </div>
               
@@ -124,7 +126,7 @@ export default function ProfileHeader({
           )}
         </div>
 
-        {/* 4. Native App Style Buttons */}
+        {/* 4. Action Buttons (Clean & Minimal) */}
         <div className="mt-5 flex gap-2 w-full">
           {isOwnProfile ? (
             isEditing ? (
@@ -150,7 +152,6 @@ export default function ProfileHeader({
             )
           ) : (
             <>
-              {/* 3. The Report Icon is injected perfectly right here! */}
               <FollowButton employerId={profile.id} initialIsFollowing={isFollowing} path={`/user/${profile.id}`} />
               
               <button onClick={handleShare} type="button" className="flex-1 bg-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-300 active:scale-[0.97] transition-all shadow-sm">
@@ -166,6 +167,81 @@ export default function ProfileHeader({
             </>
           )}
         </div>
+
+        {/* 5. KYC Contextual Banners (Only visible to the owner when not editing) */}
+        {isOwnProfile && !isEditing && (
+          <div className="mt-4 w-full space-y-4">
+            
+            {/* Get Verified Prompt */}
+            {profile?.kyc_status === 'none' && (
+              <div className="flex items-center justify-between p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-blue-900">Get Verified</p>
+                    {/* Logic: Check if name and avatar exist */}
+                    <p className="text-xs text-blue-700 mt-0.5 font-medium">
+                      {(!profile?.contact_username || !profile?.avatar_url) 
+                        ? "Please add your name and photo first." 
+                        : "Build trust with a verified badge."}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Logic: Change button behavior based on profile completeness */}
+                {(!profile?.contact_username || !profile?.avatar_url) ? (
+                  <button type="button" onClick={onEdit} className="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-300 active:scale-95 transition-all shadow-sm">
+                    Edit Profile
+                  </button>
+                ) : (
+                  <button type="button" onClick={onOpenKyc} className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-sm">
+                    Apply
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Pending: Personal Verification */}
+            {profile?.kyc_status === 'pending_personal' && (
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">Verification Pending</p>
+                    <p className="text-xs text-slate-500 mt-0.5 font-medium">We are reviewing your details.</p>
+                  </div>
+                </div>
+                <span className="px-3 py-1.5 bg-slate-200 text-slate-600 text-[10px] uppercase tracking-wider font-bold rounded-lg">
+                  In Review
+                </span>
+              </div>
+            )}
+
+            {/* Pending: Business Verification (Requires User Action) */}
+            {profile?.kyc_status === 'pending_business' && (
+              <div className="flex items-center justify-between p-4 bg-amber-50/50 border border-amber-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.21-1.12-.33-1.08-.7.02-.19.27-.39.75-.59 2.95-1.28 4.91-2.13 5.89-2.53 2.79-1.16 3.37-1.36 3.75-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .24z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-amber-900">Action Required</p>
+                    <p className="text-[11px] text-amber-700 mt-0.5 font-medium leading-tight max-w-[200px]">Message us on Telegram to schedule your video call.</p>
+                  </div>
+                </div>
+                <a href="https://t.me/parttimemmofficial" target="_blank" rel="noopener noreferrer" className="shrink-0 px-3 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 active:scale-95 transition-all shadow-sm text-center">
+                  Telegram
+                </a>
+              </div>
+            )}
+
+          </div>
+        )}
+
       </div>
     </div>
   );

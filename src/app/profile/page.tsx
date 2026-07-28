@@ -62,6 +62,13 @@ export default async function ProfilePage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Fetch old profile to detect changes for KYC Revocation
+    const { data: oldProfile } = await supabase
+      .from('profiles')
+      .select('contact_username, avatar_url, kyc_status, is_verified')
+      .eq('id', user.id)
+      .single();
+
     const updates: any = {
       contact_username: formData.get('contact_username'),
       bio: formData.get('bio'),
@@ -69,6 +76,8 @@ export default async function ProfilePage() {
       city: formData.get('city'),
       township: formData.get('township'),
     };
+
+    let avatarChanged = false;
 
     // Handle Profile Photo Upload
     const avatarFile = formData.get('avatar') as File | null;
@@ -78,7 +87,15 @@ export default async function ProfilePage() {
       if (data) {
         const { data: { publicUrl } } = supabase.storage.from('profiles').getPublicUrl(fileName);
         updates.avatar_url = publicUrl;
+        avatarChanged = true;
+      }
     }
+
+    // Auto-revoke KYC if name or avatar changed
+    const nameChanged = updates.contact_username && oldProfile?.contact_username !== updates.contact_username;
+    if ((nameChanged || avatarChanged) && oldProfile?.kyc_status !== 'none') {
+      updates.kyc_status = 'none';
+      updates.is_verified = false; // Reset existing UI flag
     }
 
     // Handle Cover Photo Upload
@@ -134,6 +151,38 @@ export default async function ProfilePage() {
     await supabase.from('profiles').update(updates).eq('id', user.id);
     revalidatePath('/profile');
   }
+  
+  async function submitKyc(formData: FormData) {
+    'use server';
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const tier = formData.get('tier') as string;
+    const newApplication: any = { user_id: user.id, tier, status: 'pending' };
+    
+    // Upload helper for private bucket (Returns path, NOT public URL)
+    const uploadFile = async (field: string) => {
+      const file = formData.get(field) as File | null;
+      if (!file || file.size === 0) return null;
+      const fileName = `${user.id}_${field}_${Date.now()}`;
+      const { data } = await supabase.storage.from('kyc_documents').upload(fileName, file);
+      return data ? data.path : null;
+    };
+
+    if (tier === 'personal') {
+      newApplication.id_card_url = await uploadFile('id_card');
+      newApplication.selfie_url = await uploadFile('selfie');
+      await supabase.from('profiles').update({ kyc_status: 'pending_personal' }).eq('id', user.id);
+    } else if (tier === 'business') {
+      // Business verification is handled off-platform via Telegram video call.
+      // We just flag the account as pending. No files uploaded.
+      await supabase.from('profiles').update({ kyc_status: 'pending_business' }).eq('id', user.id);
+    }
+
+    await supabase.from('kyc_applications').insert(newApplication);
+    revalidatePath('/profile');
+  }
 
   return (
     <main className="w-full min-h-screen bg-[#f8fafc] text-slate-900 antialiased selection:bg-teal-200 pb-12">
@@ -141,7 +190,8 @@ export default async function ProfilePage() {
       <ProfileClient 
         profile={profile} 
         locationMap={locationMap} 
-        saveProfile={saveProfile} 
+        saveProfile={saveProfile}
+        submitKyc={submitKyc}
         initialPosts={initialPosts}
         isEmployer={isEmployer}
         t={t}
