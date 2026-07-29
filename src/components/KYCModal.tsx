@@ -24,27 +24,34 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
         await submitKyc(businessData);
         window.open(TELEGRAM_LINK, '_blank');
       } else {
-        const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+        // 1. Lower size to 0.4MB (400KB) to stay under Next.js 1MB default limit
+        // 2. Disable useWebWorker (prevents crashes on Android browsers)
+        const options = { maxSizeMB: 0.4, maxWidthOrHeight: 1280, useWebWorker: false };
+        
+        // 3. Create a totally NEW FormData to prevent sending the original large files
+        const safeFormData = new FormData();
+        safeFormData.append('tier', tier);
         
         const idCardFile = formData.get('id_card') as File;
         if (idCardFile && idCardFile.size > 0) {
           const compressedId = await imageCompression(idCardFile, options);
-          formData.set('id_card', compressedId, compressedId.name);
+          safeFormData.append('id_card', compressedId, compressedId.name || 'id_card.jpg');
         }
 
         const selfieFile = formData.get('selfie') as File;
         if (selfieFile && selfieFile.size > 0) {
           const compressedSelfie = await imageCompression(selfieFile, options);
-          formData.set('selfie', compressedSelfie, compressedSelfie.name);
+          safeFormData.append('selfie', compressedSelfie, compressedSelfie.name || 'selfie.jpg');
         }
 
-        formData.append('tier', tier);
-        await submitKyc(formData);
+        await submitKyc(safeFormData);
       }
+      
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("KYC Submission Error:", error);
-      alert("Upload failed. Please check your connection and try again.");
+      // 4. Show the exact error message on the phone screen
+      alert(`Upload failed: ${error?.message || "Unknown error occurred"}`);
     } finally {
       setIsSubmitting(false);
     }
