@@ -10,6 +10,8 @@ import { getLang } from '../../utils/getLang';
 import { dictionaries } from '../../utils/dictionaries';
 import ShareButtons from '../../../components/ShareButtons';
 import ReportModal from '../../../components/ReportModal';
+import { revalidatePath } from 'next/cache';
+import CloseJobModal from '../../../components/CloseJobModal';
 
 const notoSans = Noto_Sans_Myanmar({ 
   weight: ['400', '500', '700', '900'],
@@ -29,7 +31,27 @@ export default async function JobDetailPage({
   const t = dictionaries[lang].jobDetail;
   const tHome = dictionaries[lang].home;
   const tNav = dictionaries[lang].nav;
-  const tReport = dictionaries[lang].reportModal
+  const tReport = dictionaries[lang].reportModal;
+  const tComplete = dictionaries[lang].completeJob; // <-- ADD THIS
+
+  // <-- ADD THIS SERVER ACTION -->
+  async function closeJobAction(id: string) {
+    'use server';
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
+
+    const { error } = await supabase
+      .from('jobs')
+      .update({ status: 'closed' })
+      .eq('id', id)
+      .eq('employer_id', user.id); 
+
+    if (error) return { error: error.message };
+    revalidatePath(`/jobs/${id}`);
+    revalidatePath('/');
+    return { success: true };
+  }
 
   const supabase = await createClient();
   
@@ -147,12 +169,13 @@ export default async function JobDetailPage({
 
             {user?.id === job.employer_id && !isClosed && (
               <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                <Link 
-                  href={`/complete/${job.id}`} 
-                  className="block w-full text-center px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-sm font-bold transition-all active:scale-[0.97] whitespace-nowrap shadow-sm"
-                >
-                  {t.closeJob}
-                </Link>
+                <CloseJobModal 
+                  jobId={job.id} 
+                  jobTitle={job.title} 
+                  closeAction={closeJobAction} 
+                  t={t} 
+                  tComplete={tComplete} 
+                />
               </div>
             )}
           </div>
