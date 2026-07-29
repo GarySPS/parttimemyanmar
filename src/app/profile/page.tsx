@@ -69,8 +69,14 @@ export default async function ProfilePage() {
       .eq('id', user.id)
       .single();
 
+    const rawName = (formData.get('contact_username') as string) || '';
+    const cleanName = rawName
+      .replace(/[✔️☑️✅🔵🟡]/g, '') // Removes fake badge emojis
+      .replace(/admin|verified/gi, '') // Removes official words
+      .trim();
+
     const updates: any = {
-      contact_username: formData.get('contact_username'),
+      contact_username: cleanName,
       bio: formData.get('bio'),
       category: formData.get('category'),
       city: formData.get('city'),
