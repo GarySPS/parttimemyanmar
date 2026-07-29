@@ -9,6 +9,7 @@ import CityTownSelect from '../../components/CityTownSelect';
 import ProfileHeader from '../../components/ProfileHeader';
 import JobCard from '../../components/JobCard';
 import KYCModal from '../../components/KYCModal';
+import imageCompression from 'browser-image-compression';
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -140,9 +141,39 @@ export default function ProfileClient({
     if (!isEditing) return; 
 
     setIsSaving(true);
-    await saveProfile(formData);
-    setIsSaving(false);
-    setIsEditing(false);
+    
+    try {
+      const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+
+      const avatarFile = formData.get('avatar') as File;
+      if (avatarFile && avatarFile.size > 0) {
+        const compressedAvatar = await imageCompression(avatarFile, options);
+        formData.set('avatar', compressedAvatar, compressedAvatar.name);
+      }
+
+      const coverFile = formData.get('cover') as File;
+      if (coverFile && coverFile.size > 0) {
+        const compressedCover = await imageCompression(coverFile, options);
+        formData.set('cover', compressedCover, compressedCover.name);
+      }
+
+      const platformCount = parseInt(formData.get('platform_count') as string || '0');
+      for (let i = 0; i < platformCount; i++) {
+        const screenFile = formData.get(`platform_screenshot_${i}`) as File;
+        if (screenFile && screenFile.size > 0) {
+           const compressedScreen = await imageCompression(screenFile, options);
+           formData.set(`platform_screenshot_${i}`, compressedScreen, compressedScreen.name);
+        }
+      }
+
+      await saveProfile(formData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Profile Save Error:', error);
+      alert('Failed to save profile. Please check your connection and try again.');
+    } finally {
+      setIsSaving(false);
+    }
   }
 
 const displayCategory = profile?.category ? (tHome.cats[profile.category] || profile.category) : t.notSpecified;

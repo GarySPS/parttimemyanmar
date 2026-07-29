@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import imageCompression from 'browser-image-compression';
 
 export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,18 +17,37 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
     
-    if (tier === 'business') {
-      const businessData = new FormData();
-      businessData.append('tier', 'business');
-      await submitKyc(businessData);
-      window.open(TELEGRAM_LINK, '_blank');
-    } else {
-      formData.append('tier', tier);
-      await submitKyc(formData);
+    try {
+      if (tier === 'business') {
+        const businessData = new FormData();
+        businessData.append('tier', 'business');
+        await submitKyc(businessData);
+        window.open(TELEGRAM_LINK, '_blank');
+      } else {
+        const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+        
+        const idCardFile = formData.get('id_card') as File;
+        if (idCardFile && idCardFile.size > 0) {
+          const compressedId = await imageCompression(idCardFile, options);
+          formData.set('id_card', compressedId, compressedId.name);
+        }
+
+        const selfieFile = formData.get('selfie') as File;
+        if (selfieFile && selfieFile.size > 0) {
+          const compressedSelfie = await imageCompression(selfieFile, options);
+          formData.set('selfie', compressedSelfie, compressedSelfie.name);
+        }
+
+        formData.append('tier', tier);
+        await submitKyc(formData);
+      }
+      onClose();
+    } catch (error) {
+      console.error("KYC Submission Error:", error);
+      alert("Upload failed. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
-    onClose();
   }
 
   return (
