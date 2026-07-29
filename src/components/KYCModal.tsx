@@ -8,6 +8,7 @@ import imageCompression from 'browser-image-compression';
 
 export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
   const [tier, setTier] = useState<'personal' | 'business'>('personal');
 
   const TELEGRAM_LINK = "https://t.me/parttimemmofficial"; 
@@ -24,11 +25,11 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
         await submitKyc(businessData);
         window.open(TELEGRAM_LINK, '_blank');
       } else {
-        // 1. Lower size to 0.4MB (400KB) to stay under Next.js 1MB default limit
-        // 2. Disable useWebWorker (prevents crashes on Android browsers)
+        setLoadingText("Compressing images...");
+        // Force UI to update before heavy compression starts
+        await new Promise(resolve => setTimeout(resolve, 50)); 
+
         const options = { maxSizeMB: 0.4, maxWidthOrHeight: 1280, useWebWorker: false };
-        
-        // 3. Create a totally NEW FormData to prevent sending the original large files
         const safeFormData = new FormData();
         safeFormData.append('tier', tier);
         
@@ -44,16 +45,19 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
           safeFormData.append('selfie', compressedSelfie, compressedSelfie.name || 'selfie.jpg');
         }
 
+        setLoadingText("Uploading securely...");
+        // Force UI to update text before server upload starts
+        await new Promise(resolve => setTimeout(resolve, 50)); 
+        
         await submitKyc(safeFormData);
       }
-      
       onClose();
     } catch (error: any) {
       console.error("KYC Submission Error:", error);
-      // 4. Show the exact error message on the phone screen
-      alert(`Upload failed: ${error?.message || "Unknown error occurred"}`);
+      alert(`Upload failed: ${error?.message || "Please check your connection and try again"}`);
     } finally {
       setIsSubmitting(false);
+      setLoadingText("");
     }
   }
 
@@ -130,9 +134,14 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                   <button type="button" onClick={onClose} disabled={isSubmitting} className="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-200 active:scale-[0.98] transition-all">
                     Cancel
                   </button>
-                  <button type="submit" disabled={isSubmitting} className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center">
-                    {isSubmitting ? 'Processing...' : (tier === 'business' ? 'Connect via Telegram' : 'Submit Application')}
-                  </button>
+                  <button type="submit" disabled={isSubmitting} className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+  {isSubmitting ? (
+    <span className="flex items-center gap-2">
+      <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+      {loadingText || 'Processing...'}
+    </span>
+  ) : (tier === 'business' ? 'Connect via Telegram' : 'Submit Application')}
+</button>
                 </div>
               </form>
             </div>
