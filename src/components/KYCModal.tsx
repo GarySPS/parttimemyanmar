@@ -5,11 +5,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import imageCompression from 'browser-image-compression';
+import { dictionaries } from '@/app/utils/dictionaries';
 
 // Using the local AI-generated Myanmar girl sample
 const SAMPLE_VERIFY_IMAGE = "/images/id-sample.png";
 
-export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
+// Added "lang = 'en'" here
+export default function KYCModal({ isOpen, onClose, profile, submitKyc, lang = 'en' }: any) {
+  // Uses the lang prop directly
+  const t = dictionaries[lang as keyof typeof dictionaries].kyc;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [tier, setTier] = useState<'personal' | 'business'>('personal');
@@ -107,8 +112,8 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                   <ShieldIcon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-extrabold text-gray-900">Get Verified</h2>
-                  <p className="text-xs text-gray-500 font-medium">Build trust with a verified badge</p>
+                  <h2 className="text-xl font-extrabold text-gray-900">{t.title}</h2>
+                  <p className="text-xs text-gray-500 font-medium">{t.subtitle}</p>
                 </div>
               </div>
             </div>
@@ -121,15 +126,16 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                   onClick={() => setTier('personal')}
                   className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all z-10 ${tier === 'personal' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
-                  Personal 
+                  {t.personal}
                 </button>
                 <button 
                   type="button" 
                   onClick={() => setTier('business')}
                   className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all z-10 ${tier === 'business' ? 'text-amber-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
-                  Business
+                  {t.business}
                 </button>
+
                 {/* Active Pill Background */}
                 <div 
                   className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-xl shadow-sm transition-transform duration-300 ease-in-out ${tier === 'personal' ? 'translate-x-0' : 'translate-x-[calc(100%+2px)]'}`} 
@@ -148,7 +154,7 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                       {/* 1. ID Card Upload */}
                       <div>
                         <label className="flex items-center justify-between text-[11px] font-bold text-gray-700 uppercase mb-2">
-                          <span>1. ID (NRC) Front</span>
+                          <span>{t.idFront}</span>
                           {idPreview && <CheckCircleIcon className="w-4 h-4 text-green-500" />}
                         </label>
                         <input type="file" name="id_card" ref={idInputRef} accept="image/*" onChange={(e) => handleFileSelect(e, 'id')} className="hidden" />
@@ -156,12 +162,12 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                           {idPreview ? (
                             <>
                               <img src={idPreview} alt="ID Preview" className="w-full h-full object-cover opacity-60" />
-                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span className="bg-white/90 text-gray-900 text-[10px] font-bold px-2 py-1 rounded shadow-sm">Change</span></div>
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span className="bg-white/90 text-gray-900 text-[10px] font-bold px-2 py-1 rounded shadow-sm">{t.change}</span></div>
                             </>
                           ) : (
                             <>
                               <CameraIcon className="w-6 h-6 text-gray-400 mb-1" />
-                              <span className="text-xs font-semibold text-gray-600">Upload ID</span>
+                              <span className="text-xs font-semibold text-gray-600">{t.uploadId}</span>
                             </>
                           )}
                         </div>
@@ -170,7 +176,7 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                       {/* 2. Selfie Upload */}
                       <div>
                         <label className="flex items-center justify-between text-[11px] font-bold text-gray-700 uppercase mb-2">
-                          <span>2. Selfie with ID</span>
+                          <span>{t.selfie}</span>
                           {selfiePreview && <CheckCircleIcon className="w-4 h-4 text-green-500" />}
                         </label>
                         <input type="file" name="selfie" ref={selfieInputRef} accept="image/*" onChange={(e) => handleFileSelect(e, 'selfie')} className="hidden" />
@@ -178,12 +184,12 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                           {selfiePreview ? (
                             <>
                               <img src={selfiePreview} alt="Selfie Preview" className="w-full h-full object-cover opacity-60" />
-                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span className="bg-white/90 text-gray-900 text-[10px] font-bold px-2 py-1 rounded shadow-sm">Change</span></div>
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span className="bg-white/90 text-gray-900 text-[10px] font-bold px-2 py-1 rounded shadow-sm">{t.change}</span></div>
                             </>
                           ) : (
                             <>
                               <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-1"><UploadIcon className="w-4 h-4 text-blue-500" /></div>
-                              <span className="text-xs font-semibold text-gray-600">Upload Selfie</span>
+                              <span className="text-xs font-semibold text-gray-600">{t.uploadSelfie}</span>
                             </>
                           )}
                         </div>
@@ -196,7 +202,7 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                       <div className="w-full h-[calc(100%-8px)] relative rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
                         <img src={SAMPLE_VERIFY_IMAGE} alt="Example" className="w-full h-full object-cover absolute inset-0" />
                         <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 text-center">
-                          <span className="text-[9px] font-bold text-white tracking-wider uppercase">Example</span>
+                          <span className="text-[9px] font-bold text-white tracking-wider uppercase">{t.example}</span>
                         </div>
                       </div>
                     </div>
@@ -210,19 +216,19 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                     <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-amber-100/50">
                       <VideoIcon className="w-8 h-8 text-amber-500" />
                     </div>
-                    <h3 className="text-gray-900 font-extrabold text-xl mb-2">Live Verification</h3>
+                    <h3 className="text-gray-900 font-extrabold text-xl mb-2">{t.liveVerification}</h3>
                     <p className="text-sm text-gray-500 px-4 leading-relaxed font-medium">
-                      To protect our community, business accounts require a brief video call to verify your workspace.
+                      {t.businessDesc}
                     </p>
                     <div className="bg-amber-50/50 rounded-2xl p-4 mt-6 text-left border border-amber-100/50">
                       <p className="text-xs font-bold text-amber-800/60 uppercase mb-3 flex items-center gap-1.5">
                         <InfoIcon className="w-4 h-4" />
-                        Next Steps
+                        {t.nextSteps}
                       </p>
                       <ul className="text-sm text-amber-900/80 space-y-2.5 font-medium ml-1">
-                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">1.</span> Click connect below.</li>
-                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">2.</span> Message official Telegram (@parttimemmofficial).</li>
-                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">3.</span> Schedule your quick call.</li>
+                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">1.</span> {t.step1}</li>
+                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">2.</span> {t.step2}</li>
+                        <li className="flex gap-2 items-start"><span className="text-amber-500 font-bold">3.</span> {t.step3}</li>
                       </ul>
                     </div>
                   </motion.div>
@@ -236,7 +242,7 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                     disabled={isSubmitting} 
                     className="flex-1 py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-bold text-sm hover:bg-gray-200 active:scale-[0.98] transition-all"
                   >
-                    Cancel
+                    {t.cancel}
                   </button>
                   <button 
                     type="submit" 
@@ -248,9 +254,9 @@ export default function KYCModal({ isOpen, onClose, profile, submitKyc }: any) {
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
                         <SpinnerIcon className="animate-spin h-4 w-4 text-white" />
-                        {loadingText || 'Processing...'}
+                        {loadingText || t.processing}
                       </span>
-                    ) : (tier === 'business' ? 'Connect Telegram' : 'Submit Verify')}
+                    ) : (tier === 'business' ? t.connectTelegram : t.submitVerify)}
                   </button>
                 </div>
               </form>

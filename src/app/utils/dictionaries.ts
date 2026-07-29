@@ -273,6 +273,28 @@ reportModal: {
         other: "အခြား (Other)"
       }
     },
+        kyc: {
+      title: "အတည်ပြုချက်ရယူမည်",
+      subtitle: "ယုံကြည်မှုရရှိရန် Verified အမှတ်အသားရယူပါ",
+      personal: "တစ်ကိုယ်ရည်",
+      business: "စီးပွားရေး",
+      idFront: "၁။ မှတ်ပုံတင် (အရှေ့ဘက်)",
+      uploadId: "မှတ်ပုံတင်တင်ရန်",
+      change: "ပြောင်းမည်",
+      selfie: "၂။ မှတ်ပုံတင်နှင့်အတူ ဆယ်လ်ဖီ",
+      uploadSelfie: "ဆယ်လ်ဖီတင်ရန်",
+      example: "နမူနာ",
+      liveVerification: "တိုက်ရိုက်အတည်ပြုခြင်း",
+      businessDesc: "လုံခြုံစိတ်ချရမှုအတွက် စီးပွားရေးအကောင့်များကို ဗီဒီယိုခေါ်ဆိုမှုဖြင့် အတည်ပြုရန် လိုအပ်ပါသည်။",
+      nextSteps: "နောက်ဆက်တွဲ လုပ်ဆောင်ရန်",
+      step1: "၁။ အောက်ပါခလုတ်ကို နှိပ်ပါ။",
+      step2: "၂။ တရားဝင် Telegram (@parttimemmofficial) သို့ စာပို့ပါ။",
+      step3: "၃။ ဗီဒီယိုခေါ်ဆိုရန် အချိန်သတ်မှတ်ပါ။",
+      cancel: "မလုပ်တော့ပါ",
+      submitVerify: "အတည်ပြုရန် ပေးပို့မည်",
+      connectTelegram: "Telegram သို့ ချိတ်ဆက်မည်",
+      processing: "လုပ်ဆောင်နေသည်..."
+    },
   },
 
 
@@ -545,6 +567,28 @@ telegram: {
         inappropriate: "Inappropriate Content",
         other: "Other"
       }
-    }, 
+    },
+          kyc: {
+      title: "Get Verified",
+      subtitle: "Build trust with a verified badge",
+      personal: "Personal",
+      business: "Business",
+      idFront: "1. ID (NRC) Front",
+      uploadId: "Upload ID",
+      change: "Change",
+      selfie: "2. Selfie with ID",
+      uploadSelfie: "Upload Selfie",
+      example: "Example",
+      liveVerification: "Live Verification",
+      businessDesc: "To protect our community, business accounts require a brief video call to verify your workspace.",
+      nextSteps: "Next Steps",
+      step1: "1. Click connect below.",
+      step2: "2. Message official Telegram (@parttimemmofficial).",
+      step3: "3. Schedule your quick call.",
+      cancel: "Cancel",
+      submitVerify: "Submit Verify",
+      connectTelegram: "Connect Telegram",
+      processing: "Processing..."
+    },
   }
 };

@@ -203,6 +203,7 @@ export default async function ProfilePage() {
         t={t}
         tHome={tHome}
         tCityTown={tCityTown}
+        lang={lang} // <-- ADD THIS LINE
       />
     </main>
   );

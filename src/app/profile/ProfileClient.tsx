@@ -25,7 +25,7 @@ const staggerContainer: Variants = {
 };
 
 export default function ProfileClient({ 
-  profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown 
+  profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown, lang // <-- Add `lang` here
 }: any) {
   const supabase = createClient();
   const [isKycModalOpen, setIsKycModalOpen] = useState(false)
@@ -516,7 +516,8 @@ const hasLocation = profile?.township && profile?.city;
         isOpen={isKycModalOpen} 
         onClose={() => setIsKycModalOpen(false)} 
         profile={profile} 
-        submitKyc={submitKyc} 
+        submitKyc={submitKyc}
+        lang={lang}
       />
     </div>
   );
