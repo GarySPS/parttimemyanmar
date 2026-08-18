@@ -19,6 +19,41 @@ const notoSans = Noto_Sans_Myanmar({
   display: 'swap',
 });
 
+function getContactDetails(app: string, username: string) {
+  const normalizedApp = app.toLowerCase();
+  
+  // 1. TELEGRAM: Clean up "@", "t.me/", "https://"
+  let rawTg = username.replace(/https?:\/\/(www\.)?(t\.me|telegram\.me)\//i, '');
+  rawTg = rawTg.replace('@', '').trim();
+
+  // 2. FACEBOOK/MESSENGER: Clean up full URLs
+  let rawFb = username.replace(/https?:\/\/(www\.)?(facebook\.com|m\.me)\//i, '');
+  rawFb = rawFb.split('?')[0]; // Removes extra tracking text like ?mibextid=...
+  rawFb = rawFb.trim();
+
+  // 3. VIBER/PHONE: Remove spaces, dashes, brackets. Convert "09" to "959"
+  let rawPhone = username.replace(/[\s\(\)\-]/g, '');
+  if (rawPhone.startsWith('09')) {
+    rawPhone = '959' + rawPhone.substring(2); // Turns 09123 into 959123
+  } else if (rawPhone.startsWith('+')) {
+    rawPhone = rawPhone.substring(1); // Removes '+' so Viber doesn't break
+  }
+  
+  switch (normalizedApp) {
+    case 'viber': 
+      return { link: `viber://chat?number=${rawPhone}`, color: 'bg-[#7360f2] hover:bg-[#5c4ce0]', icon: <svg className="w-6 h-6 mr-2 fill-current" viewBox="0 0 24 24"><path d="M17.51 14.83c-.85-.05-1.68-.2-2.48-.44-.32-.1-.66-.02-.91.22l-1.57 1.57c-2.3-1.17-4.17-3.04-5.34-5.34l1.57-1.57c.24-.25.32-.59.22-.91-.24-.8-.39-1.63-.44-2.48-.05-.51-.48-.91-1-.91H4.51c-.53 0-.96.44-.91.97.28 2.8 1.44 5.38 3.22 7.49 2 2.37 4.7 3.99 7.71 4.54.51.09.96-.32.96-.84v-3.04c0-.52-.4-.95-.91-1l-.07-.27zM18.8 8.16A5.4 5.4 0 0013.44 2.8v1.66c2.06 0 3.74 1.68 3.74 3.74h1.62zm1.62 0c0-3.86-3.14-7-7-7v1.66c2.94 0 5.34 2.4 5.34 5.34h1.66z"/></svg> };
+    case 'telegram': 
+      return { link: `https://t.me/${rawTg}`, color: 'bg-[#229ED9] hover:bg-[#1e8cc0]', icon: <svg className="w-6 h-6 mr-2 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg> };
+    case 'facebook': 
+      return { link: `https://m.me/${rawFb}`, color: 'bg-[#0084FF] hover:bg-[#0073e6]', icon: <svg className="w-6 h-6 mr-2 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.36 2 1.8 6.13 1.8 11.22c0 2.9 1.45 5.48 3.74 7.23V22l3.41-1.88c.98.27 2 .42 3.05.42 5.64 0 10.2-4.13 10.2-9.22S17.64 2 12 2zm1.04 12.3l-2.65-2.83-5.18 2.83 5.67-6.03 2.74 2.83 5.09-2.83-5.67 6.03z"/></svg> };
+    case 'phone': 
+      return { link: `tel:+${rawPhone}`, color: 'bg-emerald-600 hover:bg-emerald-700', icon: <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg> };
+    case 'email': 
+      return { link: `mailto:${username.trim()}`, color: 'bg-slate-800 hover:bg-slate-900', icon: <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> };
+    default: 
+      return { link: '#', color: 'bg-teal-600 hover:bg-teal-700', icon: null };
+  }
+}
 export default async function JobDetailPage({
   params,
 }: {
@@ -93,6 +128,7 @@ export default async function JobDetailPage({
   const employerAvatar = job.profiles?.avatar_url;
   const isClosed = job.status !== 'open';
   const canViewContact = userRole !== 'employer' || user?.id === job.employer_id;
+  const appInfo = canViewContact && contactApp && contactUser ? getContactDetails(contactApp, contactUser) : null;
 
   return (
     <main className={`relative w-full min-h-screen bg-[#F4F6F8] text-slate-900 antialiased pb-24 ${notoSans.className}`}>
@@ -303,26 +339,26 @@ export default async function JobDetailPage({
                 <svg className="w-6 h-6 mr-3 text-rose-500 shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 {t.jobClosed}
               </div>
-            ) : canViewContact && contactApp && contactUser ? (
-              <div className="w-full bg-gradient-to-br from-[#0f4c5c] to-[#166073] rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-[#0f4c5c]/20 relative overflow-hidden">
-                <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#e3b23c]/20 rounded-full blur-2xl"></div>
-
-                <div className="relative z-10">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2 tracking-tight">{t.readyToApply}</h3>
-                  <p className="text-[#a4c3d2] text-sm sm:text-base font-medium mb-6 max-w-lg">
-                    {t.reachOut1} {contactApp} {t.reachOut2}
-                  </p>
-                  
-                  <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-4 bg-black/20 p-1.5 sm:pr-6 rounded-xl sm:rounded-full border border-white/10 backdrop-blur-md w-full sm:w-auto">
-                    <span className="w-full sm:w-auto text-center px-6 py-3 bg-white text-[#0f4c5c] font-black rounded-lg sm:rounded-full uppercase tracking-wider text-xs shadow-md">
-                      {contactApp}
-                    </span>
-                    <span className="w-full sm:w-auto text-center px-4 py-3 sm:py-0 text-xl font-mono font-bold text-white select-all tracking-wide">
-                      {contactUser}
-                    </span>
-                  </div>
-                </div>
+            ) : canViewContact && contactApp && contactUser && appInfo ? (
+              <div className="w-full bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm relative overflow-hidden flex flex-col items-center text-center">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2 text-slate-900 tracking-tight">{t.readyToApply}</h3>
+                <p className="text-slate-500 text-sm sm:text-base font-medium mb-6 max-w-lg">
+                  {t.reachOut1} {contactApp} {t.reachOut2}
+                </p>
+                
+                <a 
+                  href={appInfo.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 ${appInfo.color} text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98] text-lg`}
+                >
+                  {appInfo.icon}
+                  Connect on {contactApp}
+                </a>
+                
+                <p className="mt-5 text-xs font-semibold text-slate-400 select-all">
+                  Username / Number: {contactUser}
+                </p>
               </div>
             ) : (
               <div className="w-full bg-slate-100 border-2 border-dashed border-slate-300 text-slate-500 px-6 py-8 rounded-2xl flex flex-col items-center justify-center text-center">

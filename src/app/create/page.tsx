@@ -1,5 +1,6 @@
 //src/app/create/page.tsx
 
+import ContactInputGroup from '../../components/ContactInputGroup';
 import { createClient } from '../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -59,8 +60,9 @@ export default async function CreateJobPage() {
     const city = formData.get('city') as string;
     const township = formData.get('township') as string;
     const pay_period = formData.get('pay_period') as string;
+    const is_negotiable = formData.get('is_negotiable') === 'on';
     const priceStr = formData.get('price') as string;
-    const price = priceStr ? parseInt(priceStr.replace(/,/g, ''), 10) : null;
+    const price = is_negotiable ? null : (priceStr ? parseInt(priceStr.replace(/,/g, ''), 10) : null);
     const task_date = formData.get('task_date') as string;
     const expires_at = formData.get('expires_at') as string;
     const description = formData.get('description') as string;
@@ -108,6 +110,7 @@ export default async function CreateJobPage() {
       township,
       pay_period,
       price,
+      is_negotiable,
       task_date: task_date || null,
       expires_at: expires_at || null,
       description,
@@ -128,7 +131,7 @@ export default async function CreateJobPage() {
             title,
             company: contact_username || 'Employer',
             location: `${township}, ${city.split(' ')[0]}`,
-            salary: price ? `${new Intl.NumberFormat('en-MM').format(price)} MMK` : 'Negotiable',
+            salary: is_negotiable ? 'Negotiable (ညှိနှိုင်း)' : (price ? `${new Intl.NumberFormat('en-MM').format(price)} MMK` : 'Negotiable'),
             jobId: newJob.id,
           }),
         });
@@ -231,7 +234,7 @@ export default async function CreateJobPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="price" className="font-bold text-sm text-gray-800">{t.amount} <span className="text-rose-500">*</span></label>
-                  <PriceInput />
+                  <PriceInput tNegotiable={t.negotiable} />
                 </div>
               </div>
 
@@ -284,32 +287,18 @@ export default async function CreateJobPage() {
               <h2 className="text-sm font-extrabold text-teal-900 uppercase tracking-widest border-b border-gray-100 pb-2">{t.section4}</h2>
               <p className="text-xs text-gray-500 font-medium mb-2">{t.contactDesc}</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-0">
-                <div className="flex flex-col gap-2">
-                  <label className="font-bold text-sm text-gray-800">{t.contactMethod} <span className="text-rose-500">*</span></label>
-                  <CustomSelect 
-                    name="contact_app"
-                    placeholder={t.contactPlaceholder}
-                    defaultValue={profile?.contact_app || ''}
-                    options={[
-                      { value: 'Viber', label: 'Viber' },
-                      { value: 'Telegram', label: 'Telegram' },
-                      { value: 'Phone', label: t.apps.phone },
-                      { value: 'Facebook', label: t.apps.facebook },
-                      { value: 'Email', label: 'Email' }
-                    ]}
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="contact_username" className="font-bold text-sm text-gray-800">{t.usernamePhone} <span className="text-rose-500">*</span></label>
-                  <input 
-                    type="text" id="contact_username" name="contact_username" required 
-                    defaultValue={profile?.contact_username || ''}
-                    placeholder={t.usernamePlaceholder} 
-                    className="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all placeholder:text-gray-400 shadow-sm"
-                  />
-                </div>
-              </div>
+              <ContactInputGroup 
+                t={t} 
+                profileApp={profile?.contact_app || ''} 
+                profileUser={''} 
+                options={[
+                  { value: 'Viber', label: 'Viber' },
+                  { value: 'Telegram', label: 'Telegram' },
+                  { value: 'Phone', label: t.apps.phone },
+                  { value: 'Facebook', label: t.apps.facebook },
+                  { value: 'Email', label: 'Email' }
+                ]}
+              />
             </div>
 
             <div className="pt-4">
