@@ -4,7 +4,8 @@ import Navbar from '../../components/Navbar';
 import { createClient } from '../utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import ProfileClient from './ProfileClient';
+import EmployerProfile from './EmployerProfile';
+import SeekerProfile from './SeekerProfile';
 import { getLang } from '../utils/getLang';
 import { dictionaries } from '../utils/dictionaries';
 
@@ -76,6 +77,7 @@ export default async function ProfilePage() {
       .trim();
 
     const updates: any = {
+      contact_app: formData.get('contact_app') as string,
       contact_username: cleanName,
       bio: formData.get('bio'),
       category: formData.get('category'),
@@ -153,6 +155,16 @@ export default async function ProfilePage() {
 
     updates.platforms = platforms; // Save array to JSONB column
 
+    // Handle Seeker Digital CV fields
+    const skillsRaw = formData.get('skills') as string;
+    if (skillsRaw) updates.skills = JSON.parse(skillsRaw);
+
+    const experienceRaw = formData.get('experience') as string;
+    if (experienceRaw) updates.experience = JSON.parse(experienceRaw);
+
+    const educationRaw = formData.get('education') as string;
+    if (educationRaw) updates.education = JSON.parse(educationRaw);
+
     // Save all to database
     await supabase.from('profiles').update(updates).eq('id', user.id);
     revalidatePath('/profile');
@@ -193,18 +205,31 @@ export default async function ProfilePage() {
   return (
     <main className="w-full min-h-screen bg-[#f8fafc] text-slate-900 antialiased selection:bg-teal-200 pb-12">
       <Navbar />
-      <ProfileClient 
-        profile={profile} 
-        locationMap={locationMap} 
-        saveProfile={saveProfile}
-        submitKyc={submitKyc}
-        initialPosts={initialPosts}
-        isEmployer={isEmployer}
-        t={t}
-        tHome={tHome}
-        tCityTown={tCityTown}
-        lang={lang} // <-- ADD THIS LINE
-      />
+      {isEmployer ? (
+        <EmployerProfile 
+          profile={profile} 
+          locationMap={locationMap} 
+          saveProfile={saveProfile}
+          submitKyc={submitKyc}
+          initialPosts={initialPosts}
+          isEmployer={isEmployer}
+          t={t}
+          tHome={tHome}
+          tCityTown={tCityTown}
+          lang={lang}
+        />
+      ) : (
+        <SeekerProfile 
+          profile={profile} 
+          locationMap={locationMap} 
+          saveProfile={saveProfile}
+          submitKyc={submitKyc}
+          t={t}
+          tHome={tHome}
+          tCityTown={tCityTown}
+          lang={lang}
+        />
+      )}
     </main>
   );
 }

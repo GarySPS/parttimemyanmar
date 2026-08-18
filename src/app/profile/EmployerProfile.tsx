@@ -1,4 +1,4 @@
-// src/app/profile/ProfileClient.tsx
+// src/app/profile/EmployerProfile.tsx
 
 'use client';
 
@@ -24,7 +24,7 @@ const staggerContainer: Variants = {
   }
 };
 
-export default function ProfileClient({ 
+export default function EmployerProfile({
   profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown, lang // <-- Add `lang` here
 }: any) {
   const supabase = createClient();
@@ -263,50 +263,9 @@ const hasLocation = profile?.township && profile?.city;
         {/* Thick Divider */}
         <div className="w-full h-2 bg-[#F0F2F5]"></div>
 
-        {/* Conditional Bottom Section: Resume (Seeker) vs Platforms (Employer) */}
+        {/* ================= EMPLOYER: LINKED PLATFORMS ================= */}
         <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-4 md:p-6 shadow-sm">
-          
-          {profile?.role === 'seeker' ? (
-            // ================= SEEKER: CV/RESUME SECTION =================
-            <>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">{t.cvResume}</h2>
-              </div>
 
-              {isEditing ? (
-                <div className="w-full p-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center relative hover:border-blue-400 transition-colors">
-                  <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  <span className="text-sm font-semibold text-gray-800 mb-1">
-                    {resumeFileName ? resumeFileName : t.uploadCv}
-                  </span>
-                  <span className="text-xs text-gray-500">{t.clickDrag}</span>
-                  <input type="file" name="resume" accept=".pdf,.doc,.docx" onChange={handleResumeChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-                </div>
-              ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  {profile?.resume_url ? (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-blue-100 text-blue-600 rounded-lg">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm">{t.resumeUploaded}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">{t.availableToEmployers}</p>
-                        </div>
-                      </div>
-                      <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto text-center bg-gray-200 text-gray-900 px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-300 active:scale-[0.97] transition-all">
-                        {t.viewCv}
-                      </a>
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-500 font-medium w-full text-center py-2">{t.noCv}</p>
-                  )}
-                </div>
-              )}
-            </>
-          ) : (
-            // ================= EMPLOYER: LINKED PLATFORMS =================
             <>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold text-gray-900">{t.linkedPlatforms}</h2>
@@ -385,7 +344,6 @@ const hasLocation = profile?.township && profile?.city;
                 </motion.div>
               )}
             </>
-          )}
         </motion.section>
 
         {/* ================= NEW ACTIVITY / POSTS SECTION (EMPLOYERS ONLY) ================= */}
