@@ -7,10 +7,15 @@ import { redirect } from 'next/navigation';
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
-  const email = formData.get('email') as string;
+  const email = formData.get('email') as string | null;
+  const phone = formData.get('phone') as string | null;
   const password = formData.get('password') as string;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const credentials: any = { password };
+  if (email) credentials.email = email;
+  if (phone) credentials.phone = phone;
+
+  const { error } = await supabase.auth.signInWithPassword(credentials);
   
   if (error) {
     return redirect('/login?error=Invalid login credentials');
@@ -20,28 +25,31 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = await createClient();
-  const email = formData.get('email') as string;
+  const email = formData.get('email') as string | null;
+  const phone = formData.get('phone') as string | null;
   const password = formData.get('password') as string;
   const role = formData.get('role') as string;
   
   // 1. Pass the role into user_metadata. 
-  // If your Supabase trigger is configured to read metadata, it will apply it instantly.
-  const { data, error } = await supabase.auth.signUp({ 
-    email, 
+  const credentials: any = {
     password,
     options: {
       data: {
         role: role,
       }
     }
-  });
+  };
+  
+  if (email) credentials.email = email;
+  if (phone) credentials.phone = phone;
+
+  const { data, error } = await supabase.auth.signUp(credentials);
 
   if (error) {
     return redirect('/register?error=Could not create user');
   }
 
   // 2. Wait for the user to be returned, then manually UPDATE the row 
-  // that the database trigger just automatically created.
   if (data.user) {
     const handle = `user_${Math.random().toString(16).slice(2, 10)}`;
 
@@ -51,7 +59,7 @@ export async function signup(formData: FormData) {
         role: role,
         handle: handle,
       })
-      .eq('id', data.user.id); // Force update the specific user's row
+      .eq('id', data.user.id);
 
     if (profileError) {
       console.error("Profile update error:", profileError.message);

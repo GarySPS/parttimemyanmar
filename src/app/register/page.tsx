@@ -1,5 +1,4 @@
 // src/app/register/page.tsx
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,7 +31,6 @@ export default async function RegisterPage() {
 
         <div className="p-8 pt-6">
           
-          {/* Inject translated Client Form here */}
           <RegisterForm t={t} />
 
           <div className="mt-8 pt-6 border-t border-gray-200/60 text-center text-sm text-gray-600">

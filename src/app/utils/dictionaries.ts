@@ -77,7 +77,10 @@ register: {
   passwordLabel: "စကားဝှက်",
   registerBtn: "စာရင်းသွင်းမည်",
   alreadyHaveAccount: "အကောင့်ရှိပြီးသားလား?",
-  logInText: "အကောင့်ဝင်မည်"
+  logInText: "အကောင့်ဝင်မည်",
+  phoneLabel: "ဖုန်းနံပါတ်",
+  usePhone: "ဖုန်းဖြင့်စာရင်းသွင်းမည်",
+  useEmail: "အီးမေးလ်ဖြင့်စာရင်းသွင်းမည်",
 },
 jobDetail: {
   closeJob: "အလုပ်ပိတ်မည်",
@@ -400,7 +403,10 @@ register: {
   passwordLabel: "Password",
   registerBtn: "Register",
   alreadyHaveAccount: "Already have an account?",
-  logInText: "Log in"
+  logInText: "Log in",
+  phoneLabel: "Phone Number",
+  usePhone: "Use Phone",
+  useEmail: "Use Email",
 },
 jobDetail: {
   closeJob: "Close Job",
