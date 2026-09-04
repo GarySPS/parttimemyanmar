@@ -10,6 +10,7 @@ import PriceInput from '../../components/PriceInput';
 import Navbar from '../../components/Navbar';
 import { getLang } from '../utils/getLang';
 import { dictionaries } from '../utils/dictionaries';
+import SubmitButton from '../../components/SubmitButton';
 
 export default async function CreateJobPage() {
   const lang = await getLang();
@@ -302,12 +303,7 @@ export default async function CreateJobPage() {
             </div>
 
             <div className="pt-4">
-              <button 
-                type="submit" 
-                className="w-full bg-teal-900 text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-teal-800 active:scale-[0.97] active:shadow-sm transition-all"
-              >
-                {t.publishBtn}
-              </button>
+              <SubmitButton publishText={t.publishBtn} />
             </div>
           </form>
         </section>

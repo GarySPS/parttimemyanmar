@@ -5,8 +5,22 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useFormStatus } from 'react-dom';
+import Link from 'next/link';
 import { login } from '../auth/actions';
 import Button from '@/components/Button';
+
+// FIX 1: Extracted the button to auto-detect the Server Action status
+function SubmitButton({ t }: { t: any }) {
+  const { pending } = useFormStatus();
+  
+  return (
+    <Button type="submit" isLoading={pending} className="w-full mt-6 group">
+      {pending ? (t.loading || 'Signing in...') : t.signIn}
+      {!pending && <ArrowRight className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />}
+    </Button>
+  );
+}
 
 export default function LoginForm({ t }: { t: any }) {
   const searchParams = useSearchParams();
@@ -14,7 +28,6 @@ export default function LoginForm({ t }: { t: any }) {
   const errorMessage = searchParams.get('error');
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="w-full">
@@ -30,7 +43,8 @@ export default function LoginForm({ t }: { t: any }) {
         </div>
       )}
 
-      <form action={login} onSubmit={() => setIsLoading(true)} className="space-y-5">
+      {/* Removed the manual onSubmit state handler */}
+      <form action={login} className="space-y-5">
         <div className="space-y-1.5">
           <label className="block text-sm font-medium text-[#045D5D] ml-1">
             {t.emailLabel}
@@ -48,9 +62,10 @@ export default function LoginForm({ t }: { t: any }) {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between ml-1">
             <label className="block text-sm font-medium text-[#045D5D]">{t.passwordLabel}</label>
-            <a href="#" className="text-xs font-medium text-[#D4AF37] hover:text-[#b8952b] transition-colors">
+            {/* FIX 2: Upgraded to next/link pointing to the real route */}
+            <Link href="/forgot-password" className="text-xs font-medium text-[#D4AF37] hover:text-[#b8952b] transition-colors">
               {t.forgotPassword}
-            </a>
+            </Link>
           </div>
           <div className="relative group">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#045D5D] transition-colors" />
@@ -68,10 +83,7 @@ export default function LoginForm({ t }: { t: any }) {
           </div>
         </div>
 
-        <Button type="submit" isLoading={isLoading} className="w-full mt-6">
-          {t.signIn}
-          <ArrowRight className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-        </Button>
+        <SubmitButton t={t} />
       </form>
     </div>
   );

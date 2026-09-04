@@ -1,23 +1,31 @@
-//src/app/register/RegisterForm.tsx
-
 "use client";
 
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Briefcase, User } from 'lucide-react';
+import { useFormStatus } from 'react-dom';
 import { signup } from '../auth/actions';
-import Button from '@/components/Button';
+
+function SubmitButton({ t }: { t: any }) {
+  const { pending } = useFormStatus();
+  
+  return (
+    <button 
+      type="submit" 
+      disabled={pending}
+      className="w-full mt-2 flex items-center justify-center gap-2 py-3.5 bg-[#045D5D] text-white rounded-2xl font-semibold tracking-wide transition-all shadow-sm hover:shadow-md hover:bg-[#034d4d] active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed group"
+    >
+      {pending ? (t.loading || 'Creating account...') : t.registerBtn}
+      {!pending && <ArrowRight className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />}
+    </button>
+  );
+}
 
 export default function RegisterForm({ t }: { t: any }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState('seeker');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    setIsLoading(true);
-  };
-
   return (
-    <form action={signup} onSubmit={handleSubmit} className="space-y-5">
+    <form action={signup} className="space-y-5">
       <input type="hidden" name="role" value={role} />
 
       <div className="space-y-2">
@@ -60,6 +68,7 @@ export default function RegisterForm({ t }: { t: any }) {
           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#045D5D] transition-colors" />
           <input 
             type={showPassword ? "text" : "password"} name="password" required placeholder="••••••••"
+            minLength={6}
             className="w-full pl-12 pr-12 py-3.5 bg-white/70 border border-gray-200 rounded-2xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-[#045D5D]/15 focus:border-[#045D5D] transition-all shadow-sm" 
           />
           <button 
@@ -71,9 +80,7 @@ export default function RegisterForm({ t }: { t: any }) {
         </div>
       </div>
 
-      <Button type="submit" isLoading={isLoading} className="w-full mt-2">
-        {t.registerBtn} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-      </Button>
+      <SubmitButton t={t} />
     </form>
   );
 }

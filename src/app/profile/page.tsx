@@ -87,10 +87,11 @@ export default async function ProfilePage() {
 
     let avatarChanged = false;
 
-    // Handle Profile Photo Upload
+    // Handle Profile Photo Upload (Fixed File Extension)
     const avatarFile = formData.get('avatar') as File | null;
     if (avatarFile && avatarFile.size > 0) {
-      const fileName = `avatar_${user.id}_${Date.now()}`;
+      const ext = avatarFile.name.split('.').pop();
+      const fileName = `avatar_${user.id}_${Date.now()}.${ext}`;
       const { data } = await supabase.storage.from('profiles').upload(fileName, avatarFile, { upsert: true });
       if (data) {
         const { data: { publicUrl } } = supabase.storage.from('profiles').getPublicUrl(fileName);
@@ -106,10 +107,11 @@ export default async function ProfilePage() {
       updates.is_verified = false; // Reset existing UI flag
     }
 
-    // Handle Cover Photo Upload
+    // Handle Cover Photo Upload (Fixed File Extension)
     const coverFile = formData.get('cover') as File | null;
     if (coverFile && coverFile.size > 0) {
-      const fileName = `cover_${user.id}_${Date.now()}`;
+      const ext = coverFile.name.split('.').pop();
+      const fileName = `cover_${user.id}_${Date.now()}.${ext}`;
       const { data } = await supabase.storage.from('profiles').upload(fileName, coverFile, { upsert: true });
       if (data) {
         const { data: { publicUrl } } = supabase.storage.from('profiles').getPublicUrl(fileName);
@@ -139,9 +141,10 @@ export default async function ProfilePage() {
 
       const screenshotFile = formData.get(`platform_screenshot_${i}`) as File | null;
       
-      // Upload new screenshot if provided
+      // Upload new screenshot if provided (Fixed File Extension)
       if (screenshotFile && screenshotFile.size > 0) {
-        const fileName = `screenshot_${user.id}_${Date.now()}_${i}`;
+        const ext = screenshotFile.name.split('.').pop();
+        const fileName = `screenshot_${user.id}_${Date.now()}_${i}.${ext}`;
         const { data } = await supabase.storage.from('profiles').upload(fileName, screenshotFile, { upsert: true });
         if (data) {
           screenshot_url = supabase.storage.from('profiles').getPublicUrl(fileName).data.publicUrl;
@@ -155,15 +158,19 @@ export default async function ProfilePage() {
 
     updates.platforms = platforms; // Save array to JSONB column
 
-    // Handle Seeker Digital CV fields
-    const skillsRaw = formData.get('skills') as string;
-    if (skillsRaw) updates.skills = JSON.parse(skillsRaw);
+    // Handle Seeker Digital CV fields (Added Crash Protection)
+    try {
+      const skillsRaw = formData.get('skills') as string;
+      if (skillsRaw) updates.skills = JSON.parse(skillsRaw);
 
-    const experienceRaw = formData.get('experience') as string;
-    if (experienceRaw) updates.experience = JSON.parse(experienceRaw);
+      const experienceRaw = formData.get('experience') as string;
+      if (experienceRaw) updates.experience = JSON.parse(experienceRaw);
 
-    const educationRaw = formData.get('education') as string;
-    if (educationRaw) updates.education = JSON.parse(educationRaw);
+      const educationRaw = formData.get('education') as string;
+      if (educationRaw) updates.education = JSON.parse(educationRaw);
+    } catch (parseError) {
+      console.error("Error parsing profile JSON fields:", parseError);
+    }
 
     // Save all to database
     await supabase.from('profiles').update(updates).eq('id', user.id);

@@ -26,13 +26,15 @@ export default async function FollowingPage({
   const isSearching = searchQuery.length > 0;
 
   if (isSearching) {
+    // FIX 1: Added limit(50) to prevent server memory crashes on broad searches
     const { data } = await supabase
       .from('profiles')
       .select(`
         id, contact_username, avatar_url, bio, is_verified, role,
         followers:follows!following_id(count)
       `)
-      .ilike('contact_username', `%${searchQuery}%`);
+      .ilike('contact_username', `%${searchQuery}%`)
+      .limit(50);
 
     if (data) {
       profiles = data
@@ -43,19 +45,33 @@ export default async function FollowingPage({
         .sort((a, b) => b.followerCount - a.followerCount);
     }
   } else {
+    // FIX 2: Added limit(50) to prevent .in() array crashes
     const { data: followRecords } = await supabase
       .from('follows')
       .select('following_id')
-      .eq('follower_id', user.id);
+      .eq('follower_id', user.id)
+      .limit(50);
 
     const followingIds = followRecords?.map(f => f.following_id) || [];
 
     if (followingIds.length > 0) {
+      // FIX 3: Added follower count to the standard list so UI is consistent
       const { data } = await supabase
         .from('profiles')
-        .select('id, contact_username, avatar_url, bio, is_verified, role')
+        .select(`
+          id, contact_username, avatar_url, bio, is_verified, role,
+          followers:follows!following_id(count)
+        `)
         .in('id', followingIds);
-      profiles = data || [];
+        
+      if (data) {
+        profiles = data
+          .map((p: any) => ({
+            ...p,
+            followerCount: p.followers[0]?.count || 0
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount);
+      }
     }
   }
 
@@ -115,9 +131,15 @@ export default async function FollowingPage({
                 </svg>
               </div>
               <p className="text-gray-900 font-bold text-lg mb-1">{t.noAccounts}</p>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-sm mb-5">
                 {isSearching ? t.searchEmptyDesc : t.followingEmptyDesc}
               </p>
+              {/* FIX 4: Call to Action for empty states so it's not a dead end */}
+              {!isSearching && (
+                <Link href="/" className="px-6 py-2.5 bg-[#0f4c5c] text-white font-bold text-sm rounded-xl hover:bg-[#0a3540] transition-colors shadow-sm active:scale-[0.98]">
+                  Browse Jobs & Employers
+                </Link>
+              )}
             </div>
           ) : (
             profiles.map((p) => (
@@ -142,7 +164,8 @@ export default async function FollowingPage({
                     )}
                   </div>
                   
-                  {isSearching && p.followerCount !== undefined && (
+                  {/* Follower count will now always display safely if it exists! */}
+                  {p.followerCount !== undefined && (
                     <p className="text-xs font-semibold text-gray-500 mb-1">
                       <span className="text-gray-900">{p.followerCount}</span> {p.followerCount === 1 ? t.follower : t.followers}
                     </p>

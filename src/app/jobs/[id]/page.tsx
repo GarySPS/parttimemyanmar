@@ -26,9 +26,13 @@ function getContactDetails(app: string, username: string) {
   let rawTg = username.replace(/https?:\/\/(www\.)?(t\.me|telegram\.me)\//i, '');
   rawTg = rawTg.replace('@', '').trim();
 
-  // 2. FACEBOOK/MESSENGER: Clean up full URLs
+  // 2. FACEBOOK/MESSENGER: Clean up full URLs safely
   let rawFb = username.replace(/https?:\/\/(www\.)?(facebook\.com|m\.me)\//i, '');
-  rawFb = rawFb.split('?')[0]; // Removes extra tracking text like ?mibextid=...
+  if (rawFb.includes('profile.php?id=')) {
+    rawFb = rawFb.split('id=')[1].split('&')[0]; // Extracts the actual user ID number
+  } else {
+    rawFb = rawFb.split('?')[0]; // Safely removes tracking text for normal usernames
+  }
   rawFb = rawFb.trim();
 
   // 3. VIBER/PHONE: Remove spaces, dashes, brackets. Convert "09" to "959"
@@ -109,9 +113,10 @@ export default async function JobDetailPage({
     notFound();
   }
 
-  // 3. Format Dates & Data
+  // 3. Format Dates & Data (Adjusted for Myanmar Time +6:30)
   const isBookmarked = job.bookmarks && job.bookmarks.length > 0;
-  const postDate = new Date(job.created_at).toLocaleDateString('en-GB');
+  const mmTime = new Date(new Date(job.created_at).getTime() + (6.5 * 60 * 60 * 1000));
+  const postDate = mmTime.toLocaleDateString('en-GB');
 
   let daysLeft = null;
   if (job.expires_at) {

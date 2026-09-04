@@ -24,7 +24,7 @@ export default async function PublicProfilePage({
   
   const lang = await getLang();
   const tHeader = dictionaries[lang].profileHeader;
-  const t = dictionaries[lang].userProfile || dictionaries[lang].profile; // Fallback
+  const t = dictionaries[lang].userProfile || dictionaries[lang].profile; 
   const tHome = dictionaries[lang].home;
   const tReport = dictionaries[lang].reportModal;
   const supabase = await createClient();
@@ -43,14 +43,15 @@ export default async function PublicProfilePage({
   // Determine Role
   const isSeeker = profile?.role === 'seeker';
   
-  // Fetch Employer's Jobs ONLY if they are an employer
+  // UX FIX: Added a strict limit(50) to prevent database crashes on active employers
   let jobs: any[] = [];
   if (!isSeeker) {
     const { data } = await supabase
       .from('jobs')
       .select('*')
       .eq('employer_id', resolvedParams.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(50);
     if (data) jobs = data;
   }
 
@@ -304,15 +305,17 @@ export default async function PublicProfilePage({
               ) : (
                 <div className="flex flex-col gap-4">
                   {jobs.map((job) => {
+                    
+                    // UX FIX: Adjusted to Myanmar Time for perfect Expiration sync
+                    const mmTime = new Date(new Date().getTime() + (6.5 * 60 * 60 * 1000));
                     const postDate = new Date(job.created_at);
-                    const now = new Date();
-                    const isNew = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60) < 24;
+                    const isNew = (mmTime.getTime() - postDate.getTime()) / (1000 * 60 * 60) < 24;
                     const isClosed = job.status !== 'open';
 
                     let daysLeft = null;
                     if (job.expires_at) {
                       const expDateObj = new Date(job.expires_at);
-                      const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      const todayMidnight = new Date(mmTime.getFullYear(), mmTime.getMonth(), mmTime.getDate());
                       const expMidnight = new Date(expDateObj.getFullYear(), expDateObj.getMonth(), expDateObj.getDate());
                       const diffTime = expMidnight.getTime() - todayMidnight.getTime();
                       daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

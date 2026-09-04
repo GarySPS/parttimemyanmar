@@ -30,10 +30,8 @@ export default function SeekerProfile({
   const [avatarPreview, setAvatarPreview] = useState(profile?.avatar_url || null);
   const [coverPreview, setCoverPreview] = useState(profile?.cover_url || null);
 
-  // Basic Info States (NEW)
-  const [bio, setBio] = useState(profile?.bio || '');
+  // Basic Info State (Contact App only, Bio/Name are handled by ProfileHeader natively)
   const [contactApp, setContactApp] = useState(profile?.contact_app || '');
-  const [contactUsername, setContactUsername] = useState(profile?.contact_username || '');
 
   // Resume State
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
@@ -82,9 +80,13 @@ export default function SeekerProfile({
     setEducations(educations.filter((_, idx) => idx !== indexToRemove));
   };
 
+  // Smart Add Skill (Splits by comma)
   const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
+    if (newSkill.trim()) {
+      const splitSkills = newSkill.split(',').map(s => s.trim()).filter(s => s && !skills.includes(s));
+      if (splitSkills.length > 0) {
+        setSkills([...skills, ...splitSkills]);
+      }
       setNewSkill('');
     }
   };
@@ -116,11 +118,9 @@ export default function SeekerProfile({
     setSkills(profile?.skills?.length ? profile.skills : []);
     setExperiences(profile?.experience?.length ? profile.experience : []);
     setEducations(profile?.education?.length ? profile.education : []);
-    setBio(profile?.bio || '');
     setIsAddingExp(false);
     setIsAddingEdu(false);
     setContactApp(profile?.contact_app || '');
-    setContactUsername(profile?.contact_username || '');
     setResumeFileName(null);
   };
 
@@ -144,15 +144,40 @@ export default function SeekerProfile({
         formData.set('cover', compressedCover, compressedCover.name);
       }
 
-      // Add new fields to formData
-      formData.append('bio', bio);
-      formData.append('contact_app', contactApp);
-      formData.append('contact_username', contactUsername);
-      formData.append('skills', JSON.stringify(skills));
-      formData.append('experience', JSON.stringify(experiences));
-      formData.append('education', JSON.stringify(educations)); // Append education array
+      // UX FIX: AUTO-SAVE PENDING SUB-FORMS
+      let finalSkills = [...skills];
+      if (newSkill.trim()) {
+        const splitSkills = newSkill.split(',').map(s => s.trim()).filter(s => s && !finalSkills.includes(s));
+        finalSkills = [...finalSkills, ...splitSkills];
+        setNewSkill('');
+      }
+
+      let finalExp = [...experiences];
+      if (newExp.title.trim() && newExp.company.trim()) {
+        finalExp.push(newExp);
+        setNewExp({ title: '', company: '', startDate: '', endDate: '', description: '' });
+        setIsAddingExp(false);
+      }
+
+      let finalEdu = [...educations];
+      if (newEdu.school.trim() && newEdu.degree.trim()) {
+        finalEdu.push(newEdu);
+        setNewEdu({ school: '', degree: '', startDate: '', endDate: '', description: '' });
+        setIsAddingEdu(false);
+      }
+
+      // ProfileHeader naturally handles `contact_username` and `bio` directly in the formData.
+      // CustomSelect naturally handles `contact_app`.
+      // We only manually append the JSON arrays here:
+      formData.append('skills', JSON.stringify(finalSkills));
+      formData.append('experience', JSON.stringify(finalExp));
+      formData.append('education', JSON.stringify(finalEdu));
 
       await saveProfile(formData);
+      
+      setSkills(finalSkills);
+      setExperiences(finalExp);
+      setEducations(finalEdu);
       setIsEditing(false);
     } catch (error) {
       console.error('Profile Save Error:', error);
@@ -173,10 +198,6 @@ export default function SeekerProfile({
     { value: 'Facebook', label: t.apps?.facebook || 'Facebook' },
     { value: 'Email', label: 'Email' }
   ];
-  const categoryOptions = Object.entries(tHome.cats).map(([val, label]) => ({
-    value: val,
-    label: label as string
-  }));
   
   return (
     <div className="relative w-full min-h-screen bg-[#F4F6F8] text-gray-900 font-sans">
@@ -235,10 +256,6 @@ export default function SeekerProfile({
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Username / Number</label>
-                    <input type="text" value={contactUsername} onChange={(e) => setContactUsername(e.target.value)} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="Username or phone number" />
-                  </div>
-                  <div>
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.category}</label>
                     <select name="category" defaultValue={profile?.category || ''} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                       <option value="">{t.selectCategory}</option>
@@ -256,7 +273,7 @@ export default function SeekerProfile({
                 <div className="space-y-4 text-sm text-gray-700">
                   <div className="flex items-center gap-3">
                     <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                    <span>{contactApp && contactUsername ? `${contactApp}: ${contactUsername}` : 'No contact provided'}</span>
+                    <span>{contactApp || 'No contact app selected'}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -292,8 +309,8 @@ export default function SeekerProfile({
 
                   <div className="flex flex-wrap gap-2">
                     {skills.length === 0 && (
-  <p className="text-sm text-gray-400 italic">{t.noSkills || 'No skills added yet.'}</p>
-)}
+                      <p className="text-sm text-gray-400 italic">{t.noSkills || 'No skills added yet.'}</p>
+                    )}
                     {skills.map((skill, index) => (
                       <div key={index} className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium border border-blue-100">
                         <span>{skill}</span>
@@ -319,26 +336,9 @@ export default function SeekerProfile({
 
           </div>
 
-          {/* Right Column: Bio, Experience, CV */}
+          {/* Right Column: Experience, CV */}
           <div className="w-full md:w-2/3 flex flex-col gap-4 md:gap-6">
             
-            {/* About Me / Bio */}
-            <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border border-gray-100">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">{t.aboutMe}</h2>
-              {isEditing ? (
-                <textarea 
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder={t.aboutMePlaceholder}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm min-h-[120px] focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-                  {bio || t.noBio}
-                </p>
-              )}
-            </motion.section>
-
             {/* Work Experience */}
             <motion.section variants={fadeInUp} initial="hidden" animate="visible" className="bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-6">

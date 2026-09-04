@@ -5,7 +5,7 @@
 import { motion } from 'framer-motion';
 import FollowButton from './FollowButton';
 import ReportModal from './ReportModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ProfileHeader({
   profile,
@@ -30,9 +30,15 @@ export default function ProfileHeader({
     : (t?.noBioOther || 'This user has not provided a bio yet.'));
 
   const [copied, setCopied] = useState(false);
+  const [origin, setOrigin] = useState('');
+
+  // UX FIX: Safely grab the window origin to prevent Next.js hydration crashes
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/user/${profile.id}`;
+    const url = `${origin}/user/${profile?.id}`;
     
     if (navigator.share) {
       try {
@@ -43,10 +49,14 @@ export default function ProfileHeader({
       } catch (err) {
         console.log('Error sharing:', err);
       }
-    } else {
-      navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.log('Error copying:', err);
+      }
     }
   };
 
@@ -65,7 +75,8 @@ export default function ProfileHeader({
         
         {isEditing && (
           <motion.label whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm p-2.5 rounded-full cursor-pointer text-white hover:bg-black/80 transition-colors z-10 shadow-lg">
-            <input type="file" name="cover" className="hidden" accept="image/*" onChange={onCoverChange} />
+            {/* UX FIX: Clear target value on click so users can re-select the same image if they cancel */}
+            <input type="file" name="cover" className="hidden" accept="image/*" onClick={(e) => { (e.target as HTMLInputElement).value = ''; }} onChange={onCoverChange} />
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -89,7 +100,8 @@ export default function ProfileHeader({
           
           {isEditing && (
             <motion.label whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="absolute bottom-1 right-1 bg-black/70 p-2 rounded-full cursor-pointer text-white border-2 border-white">
-              <input type="file" name="avatar" className="hidden" accept="image/*" onChange={onAvatarChange} />
+              {/* UX FIX: Clear target value on click so users can re-select the same image if they cancel */}
+              <input type="file" name="avatar" className="hidden" accept="image/*" onClick={(e) => { (e.target as HTMLInputElement).value = ''; }} onChange={onAvatarChange} />
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               </svg>
@@ -101,8 +113,8 @@ export default function ProfileHeader({
         <div className="mt-3 text-left">
           {isEditing ? (
             <div className="space-y-4 mt-4">
-              <input type="text" name="contact_username" defaultValue={profile?.contact_username || ''} placeholder={t?.namePlaceholder || "Your Name"} className="w-full text-2xl font-bold text-gray-900 border-b-2 border-gray-300 focus:outline-none focus:border-[#0f4c5c] bg-transparent pb-1 transition-colors" required />
-              <textarea name="bio" defaultValue={profile?.bio || ''} placeholder={t?.bioPlaceholder || "Write a short bio..."} rows={3} className="w-full text-[0.95rem] text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] resize-none" />
+              <input type="text" name="contact_username" defaultValue={profile?.contact_username || ''} placeholder={t?.namePlaceholder || "Your Name / Brand"} className="w-full text-2xl font-bold text-gray-900 border-b-2 border-gray-300 focus:outline-none focus:border-[#0f4c5c] bg-transparent pb-1 transition-colors" required />
+              <textarea name="bio" defaultValue={profile?.bio || ''} placeholder={t?.bioPlaceholder || "Write a short bio..."} rows={3} maxLength={500} className="w-full text-[0.95rem] text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f4c5c] resize-none" />
             </div>
           ) : (
             <>
@@ -181,7 +193,6 @@ export default function ProfileHeader({
                   </div>
                   <div>
                     <p className="text-sm font-bold text-blue-900">Get Verified</p>
-                    {/* Logic: Check if name and avatar exist */}
                     <p className="text-xs text-blue-700 mt-0.5 font-medium">
                       {(!profile?.contact_username || !profile?.avatar_url) 
                         ? "Please add your name and photo first." 
@@ -190,7 +201,6 @@ export default function ProfileHeader({
                   </div>
                 </div>
                 
-                {/* Logic: Change button behavior based on profile completeness */}
                 {(!profile?.contact_username || !profile?.avatar_url) ? (
                   <button type="button" onClick={onEdit} className="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-300 active:scale-95 transition-all shadow-sm">
                     Edit Profile

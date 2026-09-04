@@ -55,12 +55,15 @@ export default async function Home({
     });
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  // Adjust server time to Myanmar Time (UTC+6:30) for accurate expiration
+  const mmTime = new Date(new Date().getTime() + (6.5 * 60 * 60 * 1000));
+  const today = mmTime.toISOString().split('T')[0];
 
   let query = supabase
     .from('jobs')
     .select(`*, profiles(contact_app, contact_username), bookmarks(id)`)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(20); // Professional limit to prevent crashes as you scale
 
   // Handle the new Status Filter
   if (selectedStatus === 'closed') {

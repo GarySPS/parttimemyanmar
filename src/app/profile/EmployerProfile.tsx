@@ -25,7 +25,7 @@ const staggerContainer: Variants = {
 };
 
 export default function EmployerProfile({
-  profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown, lang // <-- Add `lang` here
+  profile, locationMap, saveProfile, submitKyc, initialPosts = [], isEmployer, t, tHome, tCityTown, lang 
 }: any) {
   const supabase = createClient();
   const [isKycModalOpen, setIsKycModalOpen] = useState(false)
@@ -44,19 +44,6 @@ export default function EmployerProfile({
   const [platforms, setPlatforms] = useState<any[]>(
     profile?.platforms?.length ? profile.platforms : []
   );
-
-  const [selectedCity, setSelectedCity] = useState(profile?.city || '');
-  const [selectedTownship, setSelectedTownship] = useState(profile?.township || '');
-
-  const [resumeFileName, setResumeFileName] = useState<string | null>(null);
-
-  const handleResumeChange = (e: any) => {
-    const file = e.target.files?.[0];
-    if (file) setResumeFileName(file.name);
-  };
-
-  const availableCities = Object.keys(locationMap);
-  const availableTownships = selectedCity ? locationMap[selectedCity] : [];
 
   const handleAvatarChange = (e: any) => {
     const file = e.target.files?.[0];
@@ -90,20 +77,34 @@ export default function EmployerProfile({
     setAvatarPreview(profile?.avatar_url || null);
     setCoverPreview(profile?.cover_url || null);
     setPlatforms(profile?.platforms?.length ? profile.platforms : []);
-    setSelectedCity(profile?.city || '');
-    setSelectedTownship(profile?.township || '');
   };
   
   const loadMore = async () => {
     setIsLoadingMore(true);
-    const nextPage = page + 1;
     
-    // NOTE: You will map this to an API route later: fetch(`/api/posts?page=${nextPage}`)
-    const newPosts: any[] = []; 
+    // Calculate the pagination range (0-4 is first page, 5-9 is second, etc.)
+    const from = page * 5;
+    const to = from + 4;
     
-    if (newPosts.length < 5) setHasMore(false);
-    setPosts([...posts, ...newPosts]);
-    setPage(nextPage);
+    // Fetch directly from Supabase!
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('employer_id', profile.id)
+      .order('created_at', { ascending: false })
+      .range(from, to);
+      
+    const newPosts = data || [];
+    
+    if (newPosts.length < 5) {
+      setHasMore(false);
+    }
+    
+    if (!error && newPosts.length > 0) {
+      setPosts([...posts, ...newPosts]);
+      setPage(page + 1);
+    }
+    
     setIsLoadingMore(false);
   };
 
@@ -118,7 +119,6 @@ export default function EmployerProfile({
     setIsDeleting(true);
 
     try {
-      // Actually delete from Supabase database
       const { error } = await supabase
         .from('jobs')
         .delete()
@@ -126,14 +126,13 @@ export default function EmployerProfile({
 
       if (error) throw error;
 
-      // Remove from UI
       setPosts(posts.filter((p: any) => p.id !== postToDelete));
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('Failed to delete post. Please try again.');
     } finally {
       setIsDeleting(false);
-      setPostToDelete(null); // Close modal
+      setPostToDelete(null); 
     }
   };
 
@@ -144,27 +143,35 @@ export default function EmployerProfile({
     
     try {
       const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+      const compressPromises = [];
 
       const avatarFile = formData.get('avatar') as File;
       if (avatarFile && avatarFile.size > 0) {
-        const compressedAvatar = await imageCompression(avatarFile, options);
-        formData.set('avatar', compressedAvatar, compressedAvatar.name);
+        compressPromises.push(
+          imageCompression(avatarFile, options).then(compressed => formData.set('avatar', compressed, compressed.name))
+        );
       }
 
       const coverFile = formData.get('cover') as File;
       if (coverFile && coverFile.size > 0) {
-        const compressedCover = await imageCompression(coverFile, options);
-        formData.set('cover', compressedCover, compressedCover.name);
+        compressPromises.push(
+          imageCompression(coverFile, options).then(compressed => formData.set('cover', compressed, compressed.name))
+        );
       }
 
+      // UX FIX: Compress all platform screenshots in parallel
       const platformCount = parseInt(formData.get('platform_count') as string || '0');
       for (let i = 0; i < platformCount; i++) {
         const screenFile = formData.get(`platform_screenshot_${i}`) as File;
         if (screenFile && screenFile.size > 0) {
-           const compressedScreen = await imageCompression(screenFile, options);
-           formData.set(`platform_screenshot_${i}`, compressedScreen, compressedScreen.name);
+          compressPromises.push(
+            imageCompression(screenFile, options).then(compressed => formData.set(`platform_screenshot_${i}`, compressed, compressed.name))
+          );
         }
       }
+
+      // Wait for ALL images to compress simultaneously before saving
+      await Promise.all(compressPromises);
 
       await saveProfile(formData);
       setIsEditing(false);
@@ -176,10 +183,9 @@ export default function EmployerProfile({
     }
   }
 
-const displayCategory = profile?.category ? (tHome.cats[profile.category] || profile.category) : t.notSpecified;
-const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : t.locationNotSet;
-const locationParts = displayLocation.split(', ');
-const hasLocation = profile?.township && profile?.city;
+  const displayCategory = profile?.category ? (tHome.cats[profile.category] || profile.category) : t.notSpecified;
+  const displayLocation = (profile?.township && profile?.city) ? `${profile.township}, ${profile.city}` : t.locationNotSet;
+  const hasLocation = profile?.township && profile?.city;
   
   return (
     <div className="relative w-full min-h-screen bg-[#F0F2F5] text-gray-900">
@@ -227,7 +233,6 @@ const hasLocation = profile?.township && profile?.city;
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{t.category}</label>
                 <select name="category" defaultValue={profile?.category || ''} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-900">
                   <option value="">{t.selectCategory}</option>
-                  {/* Loop through tHome.cats instead of CATEGORY_MAP */}
                   {Object.entries(tHome.cats).map(([val, label]) => (
                     <option key={val} value={val}>{label as string}</option>
                   ))}
@@ -246,16 +251,16 @@ const hasLocation = profile?.township && profile?.city;
                 <span>{t.category}: <span className="font-semibold text-gray-900 capitalize ml-1">{displayCategory}</span></span>
               </div>
               <div className="flex items-center gap-3">
-  <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-  <span className="break-words whitespace-normal">
-    Location: <span className="font-semibold text-gray-900 capitalize ml-1">
-      {hasLocation ? displayLocation : t.locationNotSet}
-    </span>
-  </span>
-</div>
+                <svg className="w-6 h-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="break-words whitespace-normal">
+                  Location: <span className="font-semibold text-gray-900 capitalize ml-1">
+                    {hasLocation ? displayLocation : t.locationNotSet}
+                  </span>
+                </span>
+              </div>
             </div>
           )}
         </motion.section>
@@ -373,10 +378,10 @@ const hasLocation = profile?.township && profile?.city;
                         <button 
                           type="button" 
                           onClick={(e) => {
-  e.preventDefault(); 
-  e.stopPropagation(); // Completely stops the background job link from opening
-  promptDeletePost(post.id);
-}}
+                            e.preventDefault(); 
+                            e.stopPropagation(); 
+                            promptDeletePost(post.id);
+                          }}
                           className="text-red-500 hover:bg-red-50 p-2.5 rounded-lg active:scale-90 transition-all border border-red-100 bg-red-50/50 z-20 relative"
                           title="Delete Post"
                         >
