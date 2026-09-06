@@ -81,7 +81,7 @@ export default function LoginForm({ t }: { t: any }) {
             ) : (
               <input 
                 type="tel" name="phone" required 
-                placeholder="+95 9..."
+                placeholder="09..."
                 className="w-full pl-12 pr-4 py-3.5 bg-white/70 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#045D5D]/15 focus:border-[#045D5D] focus:bg-white transition-all shadow-sm" 
               />
             )}

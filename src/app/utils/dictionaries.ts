@@ -79,8 +79,8 @@ register: {
   alreadyHaveAccount: "အကောင့်ရှိပြီးသားလား?",
   logInText: "အကောင့်ဝင်မည်",
   phoneLabel: "ဖုန်းနံပါတ်",
-  usePhone: "ဖုန်းဖြင့်စာရင်းသွင်းမည်",
-  useEmail: "အီးမေးလ်ဖြင့်စာရင်းသွင်းမည်",
+  usePhone: "ဖုန်း",
+  useEmail: "အီးမေးလ်",
 },
 jobDetail: {
   closeJob: "အလုပ်ပိတ်မည်",
@@ -257,7 +257,7 @@ createJob: {
   contactPlaceholder: "App ရွေးပါ...",
   apps: { phone: "ဖုန်းခေါ်ရန် / SMS", facebook: "Facebook / Messenger" },
   usernamePhone: "အသုံးပြုသူအမည် / ဖုန်းနံပါတ်",
-  usernamePlaceholder: "ဥပမာ - +95 9...",
+  usernamePlaceholder: "ဥပမာ - 09...",
   publishBtn: "အလုပ်တင်မည်"
 },
 locationInput: {
@@ -583,7 +583,7 @@ createJob: {
   contactPlaceholder: "Select an app...",
   apps: { phone: "Phone Call / SMS", facebook: "Facebook / Messenger" },
   usernamePhone: "Username / Phone Number",
-  usernamePlaceholder: "e.g., +95 9...",
+  usernamePlaceholder: "e.g., 09...",
   publishBtn: "Publish Job Post"
 },
 locationInput: {

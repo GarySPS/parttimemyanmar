@@ -20,7 +20,7 @@ export default function ContactInputGroup({
   // Dynamic Placeholder Logic
   let placeholder = t.usernamePlaceholder; // Default
   if (app === 'Telegram') placeholder = 'e.g., @username';
-  if (app === 'Viber' || app === 'Phone') placeholder = 'e.g., +95 9...';
+  if (app === 'Viber' || app === 'Phone') placeholder = 'e.g., 09...';
   if (app === 'Facebook') placeholder = 'e.g., facebook.com/username';
   if (app === 'Email') placeholder = 'e.g., mail@example.com';
 
